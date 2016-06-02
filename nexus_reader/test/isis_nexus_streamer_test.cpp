@@ -1,9 +1,9 @@
 #include "../inc/eventdata.h"
 #include <gtest/gtest.h>
 
-class FooTest : public ::testing::Test {};
+class EventDataTest : public ::testing::Test {};
 
-TEST(FooTest, simple_test) {
+TEST(EventDataTest, get_tof_and_detid) {
   auto events = EventData();
   EXPECT_EQ(0, events.getTof().size());
   EXPECT_EQ(0, events.getDetid().size());

@@ -16,18 +16,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4ea73858-b28d-4324-ac55-a371ab5d73fb" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/isis_event_streamer.git.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nexus_reader/CMakeLists.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nexus_reader/inc/eventdata.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nexus_reader/src/eventdata.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nexus_reader/src/main.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nexus_reader/test/CMakeLists.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp" afterPath="$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp" />
     </list>
     <ignored path="isis_event_streamer.git.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -78,25 +68,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="isis_nexus_streamer_test.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="isis_nexus_streamer_test.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="270">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
-                <element signature="e#0#24#0" expanded="true" />
+                <element signature="e#0#29#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="eventdata.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="eventdata.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nexus_reader/inc/eventdata.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state relative-caret-position="252">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
-                <element signature="e#81#98#0" expanded="true" />
+                <element signature="e#81#99#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -105,8 +95,8 @@
       <file leaf-file-name="eventdata.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nexus_reader/src/eventdata.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="90">
+              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -131,13 +121,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/../isis_event_streamer.git/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/nexus_reader/inc/eventdata.h" />
-        <option value="$PROJECT_DIR$/nexus_reader/src/eventdata.cpp" />
-        <option value="$PROJECT_DIR$/nexus_reader/src/main.cpp" />
         <option value="$PROJECT_DIR$/nexus_reader/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/nexus_reader/test/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/nexus_reader/src/eventdata.cpp" />
+        <option value="$PROJECT_DIR$/nexus_reader/inc/eventdata.h" />
+        <option value="$PROJECT_DIR$/nexus_reader/src/main.cpp" />
+        <option value="$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp" />
       </list>
     </option>
   </component>
@@ -279,12 +269,8 @@
       <recent name="$PROJECT_DIR$/../isis_event_streamer.git/nexus_reader" />
     </key>
   </component>
-  <component name="RunManager" selected="Google Test.FooTest.simple_test">
-    <configuration default="false" name="All in isis_nexus_streamer_test.cpp" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="isis_nexus_streamer_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="isis_nexus_streamer_test" TEST_PATTERN="FooTest.*:FooTest/*.*:*/FooTest.*/*:*/FooTest/*.*" TEST_MODE="PATTERN">
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="FooTest.simple_test" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="isis_nexus_streamer_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="isis_nexus_streamer_test" TEST_CLASS="FooTest" TEST_METHOD="simple_test" TEST_MODE="SUITE_TEST">
+  <component name="RunManager" selected="Google Test.All in isis_nexus_streamer_test.cpp (1)">
+    <configuration default="false" name="All in isis_nexus_streamer_test.cpp (1)" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="isis_nexus_streamer_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="isis_nexus_streamer_test" TEST_PATTERN="EventDataTest.*:EventDataTest/*.*:*/EventDataTest.*/*:*/EventDataTest/*.*" TEST_MODE="PATTERN">
       <envs />
       <method />
     </configuration>
@@ -453,19 +439,11 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="isis_nexus_steamer_test" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="isis_nexus_steamer_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="isis_nexus_steamer_test">
+    <configuration default="false" name="isis_nexus_streamer_test" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="isis_nexus_streamer_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="isis_nexus_streamer_test">
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="isis_nexus_streamer_test" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="isis_nexus_streamer_test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="isis_nexus_streamer_test">
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="eventdata" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="eventdata" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="isis_nexus_streamer" RUN_TARGET_NAME="eventdata">
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="eventdata_lib" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="eventdata_lib" CONFIG_NAME="Debug">
+    <configuration default="false" name="eventdata_lib" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="isis_nexus_streamer" TARGET_NAME="eventdata_lib" CONFIG_NAME="Debug">
       <envs />
       <method />
     </configuration>
@@ -473,20 +451,16 @@
       <envs />
       <method />
     </configuration>
-    <list size="8">
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Application.Build All" />
-      <item index="1" class="java.lang.String" itemvalue="Application.isis_nexus_steamer_test" />
-      <item index="2" class="java.lang.String" itemvalue="Application.isis_nexus_streamer_test" />
-      <item index="3" class="java.lang.String" itemvalue="Google Test.All in isis_nexus_streamer_test.cpp" />
-      <item index="4" class="java.lang.String" itemvalue="Google Test.FooTest.simple_test" />
-      <item index="5" class="java.lang.String" itemvalue="Application.eventdata" />
-      <item index="6" class="java.lang.String" itemvalue="Application.eventdata_lib" />
-      <item index="7" class="java.lang.String" itemvalue="Application.main_eventdata" />
+      <item index="1" class="java.lang.String" itemvalue="Application.isis_nexus_streamer_test" />
+      <item index="2" class="java.lang.String" itemvalue="Application.eventdata_lib" />
+      <item index="3" class="java.lang.String" itemvalue="Application.main_eventdata" />
+      <item index="4" class="java.lang.String" itemvalue="Google Test.All in isis_nexus_streamer_test.cpp (1)" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Google Test.FooTest.simple_test" />
-        <item index="1" class="java.lang.String" itemvalue="Google Test.All in isis_nexus_streamer_test.cpp" />
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Google Test.All in isis_nexus_streamer_test.cpp (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -501,11 +475,35 @@
       <option name="presentableId" value="Default" />
       <updated>1464876708425</updated>
     </task>
+    <task id="LOCAL-00001" summary="started creating class to hold event data">
+      <created>1464881079981</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1464881079981</updated>
+    </task>
+    <task id="LOCAL-00002" summary="clang format cpp files">
+      <created>1464881400899</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1464881400899</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TestHistory">
     <history-entry file="All_in_isis_nexus_streamer_test_cpp - 2016.06.02 at 15h 22m 34s.xml">
       <configuration name="All in isis_nexus_streamer_test.cpp" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="All_in_isis_nexus_streamer_test_cpp - 2016.06.02 at 16h 42m 37s.xml">
+      <configuration name="All in isis_nexus_streamer_test.cpp" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="All_in_isis_nexus_streamer_test_cpp_(1) - 2016.06.02 at 16h 42m 30s.xml">
+      <configuration name="All in isis_nexus_streamer_test.cpp (1)" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="All_in_isis_nexus_streamer_test_cpp_(1) - 2016.06.02 at 16h 42m 43s.xml">
+      <configuration name="All in isis_nexus_streamer_test.cpp (1)" configurationId="CMakeGoogleTestRunConfigurationType" />
     </history-entry>
     <history-entry file="FooTest_simple_test - 2016.06.02 at 15h 35m 03s.xml">
       <configuration name="FooTest.simple_test" configurationId="CMakeGoogleTestRunConfigurationType" />
@@ -541,6 +539,11 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="started creating class to hold event data" />
+    <MESSAGE value="clang format cpp files" />
+    <option name="LAST_COMMIT_MESSAGE" value="clang format cpp files" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
@@ -562,13 +565,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp">
+    <entry file="file://$PROJECT_DIR$/nexus_reader/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="252">
+          <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -580,11 +581,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nexus_reader/CMakeLists.txt">
+    <entry file="file://$PROJECT_DIR$/nexus_reader/inc/eventdata.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
-          <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
-          <folding />
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#81#99#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -598,18 +601,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/nexus_reader/src/eventdata.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="90">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nexus_reader/inc/eventdata.h">
+    <entry file="file://$PROJECT_DIR$/nexus_reader/test/isis_nexus_streamer_test.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        <state relative-caret-position="270">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <element signature="e#81#98#0" expanded="true" />
+            <element signature="e#0#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
