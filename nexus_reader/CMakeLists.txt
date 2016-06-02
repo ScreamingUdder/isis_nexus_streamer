@@ -1,12 +1,10 @@
 project(isis_nexus_streamer)
 
-include_directories(inc/)
-
 ## eventdata library ##
 
+include_directories(${PROJECT_SOURCE_DIR}/inc)
 set(SRC_FILES
         ${PROJECT_SOURCE_DIR}/src/eventdata.cpp)
-
 add_library(eventdata_lib ${SRC_FILES})
 
 ## Main executable ##
