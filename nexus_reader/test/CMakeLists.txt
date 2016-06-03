@@ -10,5 +10,5 @@ if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()
 
-add_executable(isis_nexus_streamer_test isis_nexus_streamer_test.cpp)
-target_link_libraries(isis_nexus_streamer_test ${tests_LINK_LIBRARIES})
+add_executable(eventDataTest eventDataTest.cpp)
+target_link_libraries(eventDataTest ${tests_LINK_LIBRARIES})

@@ -14,7 +14,7 @@ TEST(EventDataTest, get_buffer_pointer) {
   auto events = EventData();
 
   std::vector<int32_t> detIds = {1, 2, 3, 4};
-  std::vector<float> tofs = {1, 2, 3, 4};
+  std::vector<float> tofs = {4, 3, 2, 1};
 
   events.setDetId(detIds);
   events.setTof(tofs);
