@@ -1,0 +1,9 @@
+// IDL file for neutron event data.
+
+table FlatbufEventData {
+    count:int;
+    detId:[int];
+    tof:[float];
+}
+
+root_type FlatbufEventData;

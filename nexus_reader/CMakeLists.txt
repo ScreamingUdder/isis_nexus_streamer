@@ -8,7 +8,8 @@ find_package(HDF5)
 
 include_directories(${PROJECT_SOURCE_DIR}/inc)
 
-add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/eventdata.cpp)
+add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/eventData.cpp)
+add_library(testHelpers_lib ${PROJECT_SOURCE_DIR}/src/eventDataTestHelper.cpp)
 
 
 #####################
