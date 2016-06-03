@@ -27,8 +27,3 @@ TEST(EventDataTest, get_buffer_pointer) {
   EXPECT_EQ(detIds, testHelper.getDetId());
   EXPECT_EQ(tofs, testHelper.getTof());
 }
-
-int main(int argc, char *argv[]) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

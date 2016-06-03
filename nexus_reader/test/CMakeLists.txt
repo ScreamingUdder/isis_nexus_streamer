@@ -10,5 +10,5 @@ if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()
 
-add_executable(eventDataTest eventDataTest.cpp)
+add_executable(eventDataTest eventDataTest.cpp unitTestRunner.cpp)
 target_link_libraries(eventDataTest ${tests_LINK_LIBRARIES})
