@@ -15,6 +15,11 @@ TEST(NexusFileReaderTest, nexus_file_open_exists) {
   EXPECT_NO_THROW(NexusFileReader(testDataPath+"WISH_test.nxs"));
 }
 
+TEST(NexusFileReaderTest, nexus_file_open_exists_and_specify_maxEventSubsetSize) {
+  extern std::string testDataPath;
+  EXPECT_NO_THROW(NexusFileReader(testDataPath+"WISH_test.nxs", 2048));
+}
+
 TEST(NexusFileReaderTest, nexus_read_file_size) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath+"WISH_test.nxs");
