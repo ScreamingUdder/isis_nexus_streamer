@@ -11,7 +11,7 @@ hsize_t NexusFileReader::getFileSize() {
   return m_file->getFileSize();
 }
 
-uint64_t NexusFileReader::getTotalCounts() {
+uint64_t NexusFileReader::getTotalEventCount() {
   DataSet dataset = m_file->openDataSet("/raw_data_1/detector_1_events/total_counts"); //total_counts
   uint64_t *totalCount = new uint64_t[1];
   dataset.read(totalCount, PredType::NATIVE_UINT64);

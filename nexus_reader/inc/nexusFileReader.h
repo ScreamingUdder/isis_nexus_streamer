@@ -11,7 +11,7 @@ class NexusFileReader {
 public:
   NexusFileReader(const std::string &filename);
   hsize_t getFileSize();
-  uint64_t getTotalCounts();
+  uint64_t getTotalEventCount();
 private:
   H5FilePtr m_file = nullptr;
 };

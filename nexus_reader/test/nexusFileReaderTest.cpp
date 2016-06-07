@@ -24,5 +24,5 @@ TEST(NexusFileReaderTest, nexus_read_file_size) {
 TEST(NexusFileReaderTest, nexus_read_number_events) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath+"WISH_test.nxs");
-  EXPECT_EQ(fileReader.getTotalCounts(), 120529245);
+  EXPECT_EQ(fileReader.getTotalEventCount(), 120529245);
 }
