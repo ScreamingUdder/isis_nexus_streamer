@@ -9,7 +9,11 @@ typedef std::shared_ptr<H5::H5File> H5FilePtr;
 
 class NexusFileReader {
 public:
-  H5FilePtr openFile(const std::string &filename);
+  NexusFileReader(const std::string &filename);
+  hsize_t getFileSize();
+  uint64_t getTotalCounts();
+private:
+  H5FilePtr m_file = nullptr;
 };
 
 #endif // ISIS_NEXUS_STREAMER_NEXUSFILEREADER_H
