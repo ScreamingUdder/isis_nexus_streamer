@@ -2,11 +2,11 @@
 
 EventData::EventData(){};
 
-void EventData::setDetId(std::vector<int32_t> detIds) {
+void EventData::setDetId(std::vector<uint32_t> detIds) {
   m_detId = detIds;
 }
 
-void EventData::setTof(std::vector<float> tofs) {
+void EventData::setTof(std::vector<uint64_t> tofs) {
   m_tof = tofs;
 }
 
@@ -27,6 +27,6 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
   return builder.ReleaseBufferPointer();
 }
 
-std::vector<int32_t> EventData::getDetId() { return m_detId; }
+std::vector<uint32_t> EventData::getDetId() { return m_detId; }
 
-std::vector<float> EventData::getTof() { return m_tof; }
+std::vector<uint64_t> EventData::getTof() { return m_tof; }

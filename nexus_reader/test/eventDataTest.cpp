@@ -13,8 +13,8 @@ TEST(EventDataTest, get_tof_and_detid) {
 TEST(EventDataTest, get_buffer_pointer) {
   auto events = EventData();
 
-  std::vector<int32_t> detIds = {1, 2, 3, 4};
-  std::vector<float> tofs = {4, 3, 2, 1};
+  std::vector<uint32_t> detIds = {1, 2, 3, 4};
+  std::vector<uint64_t> tofs = {4, 3, 2, 1};
 
   events.setDetId(detIds);
   events.setTof(tofs);

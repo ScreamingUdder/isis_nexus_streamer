@@ -12,17 +12,17 @@ public:
 
   EventData();
 
-  std::vector<int32_t> getDetId();
-  std::vector<float> getTof();
+  std::vector<uint32_t> getDetId();
+  std::vector<uint64_t> getTof();
 
-  void setDetId(std::vector<int32_t>);
-  void setTof(std::vector<float>);
+  void setDetId(std::vector<uint32_t>);
+  void setTof(std::vector<uint64_t>);
 
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
 
 private:
-  std::vector<int32_t> m_detId = {};
-  std::vector<float> m_tof = {};
+  std::vector<uint32_t> m_detId = {};
+  std::vector<uint64_t> m_tof = {};
 };
 
 #endif // ISIS_NEXUS_STREAMER_EVENTDATA_H

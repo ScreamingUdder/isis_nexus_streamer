@@ -15,12 +15,12 @@ struct FlatbufEventData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_DETID = 6,
     VT_TOF = 8
   };
-  int32_t count() const { return GetField<int32_t>(VT_COUNT, 0); }
-  const flatbuffers::Vector<int32_t> *detId() const { return GetPointer<const flatbuffers::Vector<int32_t> *>(VT_DETID); }
-  const flatbuffers::Vector<float> *tof() const { return GetPointer<const flatbuffers::Vector<float> *>(VT_TOF); }
+  uint32_t count() const { return GetField<uint32_t>(VT_COUNT, 0); }
+  const flatbuffers::Vector<uint32_t> *detId() const { return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DETID); }
+  const flatbuffers::Vector<uint64_t> *tof() const { return GetPointer<const flatbuffers::Vector<uint64_t> *>(VT_TOF); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int32_t>(verifier, VT_COUNT) &&
+           VerifyField<uint32_t>(verifier, VT_COUNT) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_DETID) &&
            verifier.Verify(detId()) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_TOF) &&
@@ -32,9 +32,9 @@ struct FlatbufEventData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct FlatbufEventDataBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_count(int32_t count) { fbb_.AddElement<int32_t>(FlatbufEventData::VT_COUNT, count, 0); }
-  void add_detId(flatbuffers::Offset<flatbuffers::Vector<int32_t>> detId) { fbb_.AddOffset(FlatbufEventData::VT_DETID, detId); }
-  void add_tof(flatbuffers::Offset<flatbuffers::Vector<float>> tof) { fbb_.AddOffset(FlatbufEventData::VT_TOF, tof); }
+  void add_count(uint32_t count) { fbb_.AddElement<uint32_t>(FlatbufEventData::VT_COUNT, count, 0); }
+  void add_detId(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> detId) { fbb_.AddOffset(FlatbufEventData::VT_DETID, detId); }
+  void add_tof(flatbuffers::Offset<flatbuffers::Vector<uint64_t>> tof) { fbb_.AddOffset(FlatbufEventData::VT_TOF, tof); }
   FlatbufEventDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   FlatbufEventDataBuilder &operator=(const FlatbufEventDataBuilder &);
   flatbuffers::Offset<FlatbufEventData> Finish() {
@@ -44,9 +44,9 @@ struct FlatbufEventDataBuilder {
 };
 
 inline flatbuffers::Offset<FlatbufEventData> CreateFlatbufEventData(flatbuffers::FlatBufferBuilder &_fbb,
-   int32_t count = 0,
-   flatbuffers::Offset<flatbuffers::Vector<int32_t>> detId = 0,
-   flatbuffers::Offset<flatbuffers::Vector<float>> tof = 0) {
+   uint32_t count = 0,
+   flatbuffers::Offset<flatbuffers::Vector<uint32_t>> detId = 0,
+   flatbuffers::Offset<flatbuffers::Vector<uint64_t>> tof = 0) {
   FlatbufEventDataBuilder builder_(_fbb);
   builder_.add_tof(tof);
   builder_.add_detId(detId);
