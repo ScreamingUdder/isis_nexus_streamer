@@ -14,8 +14,8 @@ NexusFileReader::NexusFileReader(const std::string &filename) {
 hsize_t NexusFileReader::getFileSize() { return m_file->getFileSize(); }
 
 uint64_t NexusFileReader::getTotalEventCount() {
-  DataSet dataset = m_file->openDataSet(
-      "/raw_data_1/detector_1_events/total_counts"); // total_counts
+  DataSet dataset =
+      m_file->openDataSet("/raw_data_1/detector_1_events/total_counts");
   uint64_t *totalCount = new uint64_t[1];
   dataset.read(totalCount, PredType::NATIVE_UINT64);
 
@@ -23,8 +23,8 @@ uint64_t NexusFileReader::getTotalEventCount() {
 }
 
 hsize_t NexusFileReader::getFrameStart(hsize_t frameNumber) {
-  DataSet dataset = m_file->openDataSet(
-      "/raw_data_1/detector_1_events/event_index"); // total_counts
+  DataSet dataset =
+      m_file->openDataSet("/raw_data_1/detector_1_events/event_index");
   uint64_t *frameStart = new uint64_t[1];
 
   hsize_t count[1], offset[1], stride[1], block[1];
@@ -78,4 +78,37 @@ bool NexusFileReader::getEventDetIds(std::vector<uint32_t> &detIds,
                 &detIdsArray[numberOfEventsInFrame]);
 
   return true;
+}
+
+bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
+                                   hsize_t frameNumber) {
+  if (frameNumber >= m_numberOfFrames)
+    return false;
+  DataSet dataset =
+      m_file->openDataSet("/raw_data_1/detector_1_events/event_time_offset");
+
+  hsize_t numberOfEventsInFrame = getNumberOfEventsInFrame(frameNumber);
+
+  hsize_t count[1], offset[1], stride[1], block[1];
+  count[0] = numberOfEventsInFrame;
+  offset[0] = getFrameStart(frameNumber);
+  stride[0] = 1;
+  block[0] = 1;
+
+  auto dataspace = dataset.getSpace();
+  dataspace.selectHyperslab(H5S_SELECT_SET, count, offset, stride, block);
+
+  double *timeOffsetArray = new double[numberOfEventsInFrame];
+
+  hsize_t dimsm[1];
+  dimsm[0] = numberOfEventsInFrame;
+  DataSpace memspace(1, dimsm);
+
+  dataset.read(timeOffsetArray, PredType::NATIVE_DOUBLE, memspace, dataspace);
+
+  tofs.resize(numberOfEventsInFrame);
+
+  for (size_t tofIndex = 0; tofIndex < numberOfEventsInFrame; tofIndex++) {
+    tofs[tofIndex] = static_cast<uint64_t>((timeOffsetArray[tofIndex] * 1e3));
+  }
 }
