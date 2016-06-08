@@ -33,13 +33,13 @@ TEST(NexusFileReaderTest, nexus_read_number_frames) {
   EXPECT_EQ(18131, fileReader.getNumberOfFrames());
 }
 
-TEST(NexusFileReaderTest, get_detIds) {
+TEST(NexusFileReaderTest, get_detIds_first_frame) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath+"SANS_test.nxs");
   std::vector<uint32_t> detIds;
-  fileReader.getEventDetIds(detIds);
-  EXPECT_FLOAT_EQ(123.0, detIds[0]);
-  EXPECT_FLOAT_EQ(234.0, detIds[150]);
+  EXPECT_TRUE(fileReader.getEventDetIds(detIds, 0));
+  EXPECT_FLOAT_EQ(99406, detIds[0]);
+  EXPECT_FLOAT_EQ(87829, detIds[150]);
 }
 
 /*

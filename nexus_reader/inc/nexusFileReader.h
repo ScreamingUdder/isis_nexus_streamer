@@ -14,12 +14,13 @@ public:
 
   hsize_t getFileSize();
   uint64_t getTotalEventCount();
-  bool getEventDetIds(std::vector<uint32_t> &detIds);
+  bool getEventDetIds(std::vector<uint32_t> &detIds, hsize_t frameNumber);
   size_t getNumberOfFrames() { return m_numberOfFrames; };
 
 private:
+  hsize_t getFrameStart(hsize_t frameNumber);
+  hsize_t getNumberOfEventsInFrame(hsize_t frameNumber);
   H5FilePtr m_file = nullptr;
-  size_t m_frameNumber = 0;
   size_t m_numberOfFrames;
 };
 
