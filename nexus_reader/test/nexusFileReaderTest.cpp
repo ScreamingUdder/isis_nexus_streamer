@@ -12,22 +12,43 @@ TEST(NexusFileReaderTest, nexus_file_open_not_exist) {
 
 TEST(NexusFileReaderTest, nexus_file_open_exists) {
   extern std::string testDataPath;
-  EXPECT_NO_THROW(NexusFileReader(testDataPath+"WISH_test.nxs"));
-}
-
-TEST(NexusFileReaderTest, nexus_file_open_exists_and_specify_maxEventSubsetSize) {
-  extern std::string testDataPath;
-  EXPECT_NO_THROW(NexusFileReader(testDataPath+"WISH_test.nxs", 2048));
+  EXPECT_NO_THROW(NexusFileReader(testDataPath+"SANS_test.nxs"));
 }
 
 TEST(NexusFileReaderTest, nexus_read_file_size) {
   extern std::string testDataPath;
-  auto fileReader = NexusFileReader(testDataPath+"WISH_test.nxs");
-  EXPECT_EQ(fileReader.getFileSize(), 1489857698);
+  auto fileReader = NexusFileReader(testDataPath+"SANS_test.nxs");
+  EXPECT_EQ(104602171, fileReader.getFileSize());
 }
 
 TEST(NexusFileReaderTest, nexus_read_number_events) {
   extern std::string testDataPath;
-  auto fileReader = NexusFileReader(testDataPath+"WISH_test.nxs");
-  EXPECT_EQ(fileReader.getTotalEventCount(), 120529245);
+  auto fileReader = NexusFileReader(testDataPath+"SANS_test.nxs");
+  EXPECT_EQ(14258850, fileReader.getTotalEventCount());
 }
+
+TEST(NexusFileReaderTest, nexus_read_number_frames) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath+"SANS_test.nxs");
+  EXPECT_EQ(18131, fileReader.getNumberOfFrames());
+}
+
+TEST(NexusFileReaderTest, get_detIds) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath+"SANS_test.nxs");
+  std::vector<uint32_t> detIds;
+  fileReader.getEventDetIds(detIds);
+  EXPECT_FLOAT_EQ(123.0, detIds[0]);
+  EXPECT_FLOAT_EQ(234.0, detIds[150]);
+}
+
+/*
+TEST(NexusFileReaderTest, get_event_tofs) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath+"SANS_test.nxs");
+  std::vector<uint64_t> eventTofs;
+  fileReader.getEventTofs(std::vector &eventTofs);
+  EXPECT_FLOAT_EQ(123.0, eventTofs[0]);
+  EXPECT_FLOAT_EQ(234.0, eventTofs[150]);
+}
+ */
