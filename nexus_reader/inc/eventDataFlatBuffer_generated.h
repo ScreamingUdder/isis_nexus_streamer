@@ -3,7 +3,7 @@
 #ifndef FLATBUFFERS_GENERATED_EVENTDATAFLATBUFFER_H_
 #define FLATBUFFERS_GENERATED_EVENTDATAFLATBUFFER_H_
 
-#include "flatbuffers/flatbuffers.h"
+#include "flatbuffers.h"
 
 
 
