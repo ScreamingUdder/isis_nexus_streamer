@@ -30,12 +30,9 @@ add_executable(main_eventdata ${PROJECT_SOURCE_DIR}/src/main.cpp)
 #####################
 
 enable_testing()
-find_package(GTest REQUIRED)
-
-include_directories(${GTEST_INCLUDE_DIRS})
 
 set(tests_LINK_LIBRARIES
-        ${GTEST_LIBRARIES}
+        gtest
         eventdata_lib
         nexusFileReader_lib
         testHelpers_lib)
