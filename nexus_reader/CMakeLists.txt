@@ -29,6 +29,7 @@ add_executable(main_eventdata ${PROJECT_SOURCE_DIR}/src/main.cpp)
 ## Unit Tests      ##
 #####################
 
+include(CTest)
 enable_testing()
 
 set(tests_LINK_LIBRARIES
@@ -46,3 +47,7 @@ add_executable(unitTests
         test/eventKafkaProducerTest.cpp
         test/unitTestRunner.cpp)
 target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
+
+# Make the tests available to run through ctest
+# Do "ctest -VV" in the build directory
+add_test(NAME all_tests COMMAND unitTests "${PROJECT_SOURCE_DIR}/test/data/")
