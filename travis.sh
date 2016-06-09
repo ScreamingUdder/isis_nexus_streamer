@@ -14,3 +14,8 @@ cd ../../
 echo ".... ensure librdkafka is available....."
 sudo ldconfig
 rm -Rf tmp_build
+
+echo "....fetching HDF5 dependency...."
+sudo apt-get update -qq
+apt-get -y install libhdf5-cpp-11
+echo "....done...."
