@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 echo "....fetching librdkafka dependency...."
 mkdir tmp_build
 cd tmp_build

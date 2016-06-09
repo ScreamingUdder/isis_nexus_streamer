@@ -23,7 +23,7 @@ matrix:
       env: COMPILER=g++-5
 
 script:
-  - sudo ./travis.sh
+  - sudo bash travis.sh
   - mkdir build
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER .. && make
