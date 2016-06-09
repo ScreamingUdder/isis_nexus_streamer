@@ -13,6 +13,7 @@ include_directories(
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/eventData.cpp)
 add_library(nexusFileReader_lib ${PROJECT_SOURCE_DIR}/src/nexusFileReader.cpp)
 add_library(testHelpers_lib ${PROJECT_SOURCE_DIR}/src/eventDataTestHelper.cpp)
+#add_library(eventKafkaProducer_lib ${PROJECT_SOURCE_DIR}/src/eventKafkaProducer.cpp)
 
 target_link_libraries(nexusFileReader_lib
         ${HDF5_LIBRARIES}
@@ -45,5 +46,6 @@ endif()
 add_executable(unitTests
         test/eventDataTest.cpp
         test/nexusFileReaderTest.cpp
+        test/eventKafkaProducerTest.cpp
         test/unitTestRunner.cpp)
 target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
