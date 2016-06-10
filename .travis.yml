@@ -22,6 +22,10 @@ matrix:
           packages:
             - g++-5
       env: COMPILER=g++-5
+    - env: TEST_NAME="cppcheck"
+      script: cppcheck --force --quiet --inline-suppr --enable=all -j2 nexus_reader
+      before_install: sudo apt-get install cppcheck
+
 
 script:
   - sudo bash travis.sh
