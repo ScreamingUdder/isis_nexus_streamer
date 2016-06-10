@@ -3,9 +3,10 @@
 echo "....fetching librdkafka dependency...."
 mkdir tmp_build
 cd tmp_build
-git clone https://github.com/edenhill/librdkafka.git
+wget https://github.com/edenhill/librdkafka/archive/0.9.1.tar.gz
+tar -zxf 0.9.1.tar.gz
 echo ".....done....."
-cd librdkafka
+cd librdkafka-0.9.1
 echo "....compiling librdkafka...."
 ./configure && make
 sudo make install
