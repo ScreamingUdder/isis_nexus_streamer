@@ -3,8 +3,8 @@
 
 using namespace H5;
 
-NexusFileReader::NexusFileReader(const std::string &filename) {
-  m_file = std::make_shared<H5File>(filename, H5F_ACC_RDONLY);
+NexusFileReader::NexusFileReader(const std::string &filename)
+    : m_file(std::make_shared<H5File>(filename, H5F_ACC_RDONLY)) {
   DataSet dataset = m_file->openDataSet("/raw_data_1/good_frames");
   size_t *numOfFrames = new size_t[1];
   dataset.read(numOfFrames, PredType::NATIVE_UINT64);
