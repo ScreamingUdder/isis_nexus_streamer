@@ -47,7 +47,7 @@ TEST(NexusFileReaderTest, get_event_tofs) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
   std::vector<uint64_t> eventTofs;
-  fileReader.getEventTofs(eventTofs, 0);
+  EXPECT_TRUE(fileReader.getEventTofs(eventTofs, 0));
   EXPECT_FLOAT_EQ(11660505, eventTofs[0]);
   EXPECT_FLOAT_EQ(46247304, eventTofs[150]);
 }
