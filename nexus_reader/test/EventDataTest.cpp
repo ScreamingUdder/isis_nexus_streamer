@@ -1,5 +1,5 @@
-#include "../inc/eventData.h"
-#include "../inc/eventDataTestHelper.h"
+#include "EventData.h"
+#include "EventDataTestHelper.h"
 #include <gtest/gtest.h>
 
 class EventDataTest : public ::testing::Test {};
@@ -22,7 +22,8 @@ TEST(EventDataTest, get_buffer_pointer) {
   std::string rawbuf;
   events.getBufferPointer(rawbuf);
 
-  auto testHelper = EventDataTestHelper(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+  auto testHelper =
+      EventDataTestHelper(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   EXPECT_EQ(4, testHelper.getCount());
   EXPECT_EQ(detIds, testHelper.getDetId());
   EXPECT_EQ(tofs, testHelper.getTof());
