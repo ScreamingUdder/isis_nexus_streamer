@@ -111,4 +111,6 @@ bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
   for (size_t tofIndex = 0; tofIndex < numberOfEventsInFrame; tofIndex++) {
     tofs[tofIndex] = static_cast<uint64_t>((timeOffsetArray[tofIndex] * 1e3));
   }
+
+  return true;
 }
