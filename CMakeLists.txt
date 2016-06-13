@@ -68,7 +68,7 @@ if (COVERALLS)
     file(WRITE ${SRCS_FILENAME} ${SRCS_FILE})
     coveralls_setup(
             "${SRCS_FILENAME}"
-            OFF
+            ON
             "${PROJECT_SOURCE_DIR}/cmake"
     )
 endif ()
