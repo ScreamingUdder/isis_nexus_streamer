@@ -39,7 +39,8 @@ set(core_libraries
 
 add_executable(main_nexusReader ${PROJECT_SOURCE_DIR}/src/main.cpp)
 target_link_libraries(main_nexusReader
-        ${core_libraries})
+        ${core_libraries}
+        ${LibRDKafka_LIBRARIES})
 
 #####################
 ## Unit Tests      ##
