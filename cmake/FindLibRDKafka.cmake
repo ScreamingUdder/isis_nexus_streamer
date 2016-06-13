@@ -44,6 +44,14 @@ find_package_handle_standard_args(LibRDKafka DEFAULT_MSG
         LibRDKafka_INCLUDE_DIR
         )
 
+# find_path fails on the Travis builds
+if ("${LibRDKafka_INCLUDE_DIR}" STREQUAL "")
+    set(LibRDKafka_INCLUDE_DIR /usr/local/include)
+endif()
+if ("${LibRDKafka_LIBRARIES}" STREQUAL "")
+    set(LibRDKafka_LIBRARIES /usr/local/lib/librdkafka++.so)
+endif()
+
 mark_as_advanced(
         LibRDKafka_ROOT_DIR
         LibRDKafka_LIBRARIES

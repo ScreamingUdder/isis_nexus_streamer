@@ -8,8 +8,7 @@ find_package(HDF5 COMPONENTS CXX HL REQUIRED)
 
 include_directories(
         ${HDF5_INCLUDE_DIRS}
-        #${LibRDKafka_INCLUDE_DIR}
-        /usr/local/include
+        ${LibRDKafka_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
@@ -23,8 +22,7 @@ target_link_libraries(nexusFileReader_lib
         ${HDF5_LIBRARIES}
         ${HDF5_CXX_LIBRARIES})
 target_link_libraries(eventPublisher_lib
-        /usr/local/lib/librdkafka++.so)
-        #${LibRDKafka_LIBRARIES})
+        ${LibRDKafka_LIBRARIES})
 target_link_libraries(nexusStreamer_lib
         nexusFileReader_lib
         eventdata_lib)
@@ -37,7 +35,6 @@ set(core_libraries
 
 MESSAGE(WARNING ${LibRDKafka_INCLUDE_DIR})
 MESSAGE(WARNING ${LibRDKafka_LIBRARIES})
-MESSAGE(WARNING ${HDF5_CXX_LIBRARIES})
 
 #####################
 ## Main executable ##
