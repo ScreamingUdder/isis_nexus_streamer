@@ -9,7 +9,7 @@ NexusFileReader::NexusFileReader(const std::string &filename)
   size_t *numOfFrames = new size_t[1];
   dataset.read(numOfFrames, PredType::NATIVE_UINT64);
   m_numberOfFrames = *numOfFrames;
-  delete numOfFrames;
+  delete[] numOfFrames;
 }
 
 hsize_t NexusFileReader::getFileSize() { return m_file->getFileSize(); }
@@ -112,7 +112,7 @@ bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
   for (size_t tofIndex = 0; tofIndex < numberOfEventsInFrame; tofIndex++) {
     tofs[tofIndex] = static_cast<uint64_t>((timeOffsetArray[tofIndex] * 1e3));
   }
-  delete timeOffsetArray;
+  delete[] timeOffsetArray;
 
   return true;
 }
