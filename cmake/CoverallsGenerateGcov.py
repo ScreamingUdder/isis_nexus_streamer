@@ -128,7 +128,7 @@ def main(argv):
         coverageList.append(copy.deepcopy(fileCoverage))
 
     coverallsOutput = {}
-    coverallsOutput['repo_token'] = os.environ.get('COVERALLS_REPO_TOKEN')
+    #coverallsOutput['repo_token'] = os.environ.get('COVERALLS_REPO_TOKEN')
     coverallsOutput['source_files'] = coverageList
 
     head = {'id':gitLogValue('H',PROJECT_ROOT),'author_name':gitLogValue('an',PROJECT_ROOT), \

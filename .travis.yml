@@ -31,8 +31,6 @@ matrix:
         - sudo bash travis.sh
         - mkdir build
         - cd build
-        - export COVERALLS_SERVICE_NAME=travis-ci
-        - export COVERALLS_REPO_TOKEN=abc12345
         - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Debug -DCOVERALLS=ON .. && make && make coveralls
 
 script:
