@@ -77,6 +77,8 @@ def main(argv):
     gcovAllFiles = getAllFilesWithExtension(COV_PATH,".gcov")
 
     sourcesToCheck = [line.strip() for line in open(COVERAGE_SRCS_FILE, 'r')]
+    # Remove empty strings
+    sourcesToCheck = [x for x in sourcesToCheck if x]
 
     gcovCheckedFiles = []
     uncheckedSources = sourcesToCheck
