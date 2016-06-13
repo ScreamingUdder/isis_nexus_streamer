@@ -3,6 +3,26 @@ project(isis_nexus_streamer)
 find_package(HDF5 COMPONENTS CXX HL REQUIRED)
 find_package(LibRDKafka)
 
+set( SRC_FILES
+        src/EventData.cpp
+        src/EventDataTestHelper.cpp
+        src/KafkaEventPublisher.cpp
+        src/NexusFileReader.cpp
+        src/NexusStreamer.cpp)
+
+set( INC_FILES
+        include/EventData.h
+        include/EventDataTestHelper.h
+        include/EventPublisher.h
+        include/KafkaEventPublisher.h
+        include/NexusFileReader.h
+        include/NexusStreamer.h)
+
+set( TEST_FILES
+        test/EventDataTest.cpp
+        test/NexusFileReaderTest.cpp
+        test/NexusStreamerTest.cpp)
+
 #####################
 ## Libraries       ##
 #####################
@@ -68,3 +88,14 @@ target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
 # Make the tests available to run through ctest
 # Do "ctest -VV" in the build directory
 add_test(NAME all_tests COMMAND unitTests "${PROJECT_SOURCE_DIR}/test/data/")
+
+#####################
+## Test Coverage   ##
+#####################
+
+# Add all src and inc files to test coverage check
+if (COVERALLS)
+    foreach( loop_var ${SRC_FILES} ${INC_FILES})
+        set_property(GLOBAL APPEND PROPERTY COVERAGE_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/${loop_var}")
+    endforeach(loop_var)
+endif()

@@ -1,14 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(isis_nexus_streamer)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 --coverage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-#####################
-## Test coverage   ##
-#####################
 
 # We probably don't want this to run on every build.
 option(COVERALLS "Generate coveralls data" OFF)
@@ -16,6 +12,7 @@ option(COVERALLS "Generate coveralls data" OFF)
 if (COVERALLS)
     include(Coveralls)
     coveralls_turn_on_coverage()
+    set(COVERAGE_SRCS "")
 endif()
 
 #####################
@@ -55,3 +52,15 @@ endif()
 ####################
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_producer")
+
+#####################
+## Test coverage   ##
+#####################
+
+if (COVERALLS)
+    coveralls_setup(
+            "${COVERAGE_SRCS}"
+            OFF
+            "${PROJECT_SOURCE_DIR}/cmake"
+    )
+endif ()
