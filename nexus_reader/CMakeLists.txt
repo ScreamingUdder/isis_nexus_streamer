@@ -33,8 +33,8 @@ set(core_libraries
         nexusStreamer_lib
         eventPublisher_lib)
 
-MESSAGE(${LibRDKafka_INCLUDE_DIR})
-MESSAGE(${LibRDKafka_LIBRARIES})
+MESSAGE(WARNING ${LibRDKafka_INCLUDE_DIR})
+MESSAGE(WARNING ${LibRDKafka_LIBRARIES})
 
 #####################
 ## Main executable ##
