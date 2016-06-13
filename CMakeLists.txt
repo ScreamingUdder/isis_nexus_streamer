@@ -12,7 +12,7 @@ option(COVERALLS "Generate coveralls data" OFF)
 if (COVERALLS)
     include(Coveralls)
     coveralls_turn_on_coverage()
-    set(COVERAGE_SRCS "")
+    #set(COVERAGE_SRCS "")
 endif()
 
 #####################

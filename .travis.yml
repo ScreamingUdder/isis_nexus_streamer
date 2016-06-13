@@ -25,9 +25,16 @@ matrix:
     - env: TEST_NAME="cppcheck"
       script: cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer
       before_install: sudo apt-get -y install cppcheck
+    - env: TEST_NAME="coveralls"
+      compiler: gcc
+      script:
+        - sudo bash travis.sh
+        - mkdir build
+        - cd build
+        - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Debug -DCOVERALLS=ON .. && make && make coveralls
 
 script:
   - sudo bash travis.sh
   - mkdir build
   - cd build
-  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Debug -DCOVERALLS=ON .. && make && make coveralls
+  - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Debug -DCOVERALLS=ON .. && make
