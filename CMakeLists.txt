@@ -67,7 +67,7 @@ if (COVERALLS)
     set( SRCS_FILENAME "${CMAKE_CURRENT_BINARY_DIR}/sources.txt")
     file(WRITE ${SRCS_FILENAME} ${SRCS_FILE})
     coveralls_setup(
-            "${COVERAGE_SRCS}"
+            "${SRCS_FILENAME}"
             OFF
             "${PROJECT_SOURCE_DIR}/cmake"
     )
