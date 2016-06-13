@@ -1,6 +1,7 @@
 project(isis_nexus_streamer)
 
 find_package(HDF5 COMPONENTS CXX HL REQUIRED)
+find_package(LibRDKafka)
 
 #####################
 ## Libraries       ##
@@ -32,9 +33,6 @@ set(core_libraries
         nexusFileReader_lib
         nexusStreamer_lib
         eventPublisher_lib)
-
-MESSAGE(WARNING ${LibRDKafka_INCLUDE_DIR})
-MESSAGE(WARNING ${LibRDKafka_LIBRARIES})
 
 #####################
 ## Main executable ##
