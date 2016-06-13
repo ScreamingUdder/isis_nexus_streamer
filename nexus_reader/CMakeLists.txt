@@ -33,14 +33,16 @@ set(core_libraries
         nexusStreamer_lib
         eventPublisher_lib)
 
+MESSAGE(${LibRDKafka_INCLUDE_DIR})
+MESSAGE(${LibRDKafka_LIBRARIES})
+
 #####################
 ## Main executable ##
 #####################
 
 add_executable(main_nexusReader ${PROJECT_SOURCE_DIR}/src/main.cpp)
 target_link_libraries(main_nexusReader
-        ${core_libraries}
-        ${LibRDKafka_LIBRARIES})
+        ${core_libraries})
 
 #####################
 ## Unit Tests      ##
