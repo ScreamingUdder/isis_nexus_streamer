@@ -25,6 +25,15 @@ matrix:
     - env: TEST_NAME="cppcheck"
       script: cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer
       before_install: sudo apt-get -y install cppcheck
+    - language: cpp
+      compiler:
+        - gcc
+      before_install:
+        - pip install --user cpp-coveralls
+      script:
+        - ./configure --enable-gcov && make && make check
+      after_success:
+       - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
 
 
 script:
