@@ -129,6 +129,8 @@ def main(argv):
 
     coverallsOutput = {}
     #coverallsOutput['repo_token'] = os.environ.get('COVERALLS_REPO_TOKEN')
+    coverallsOutput['service_name'] = "travis-ci"
+    coverallsOutput['service_job_id'] = os.environ.get('TRAVIS_JOB_ID')
     coverallsOutput['source_files'] = coverageList
 
     head = {'id':gitLogValue('H',PROJECT_ROOT),'author_name':gitLogValue('an',PROJECT_ROOT), \
