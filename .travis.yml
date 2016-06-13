@@ -23,7 +23,7 @@ matrix:
             - g++-5
       env: COMPILER=g++-5
     - env: TEST_NAME="cppcheck"
-      script: cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_reader/include nexus_reader
+      script: cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer
       before_install: sudo apt-get -y install cppcheck
 
 

@@ -42,4 +42,4 @@ endif()
 ## Add subdirs    ##
 ####################
 
-add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_reader")
+add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_producer")
