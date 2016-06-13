@@ -1,6 +1,6 @@
 #include "EventData.h"
 
-EventData::EventData(){};
+EventData::EventData() : m_bufferSize(0) {};
 
 void EventData::setDetId(std::vector<uint32_t> detIds) {
   m_detId = detIds;
@@ -23,6 +23,8 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
   auto bufferpointer =
       reinterpret_cast<const char *>(builder.GetBufferPointer());
   buffer.assign(bufferpointer, bufferpointer + builder.GetSize());
+
+  m_bufferSize = builder.GetSize();
 
   return builder.ReleaseBufferPointer();
 }

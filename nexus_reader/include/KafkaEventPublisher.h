@@ -9,6 +9,7 @@
 class KafkaEventPublisher : public EventPublisher {
 public:
   void setUp(const std::string &broker, const std::string &topic) override;
+  void sendMessage(char *buf, size_t messageSize) override;
   ~KafkaEventPublisher() { RdKafka::wait_destroyed(5000); };
 
 private:

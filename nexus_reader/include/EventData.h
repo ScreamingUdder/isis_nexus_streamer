@@ -9,7 +9,6 @@
 class EventData {
 
 public:
-
   EventData();
 
   std::vector<uint32_t> getDetId();
@@ -20,9 +19,12 @@ public:
 
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
 
+  size_t getBufferSize() { return m_bufferSize; };
+
 private:
   std::vector<uint32_t> m_detId = {};
   std::vector<uint64_t> m_tof = {};
+  size_t m_bufferSize;
 };
 
 #endif // ISIS_NEXUS_STREAMER_EVENTDATA_H

@@ -13,8 +13,12 @@ public:
                 const std::string &brokerAddress, const std::string &streamName,
                 const std::string &filename);
   std::shared_ptr<EventData> createMessageData(hsize_t frameNumber);
+  void streamData();
+  void streamData(size_t maxFrameNumber);
 
 private:
+  void createAndSendMessage(std::string &rawbuf, size_t frameNumber);
+
   std::shared_ptr<EventPublisher> m_publisher;
   std::shared_ptr<NexusFileReader> m_fileReader;
 };
