@@ -35,6 +35,7 @@ set(core_libraries
 
 MESSAGE(WARNING ${LibRDKafka_INCLUDE_DIR})
 MESSAGE(WARNING ${LibRDKafka_LIBRARIES})
+MESSAGE(WARNING ${HDF5_CXX_LIBRARIES})
 
 #####################
 ## Main executable ##
