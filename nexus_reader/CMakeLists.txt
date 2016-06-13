@@ -21,9 +21,11 @@ add_library(eventPublisher_lib
 target_link_libraries(nexusFileReader_lib
         ${HDF5_LIBRARIES}
         ${HDF5_CXX_LIBRARIES})
-
 target_link_libraries(eventPublisher_lib
         ${LibRDKafka_LIBRARIES})
+target_link_libraries(nexusStreamer_lib
+        nexusFileReader_lib
+        eventdata_lib)
 
 set(core_libraries
         eventdata_lib

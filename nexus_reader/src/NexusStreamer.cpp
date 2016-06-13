@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "NexusStreamer.h"
 
 NexusStreamer::NexusStreamer(std::shared_ptr<EventPublisher> publisher,
