@@ -55,13 +55,11 @@ TEST(NexusStreamerTest, test_stream_data) {
 
   auto publisher = std::make_shared<MockEventPublisher>();
 
-  size_t stopAtFrame = 14;
-
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
   EXPECT_CALL(*publisher.get(), sendMessage(_, _))
-      .Times(static_cast<int>(stopAtFrame));
+      .Times(static_cast<int>(18131));
 
   NexusStreamer streamer(publisher, broker, topic,
                          testDataPath + "SANS_test.nxs");
-  streamer.streamData(stopAtFrame);
+  EXPECT_NO_THROW(streamer.streamData());
 }

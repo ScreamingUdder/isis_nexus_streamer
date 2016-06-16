@@ -31,17 +31,6 @@ void NexusStreamer::streamData() {
   }
 }
 
-void NexusStreamer::streamData(size_t maxFrameNumber) {
-  std::string rawbuf;
-  size_t framesAvailable = m_fileReader->getNumberOfFrames();
-  if (maxFrameNumber > framesAvailable) {
-    maxFrameNumber = framesAvailable;
-  }
-  for (size_t frameNumber = 0; frameNumber < maxFrameNumber; frameNumber++) {
-    createAndSendMessage(rawbuf, frameNumber);
-  }
-}
-
 void NexusStreamer::createAndSendMessage(std::string &rawbuf,
                                          size_t frameNumber) {
   auto messageData = createMessageData(frameNumber);
