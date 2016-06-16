@@ -89,6 +89,13 @@ target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
 # Do "ctest -VV" in the build directory
 add_test(NAME all_tests COMMAND unitTests "${PROJECT_SOURCE_DIR}/test/data/")
 
+add_executable(eventdata_test test/EventDataTest.cpp)
+add_test(eventdata ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/eventdata_test)
+add_executable(nexusFileReader_test test/NexusFileReaderTest.cpp)
+add_test(nexusFileReader ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/nexusFileReader_test)
+add_executable(nexusStreamer_test test/NexusStreamerTest.cpp)
+add_test(nexusStreamer ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/nexusStreamer_test)
+
 #####################
 ## Test Coverage   ##
 #####################
