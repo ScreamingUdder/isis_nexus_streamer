@@ -53,6 +53,7 @@ endif()
 ## Add subdirs    ##
 ####################
 
+add_subdirectory("${PROJECT_SOURCE_DIR}/event_data")
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_producer")
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_consumer")
 

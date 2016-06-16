@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "EventDataTestHelper.h"
+#include "../../event_data/include/EventDataTestHelper.h"
 #include "MockEventPublisher.h"
 #include "NexusPublisher.h"
 

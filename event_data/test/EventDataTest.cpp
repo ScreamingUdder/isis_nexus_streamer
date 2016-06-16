@@ -1,5 +1,5 @@
-#include "EventData.h"
-#include "EventDataTestHelper.h"
+#include "../include/EventData.h"
+#include "../include/EventDataTestHelper.h"
 #include <gtest/gtest.h>
 
 class EventDataTest : public ::testing::Test {};

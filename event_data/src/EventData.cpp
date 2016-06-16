@@ -1,4 +1,4 @@
-#include "EventData.h"
+#include "../include/EventData.h"
 
 EventData::EventData() : m_bufferSize(0) {};
 

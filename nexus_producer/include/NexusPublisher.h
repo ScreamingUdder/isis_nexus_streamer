@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "EventData.h"
+#include "../../event_data/include/EventData.h"
 #include "EventPublisher.h"
 #include "NexusFileReader.h"
 

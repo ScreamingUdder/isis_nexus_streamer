@@ -4,18 +4,15 @@ find_package(HDF5 COMPONENTS CXX HL REQUIRED)
 find_package(LibRDKafka)
 
 set( SRC_FILES
-        src/EventData.cpp
         src/NexusFileReader.cpp
         src/NexusPublisher.cpp)
 
 set( INC_FILES
-        include/EventData.h
         include/EventPublisher.h
         include/NexusFileReader.h
         include/NexusPublisher.h)
 
 set( TEST_FILES
-        test/EventDataTest.cpp
         test/NexusFileReaderTest.cpp
         test/NexusPublisherTest.cpp)
 
@@ -28,9 +25,7 @@ include_directories(
         ${LibRDKafka_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/include)
 
-add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
 add_library(nexusFileReader_lib ${PROJECT_SOURCE_DIR}/src/NexusFileReader.cpp)
-add_library(testHelpers_lib ${PROJECT_SOURCE_DIR}/src/EventDataTestHelper.cpp)
 add_library(nexusPublisher_lib ${PROJECT_SOURCE_DIR}/src/NexusPublisher.cpp)
 add_library(eventPublisher_lib
         ${PROJECT_SOURCE_DIR}/src/KafkaEventPublisher.cpp)
@@ -65,16 +60,14 @@ target_link_libraries(main_nexusReader
 set(tests_LINK_LIBRARIES
         gtest
         gmock
-        ${core_libraries}
-        testHelpers_lib)
+        eventDataTestHelper_lib
+        ${core_libraries})
 if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()
 
 add_executable(unitTests
-        test/EventDataTest.cpp
-        test/NexusFileReaderTest.cpp
-        test/NexusPublisherTest.cpp
+        ${TEST_FILES}
         test/unitTestRunner.cpp)
 target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
 
