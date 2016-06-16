@@ -6,6 +6,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+find_package(HDF5 COMPONENTS CXX HL REQUIRED)
+find_package(LibRDKafka)
+
 include(CTest)
 enable_testing()
 
@@ -56,6 +59,37 @@ endif()
 add_subdirectory("${PROJECT_SOURCE_DIR}/event_data")
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_producer")
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_consumer")
+
+####################
+## Unit tests     ##
+####################
+
+include_directories(
+        ${HDF5_INCLUDE_DIRS}
+        ${LibRDKafka_INCLUDE_DIR}
+        ${PROJECT_SOURCE_DIR}/nexus_consumer/include
+        ${PROJECT_SOURCE_DIR}/nexus_producer/include
+        ${PROJECT_SOURCE_DIR}/event_data/include
+)
+
+file(GLOB TEST_SRC_FILES
+        ${PROJECT_SOURCE_DIR}/nexus_consumer/test/*.cpp
+        ${PROJECT_SOURCE_DIR}/nexus_producer/test/*.cpp
+        ${PROJECT_SOURCE_DIR}/event_data/test/*.cpp
+        unitTestRunner.cpp)
+
+add_executable(unitTests ${TEST_SRC_FILES})
+
+target_link_libraries(unitTests
+        gtest
+        gmock
+        producerUnitTests
+        consumerUnitTests
+        eventDataUnitTests)
+
+# Make the tests available to run through ctest
+# Do "ctest -VV" in the build directory
+add_test(NAME all_tests COMMAND unitTests "${PROJECT_SOURCE_DIR}/data/")
 
 #####################
 ## Test coverage   ##

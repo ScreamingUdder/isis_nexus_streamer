@@ -32,14 +32,9 @@ if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()
 
-add_executable(eventDataUnitTests
-        test/EventDataTest.cpp
-        test/eventDataTestRunner.cpp)
+add_library(eventDataUnitTests
+        ${TEST_FILES})
 target_link_libraries(eventDataUnitTests ${eventData_tests_LINK_LIBRARIES})
-
-# Make the tests available to run through ctest
-# Do "ctest -VV" in the build directory
-add_test(NAME eventData_tests COMMAND eventDataUnitTests)
 
 #####################
 ## Test Coverage   ##

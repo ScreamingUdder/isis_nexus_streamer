@@ -50,14 +50,9 @@ if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()
 
-add_executable(consumerUnitTests
-        test/NexusSubscriberTest.cpp
-        test/consumerUnitTestRunner.cpp)
+add_library(consumerUnitTests
+        test/NexusSubscriberTest.cpp)
 target_link_libraries(consumerUnitTests ${tests_LINK_LIBRARIES})
-
-# Make the tests available to run through ctest
-# Do "ctest -VV" in the build directory
-add_test(NAME consumer_tests COMMAND consumerUnitTests)
 
 #####################
 ## Test Coverage   ##

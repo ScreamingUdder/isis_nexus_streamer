@@ -1,8 +1,5 @@
 project(isis_nexus_streamer)
 
-find_package(HDF5 COMPONENTS CXX HL REQUIRED)
-find_package(LibRDKafka)
-
 set( SRC_FILES
         src/NexusFileReader.cpp
         src/NexusPublisher.cpp)
@@ -66,14 +63,9 @@ if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()
 
-add_executable(unitTests
-        ${TEST_FILES}
-        test/unitTestRunner.cpp)
-target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
-
-# Make the tests available to run through ctest
-# Do "ctest -VV" in the build directory
-add_test(NAME all_tests COMMAND unitTests "${PROJECT_SOURCE_DIR}/test/data/")
+add_library(producerUnitTests
+        ${TEST_FILES})
+target_link_libraries(producerUnitTests ${tests_LINK_LIBRARIES})
 
 #####################
 ## Test Coverage   ##
