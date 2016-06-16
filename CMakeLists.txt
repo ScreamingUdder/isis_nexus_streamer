@@ -27,7 +27,7 @@ else()
     set(UPDATE_DISCONNECTED_IF_AVAILABLE "UPDATE_DISCONNECTED 1")
 endif()
 
-include(DownloadProject.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/DownloadProject.cmake)
 download_project(PROJ                googletest
         GIT_REPOSITORY      https://github.com/google/googletest.git
         GIT_TAG             master
