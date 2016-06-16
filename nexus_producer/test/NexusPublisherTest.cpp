@@ -4,14 +4,14 @@
 
 #include "EventDataTestHelper.h"
 #include "MockEventPublisher.h"
-#include "NexusStreamer.h"
+#include "NexusPublisher.h"
 
 using ::testing::AtLeast;
 using ::testing::_;
 
-class NexusStreamerTest : public ::testing::Test {};
+class NexusPublisherTest : public ::testing::Test {};
 
-TEST(NexusStreamerTest, test_create_streamer) {
+TEST(NexusPublisherTest, test_create_streamer) {
   extern std::string testDataPath;
 
   const std::string broker = "broker_name";
@@ -20,11 +20,11 @@ TEST(NexusStreamerTest, test_create_streamer) {
   auto publisher = std::make_shared<MockEventPublisher>();
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusStreamer streamer(publisher, broker, topic,
+  NexusPublisher streamer(publisher, broker, topic,
                          testDataPath + "SANS_test.nxs");
 }
 
-TEST(NexusStreamerTest, test_create_message_data) {
+TEST(NexusPublisherTest, test_create_message_data) {
   extern std::string testDataPath;
 
   const std::string broker = "broker_name";
@@ -34,7 +34,7 @@ TEST(NexusStreamerTest, test_create_message_data) {
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusStreamer streamer(publisher, broker, topic,
+  NexusPublisher streamer(publisher, broker, topic,
                          testDataPath + "SANS_test.nxs");
   auto eventData = streamer.createMessageData(static_cast<hsize_t>(0));
 
@@ -46,7 +46,7 @@ TEST(NexusStreamerTest, test_create_message_data) {
   EXPECT_EQ(794, testHelper.getCount());
 }
 
-TEST(NexusStreamerTest, test_stream_data) {
+TEST(NexusPublisherTest, test_stream_data) {
 
   extern std::string testDataPath;
 
@@ -59,7 +59,7 @@ TEST(NexusStreamerTest, test_stream_data) {
   EXPECT_CALL(*publisher.get(), sendMessage(_, _))
       .Times(static_cast<int>(18131));
 
-  NexusStreamer streamer(publisher, broker, topic,
+  NexusPublisher streamer(publisher, broker, topic,
                          testDataPath + "SANS_test.nxs");
   EXPECT_NO_THROW(streamer.streamData());
 }

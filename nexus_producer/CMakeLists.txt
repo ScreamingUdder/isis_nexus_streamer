@@ -6,18 +6,18 @@ find_package(LibRDKafka)
 set( SRC_FILES
         src/EventData.cpp
         src/NexusFileReader.cpp
-        src/NexusStreamer.cpp)
+        src/NexusPublisher.cpp)
 
 set( INC_FILES
         include/EventData.h
         include/EventPublisher.h
         include/NexusFileReader.h
-        include/NexusStreamer.h)
+        include/NexusPublisher.h)
 
 set( TEST_FILES
         test/EventDataTest.cpp
         test/NexusFileReaderTest.cpp
-        test/NexusStreamerTest.cpp)
+        test/NexusPublisherTest.cpp)
 
 #####################
 ## Libraries       ##
@@ -31,7 +31,7 @@ include_directories(
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
 add_library(nexusFileReader_lib ${PROJECT_SOURCE_DIR}/src/NexusFileReader.cpp)
 add_library(testHelpers_lib ${PROJECT_SOURCE_DIR}/src/EventDataTestHelper.cpp)
-add_library(nexusStreamer_lib ${PROJECT_SOURCE_DIR}/src/NexusStreamer.cpp)
+add_library(nexusPublisher_lib ${PROJECT_SOURCE_DIR}/src/NexusPublisher.cpp)
 add_library(eventPublisher_lib
         ${PROJECT_SOURCE_DIR}/src/KafkaEventPublisher.cpp)
 
@@ -40,14 +40,14 @@ target_link_libraries(nexusFileReader_lib
         ${HDF5_CXX_LIBRARIES})
 target_link_libraries(eventPublisher_lib
         ${LibRDKafka_LIBRARIES})
-target_link_libraries(nexusStreamer_lib
+target_link_libraries(nexusPublisher_lib
         nexusFileReader_lib
         eventdata_lib)
 
 set(core_libraries
         eventdata_lib
         nexusFileReader_lib
-        nexusStreamer_lib
+        nexusPublisher_lib
         eventPublisher_lib)
 
 #####################
@@ -74,7 +74,7 @@ endif()
 add_executable(unitTests
         test/EventDataTest.cpp
         test/NexusFileReaderTest.cpp
-        test/NexusStreamerTest.cpp
+        test/NexusPublisherTest.cpp
         test/unitTestRunner.cpp)
 target_link_libraries(unitTests ${tests_LINK_LIBRARIES})
 

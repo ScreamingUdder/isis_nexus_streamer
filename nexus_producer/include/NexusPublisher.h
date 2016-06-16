@@ -1,5 +1,5 @@
-#ifndef ISIS_NEXUS_STREAMER_NEXUSSTREAMER_H
-#define ISIS_NEXUS_STREAMER_NEXUSSTREAMER_H
+#ifndef ISIS_NEXUS_STREAMER_NEXUSPUBLISHER_H
+#define ISIS_NEXUS_STREAMER_NEXUSPUBLISHER_H
 
 #include <memory>
 
@@ -7,11 +7,11 @@
 #include "EventPublisher.h"
 #include "NexusFileReader.h"
 
-class NexusStreamer {
+class NexusPublisher {
 public:
-  NexusStreamer(std::shared_ptr<EventPublisher> publisher,
-                const std::string &brokerAddress, const std::string &streamName,
-                const std::string &filename);
+  NexusPublisher(std::shared_ptr<EventPublisher> publisher,
+                 const std::string &brokerAddress,
+                 const std::string &streamName, const std::string &filename);
   std::shared_ptr<EventData> createMessageData(hsize_t frameNumber);
   void streamData();
 
@@ -22,4 +22,4 @@ private:
   std::shared_ptr<NexusFileReader> m_fileReader;
 };
 
-#endif // ISIS_NEXUS_STREAMER_NEXUSSTREAMER_H
+#endif // ISIS_NEXUS_STREAMER_NEXUSPUBLISHER_H

@@ -1,6 +1,6 @@
-#include "NexusStreamer.h"
+#include "NexusPublisher.h"
 
-NexusStreamer::NexusStreamer(std::shared_ptr<EventPublisher> publisher,
+NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
                              const std::string &brokerAddress,
                              const std::string &streamName,
                              const std::string &filename)
@@ -10,7 +10,7 @@ NexusStreamer::NexusStreamer(std::shared_ptr<EventPublisher> publisher,
 }
 
 std::shared_ptr<EventData>
-NexusStreamer::createMessageData(hsize_t frameNumber) {
+NexusPublisher::createMessageData(hsize_t frameNumber) {
   std::vector<uint32_t> detIds;
   m_fileReader->getEventDetIds(detIds, frameNumber);
   std::vector<uint64_t> tofs;
@@ -23,7 +23,7 @@ NexusStreamer::createMessageData(hsize_t frameNumber) {
   return eventData;
 }
 
-void NexusStreamer::streamData() {
+void NexusPublisher::streamData() {
   std::string rawbuf;
   for (size_t frameNumber = 0; frameNumber < m_fileReader->getNumberOfFrames();
        frameNumber++) {
@@ -31,7 +31,7 @@ void NexusStreamer::streamData() {
   }
 }
 
-void NexusStreamer::createAndSendMessage(std::string &rawbuf,
+void NexusPublisher::createAndSendMessage(std::string &rawbuf,
                                          size_t frameNumber) {
   auto messageData = createMessageData(frameNumber);
   m_publisher->sendMessage(

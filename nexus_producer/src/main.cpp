@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "KafkaEventPublisher.h"
-#include "NexusStreamer.h"
+#include "NexusPublisher.h"
 
 int main(int argc, char **argv) {
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
   }
 
   auto publisher = std::make_shared<KafkaEventPublisher>();
-  NexusStreamer streamer(publisher, broker, topic, filename);
+  NexusPublisher streamer(publisher, broker, topic, filename);
 
   return 0;
 }
