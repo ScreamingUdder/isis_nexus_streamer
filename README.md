@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/ScreamingUdder/isis_nexus_streamer.svg?branch=master)](https://travis-ci.org/ScreamingUdder/isis_nexus_streamer)
 
-[![Coverage Status](https://coveralls.io/repos/github/ScreamingUdder/isis_nexus_streamer/badge.svg?branch=master)](https://coveralls.io/github/ScreamingUdder/isis_nexus_streamer?branch=master)
+<!---[![Coverage Status](https://coveralls.io/repos/github/ScreamingUdder/isis_nexus_streamer/badge.svg?branch=master)](https://coveralls.io/github/ScreamingUdder/isis_nexus_streamer?branch=master)--->
 
 # ISIS NeXus Streamer
 Stream event data from a NeXus file from RAL/ISIS.
