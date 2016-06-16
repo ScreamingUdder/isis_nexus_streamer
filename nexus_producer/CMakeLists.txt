@@ -5,16 +5,12 @@ find_package(LibRDKafka)
 
 set( SRC_FILES
         src/EventData.cpp
-        src/EventDataTestHelper.cpp
-        src/KafkaEventPublisher.cpp
         src/NexusFileReader.cpp
         src/NexusStreamer.cpp)
 
 set( INC_FILES
         include/EventData.h
-        include/EventDataTestHelper.h
         include/EventPublisher.h
-        include/KafkaEventPublisher.h
         include/NexusFileReader.h
         include/NexusStreamer.h)
 
