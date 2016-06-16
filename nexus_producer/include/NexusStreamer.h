@@ -14,7 +14,6 @@ public:
                 const std::string &filename);
   std::shared_ptr<EventData> createMessageData(hsize_t frameNumber);
   void streamData();
-  void streamData(size_t maxFrameNumber);
 
 private:
   void createAndSendMessage(std::string &rawbuf, size_t frameNumber);
