@@ -54,6 +54,7 @@ endif()
 ####################
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_producer")
+add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_consumer")
 
 #####################
 ## Test coverage   ##
