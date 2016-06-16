@@ -51,3 +51,17 @@ TEST(NexusFileReaderTest, get_event_tofs) {
   EXPECT_FLOAT_EQ(11660505, eventTofs[0]);
   EXPECT_FLOAT_EQ(46247304, eventTofs[150]);
 }
+
+TEST(NexusFileReaderTest, get_detIds_too_high_frame_number) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
+  std::vector<uint32_t> detIds;
+  EXPECT_FALSE(fileReader.getEventDetIds(detIds, 3000000));
+}
+
+TEST(NexusFileReaderTest, get_event_tofs_too_high_frame_number) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
+  std::vector<uint64_t> eventTofs;
+  EXPECT_FALSE(fileReader.getEventTofs(eventTofs, 3000000));
+}
