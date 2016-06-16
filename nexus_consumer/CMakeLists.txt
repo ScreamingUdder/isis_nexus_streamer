@@ -27,7 +27,7 @@ target_link_libraries(eventSubscriber_lib
         ${LibRDKafka_LIBRARIES})
 
 set(core_libraries
-        eventdata_lib
+        eventSubscriber_lib
         nexusSubscriber_lib)
 
 #####################
@@ -46,7 +46,6 @@ set(tests_LINK_LIBRARIES
         gtest
         gmock
         ${core_libraries})
-        #testHelpers_lib)
 if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()

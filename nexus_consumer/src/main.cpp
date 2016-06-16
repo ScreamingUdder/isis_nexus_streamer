@@ -19,16 +19,21 @@ int main(int argc, char **argv) {
   while ((opt = getopt(argc, argv, "b:t")) != -1) {
     switch (opt) {
 
-      case 'b':
-        broker = optarg;
-        break;
+    case 'b':
+      broker = optarg;
+      break;
 
-      case 't':
-        topic = optarg;
-        break;
+    case 't':
+      topic = optarg;
+      break;
 
-      default:
-        goto usage;
+    default:
+      fprintf(stderr, "Usage: %s "
+                      "[-b <host:port>] "
+                      "[-t <topic_name>]"
+                      "\n",
+              argv[0]);
+      exit(1);
     }
   }
 
@@ -36,14 +41,4 @@ int main(int argc, char **argv) {
   NexusSubscriber streamer(subscriber, broker, topic);
 
   return 0;
-
-  {
-    usage:
-    fprintf(stderr,
-            "Usage: %s "
-                "[-b <host:port>] "
-                "[-t <topic_name>]"
-                "\n", argv[0]);
-    exit(1);
-  }
 }
