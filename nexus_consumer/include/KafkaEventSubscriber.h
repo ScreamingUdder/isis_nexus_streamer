@@ -9,7 +9,7 @@
 class KafkaEventSubscriber : public EventSubscriber {
 public:
   void setUp(const std::string &broker, const std::string &topic) override;
-  ~KafkaEventPublisher() { RdKafka::wait_destroyed(5000); };
+  ~KafkaEventSubscriber() { RdKafka::wait_destroyed(5000); };
 
 private:
   std::unique_ptr<RdKafka::Consumer> m_consumer_ptr;
