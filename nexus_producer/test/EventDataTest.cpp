@@ -20,11 +20,25 @@ TEST(EventDataTest, get_buffer_pointer) {
   events.setTof(tofs);
 
   std::string rawbuf;
-  events.getBufferPointer(rawbuf);
+  EXPECT_NO_THROW(events.getBufferPointer(rawbuf));
 
   auto testHelper =
       EventDataTestHelper(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   EXPECT_EQ(4, testHelper.getCount());
   EXPECT_EQ(detIds, testHelper.getDetId());
   EXPECT_EQ(tofs, testHelper.getTof());
+}
+
+TEST(EventDataTest, get_buffer_size) {
+  auto events = EventData();
+
+  std::vector<uint32_t> detIds = {1, 2, 3, 4};
+  std::vector<uint64_t> tofs = {4, 3, 2, 1};
+
+  events.setDetId(detIds);
+  events.setTof(tofs);
+
+  std::string rawbuf;
+  EXPECT_NO_THROW(events.getBufferPointer(rawbuf));
+  EXPECT_EQ(96, events.getBufferSize());
 }
