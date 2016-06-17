@@ -11,4 +11,6 @@ EventDataTestHelper::EventDataTestHelper(const uint8_t *buf) {
   std::copy(tofFBVector->begin(), tofFBVector->end(), m_tof.begin());
 
   m_count = eventData->count();
+  m_numberOfFrames = eventData->totalFrames();
+  m_frameNumber = eventData->frameNumber();
 }

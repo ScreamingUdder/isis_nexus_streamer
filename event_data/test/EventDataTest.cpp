@@ -17,9 +17,13 @@ TEST(EventDataTest, get_buffer_pointer) {
 
   std::vector<uint32_t> detIds = {1, 2, 3, 4};
   std::vector<uint64_t> tofs = {4, 3, 2, 1};
+  uint32_t frameNumber = 2;
+  uint32_t numberOfFrames = 10;
 
   events.setDetId(detIds);
   events.setTof(tofs);
+  events.setNumberOfFrames(numberOfFrames);
+  events.setFrameNumber(frameNumber);
 
   std::string rawbuf;
   EXPECT_NO_THROW(events.getBufferPointer(rawbuf));
@@ -29,6 +33,8 @@ TEST(EventDataTest, get_buffer_pointer) {
   EXPECT_EQ(4, testHelper.getCount());
   EXPECT_EQ(detIds, testHelper.getDetId());
   EXPECT_EQ(tofs, testHelper.getTof());
+  EXPECT_EQ(numberOfFrames, testHelper.getNumberOfFrames());
+  EXPECT_EQ(frameNumber, testHelper.getFrameNumber());
 }
 
 TEST(EventDataTest, get_buffer_size) {

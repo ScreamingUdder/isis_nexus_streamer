@@ -9,7 +9,8 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
   auto tofsVector = builder.CreateVector(m_tof);
 
   auto messageFlatbuf = CreateFlatbufEventData(
-      builder, static_cast<int32_t>(m_detId.size()), detIdsVector, tofsVector);
+      builder, static_cast<int32_t>(m_detId.size()), detIdsVector, tofsVector,
+      m_frameNumber, m_numberOfFrames);
   builder.Finish(messageFlatbuf);
 
   auto bufferpointer =
