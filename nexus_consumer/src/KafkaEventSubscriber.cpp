@@ -40,3 +40,36 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
     exit(1);
   }
 }
+
+bool KafkaEventSubscriber::listenForMessage(std::string &message) {
+  const int partition = 0;
+  RdKafka::Message *msg = m_consumer_ptr->consume(m_topic_ptr.get(), partition, 1000);
+  bool success = messageConsume(msg, message);
+  m_consumer_ptr->poll(0);
+  delete msg;
+  return success;
+}
+
+bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg, std::string &message) {
+  bool success = false;
+  switch (msg->err()) {
+    case RdKafka::ERR__TIMED_OUT:
+      break;
+
+    case RdKafka::ERR_NO_ERROR:
+      /* Real message */
+      std::cout << "Read msg at offset " << msg->offset() << " with length "
+      << msg->len() << " bytes" << std::endl;
+      if (msg->key()) {
+        std::cout << "Key: " << *msg->key() << std::endl;
+      }
+      message.assign(static_cast<const char *>(msg->payload()));
+      success = true;
+      break;
+
+    default:
+      /* Errors */
+      std::cerr << "Consume failed: " << msg->errstr() << std::endl;
+  }
+  return success;
+}

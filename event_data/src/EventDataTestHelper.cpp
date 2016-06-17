@@ -1,4 +1,4 @@
-#include "../include/EventDataTestHelper.h"
+#include "EventDataTestHelper.h"
 
 EventDataTestHelper::EventDataTestHelper(const uint8_t *buf) {
   auto eventData = GetFlatbufEventData(buf);

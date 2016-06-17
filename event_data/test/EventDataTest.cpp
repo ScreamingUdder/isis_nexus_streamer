@@ -20,10 +20,10 @@ TEST(EventDataTest, get_buffer_pointer) {
   uint32_t frameNumber = 2;
   uint32_t numberOfFrames = 10;
 
-  events.setDetId(detIds);
-  events.setTof(tofs);
-  events.setNumberOfFrames(numberOfFrames);
-  events.setFrameNumber(frameNumber);
+  EXPECT_NO_THROW(events.setDetId(detIds));
+  EXPECT_NO_THROW(events.setTof(tofs));
+  EXPECT_NO_THROW(events.setNumberOfFrames(numberOfFrames));
+  EXPECT_NO_THROW(events.setFrameNumber(frameNumber));
 
   std::string rawbuf;
   EXPECT_NO_THROW(events.getBufferPointer(rawbuf));

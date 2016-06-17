@@ -11,6 +11,8 @@ public:
                   const std::string &brokerAddress,
                   const std::string &streamName);
 
+  void listen();
+
 private:
   std::shared_ptr<EventSubscriber> m_subscriber;
 };
