@@ -1,14 +1,6 @@
 #include "../include/EventData.h"
 
-EventData::EventData() : m_bufferSize(0) {};
-
-void EventData::setDetId(std::vector<uint32_t> detIds) {
-  m_detId = detIds;
-}
-
-void EventData::setTof(std::vector<uint64_t> tofs) {
-  m_tof = tofs;
-}
+EventData::EventData() : m_bufferSize(0), m_frameNumber(0), m_numberOfFrames(0) {};
 
 flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
   flatbuffers::FlatBufferBuilder builder;
@@ -28,7 +20,3 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
 
   return builder.ReleaseBufferPointer();
 }
-
-std::vector<uint32_t> EventData::getDetId() { return m_detId; }
-
-std::vector<uint64_t> EventData::getTof() { return m_tof; }

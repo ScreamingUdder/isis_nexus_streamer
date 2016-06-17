@@ -11,11 +11,17 @@ class EventData {
 public:
   EventData();
 
-  std::vector<uint32_t> getDetId();
-  std::vector<uint64_t> getTof();
+  // Setters
+  void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; };
+  void setTof(std::vector<uint64_t> tofs) { m_tof = tofs; };
+  void setNumberOfFrames(uint32_t numberOfFrames) { m_numberOfFrames = numberOfFrames; };
+  void setFrameNumber(uint32_t frameNumber) { m_frameNumber = frameNumber; };
 
-  void setDetId(std::vector<uint32_t>);
-  void setTof(std::vector<uint64_t>);
+  // Getters
+  std::vector<uint32_t> getDetId() { return m_detId; };
+  std::vector<uint64_t> getTof() { return m_tof; };
+  uint32_t getNumberOfFrames() { return m_numberOfFrames; };
+  uint32_t getFrameNumber() { return m_frameNumber; };
 
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
 
@@ -24,6 +30,8 @@ public:
 private:
   std::vector<uint32_t> m_detId = {};
   std::vector<uint64_t> m_tof = {};
+  uint32_t m_numberOfFrames;
+  uint32_t m_frameNumber;
   size_t m_bufferSize;
 };
 
