@@ -36,14 +36,16 @@ TEST(NexusPublisherTest, test_create_message_data) {
 
   NexusPublisher streamer(publisher, broker, topic,
                          testDataPath + "SANS_test.nxs");
-  auto eventData = streamer.createMessageData(static_cast<hsize_t>(0));
+  auto eventData = streamer.createMessageData(static_cast<hsize_t>(1));
 
   std::string rawbuf;
   eventData->getBufferPointer(rawbuf);
 
   auto testHelper =
       EventDataTestHelper(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
-  EXPECT_EQ(794, testHelper.getCount());
+  EXPECT_EQ(770, testHelper.getCount());
+  EXPECT_EQ(18131, testHelper.getNumberOfFrames());
+  EXPECT_EQ(1, testHelper.getFrameNumber());
 }
 
 TEST(NexusPublisherTest, test_stream_data) {

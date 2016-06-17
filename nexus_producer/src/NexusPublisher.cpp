@@ -19,6 +19,8 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
   auto eventData = std::make_shared<EventData>();
   eventData->setDetId(detIds);
   eventData->setTof(tofs);
+  eventData->setNumberOfFrames(static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
+  eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
 
   return eventData;
 }
