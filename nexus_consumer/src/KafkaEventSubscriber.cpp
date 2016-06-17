@@ -2,10 +2,22 @@
 
 #include "KafkaEventSubscriber.h"
 
+namespace{
+  const int static PARTITION = 0;
+}
+
+KafkaEventSubscriber::~KafkaEventSubscriber() {
+  m_consumer_ptr->stop(m_topic_ptr.get(), PARTITION);
+  // rdkafka example polls after stop() is called,
+  // not sure why but doing the same here for now
+  m_consumer_ptr->poll(1000);
+  // Wait for RdKafka to decommission, avoids complaints of memory leak from valgrind etc.
+  RdKafka::wait_destroyed(5000);
+}
+
 void KafkaEventSubscriber::setUp(const std::string &broker_str,
                                  const std::string &topic_str) {
   std::string error_str;
-  const int partition = 0;
   const int start_offset = 0;
 
   RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
@@ -33,7 +45,7 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
   // Start consumer for topic+partition at start offset
   RdKafka::ErrorCode resp =
-      m_consumer_ptr->start(m_topic_ptr.get(), partition, start_offset);
+      m_consumer_ptr->start(m_topic_ptr.get(), PARTITION, start_offset);
   if (resp != RdKafka::ERR_NO_ERROR) {
     std::cerr << "Failed to start consumer: " << RdKafka::err2str(resp)
               << std::endl;
@@ -42,8 +54,7 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 }
 
 bool KafkaEventSubscriber::listenForMessage(std::string &message) {
-  const int partition = 0;
-  RdKafka::Message *msg = m_consumer_ptr->consume(m_topic_ptr.get(), partition, 1000);
+  RdKafka::Message *msg = m_consumer_ptr->consume(m_topic_ptr.get(), PARTITION, 1000);
   bool success = messageConsume(msg, message);
   m_consumer_ptr->poll(0);
   delete msg;

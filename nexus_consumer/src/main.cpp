@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
 
   auto subscriber = std::make_shared<KafkaEventSubscriber>();
   NexusSubscriber streamer(subscriber, broker, topic);
+  streamer.listen();
 
   return 0;
 }
