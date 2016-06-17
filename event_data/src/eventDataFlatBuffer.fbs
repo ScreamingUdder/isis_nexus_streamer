@@ -2,10 +2,10 @@
 
 table FlatbufEventData {
     count:uint;
-    frameNumber:uint;
-    totalFrames:uint;
     detId:[uint];
     tof:[ulong];
+    frameNumber:uint;
+    totalFrames:uint;
 }
 
 root_type FlatbufEventData;
