@@ -11,7 +11,7 @@ public:
   void setUp(const std::string &broker, const std::string &topic) override;
   bool listenForMessage(std::string &message) override;
   bool messageConsume(RdKafka::Message *message, std::string &msg);
-  ~KafkaEventSubscriber() { RdKafka::wait_destroyed(5000); };
+  ~KafkaEventSubscriber();
 
 private:
   std::unique_ptr<RdKafka::Consumer> m_consumer_ptr;
