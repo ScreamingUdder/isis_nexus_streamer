@@ -17,7 +17,8 @@ set( TEST_FILES
 
 include_directories(
         ${LibRDKafka_INCLUDE_DIR}
-        ${PROJECT_SOURCE_DIR}/include)
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/../event_data/include)
 
 add_library(nexusSubscriber_lib ${PROJECT_SOURCE_DIR}/src/NexusSubscriber.cpp)
 add_library(eventSubscriber_lib

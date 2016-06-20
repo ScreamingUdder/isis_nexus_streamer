@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "EventSubscriber.h"
+#include "EventData.h"
 
 class NexusSubscriber {
 public:
@@ -12,6 +13,7 @@ public:
                   const std::string &streamName);
 
   void listen();
+  void decodeMessage(std::shared_ptr<EventData> eventData, const std::string &rawbuf);
 
 private:
   std::shared_ptr<EventSubscriber> m_subscriber;
