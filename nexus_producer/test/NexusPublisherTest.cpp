@@ -20,7 +20,7 @@ TEST(NexusPublisherTest, test_create_streamer) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                         testDataPath + "SANS_test.nxs");
+                          testDataPath + "SANS_test.nxs");
 }
 
 TEST(NexusPublisherTest, test_create_message_data) {
@@ -34,7 +34,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                         testDataPath + "SANS_test.nxs");
+                          testDataPath + "SANS_test.nxs");
   auto eventData = streamer.createMessageData(static_cast<hsize_t>(1));
 
   std::string rawbuf;
@@ -61,6 +61,6 @@ TEST(NexusPublisherTest, test_stream_data) {
       .Times(static_cast<int>(18131));
 
   NexusPublisher streamer(publisher, broker, topic,
-                         testDataPath + "SANS_test.nxs");
+                          testDataPath + "SANS_test.nxs");
   EXPECT_NO_THROW(streamer.streamData());
 }

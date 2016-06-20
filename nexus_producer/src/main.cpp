@@ -38,12 +38,12 @@ int main(int argc, char **argv) {
   }
 
   if (filename.empty()) {
-    usage:
-    fprintf(stderr,
-            "Usage: %s -f <filepath> "
-                "[-b <host:port>] "
-                "[-t <topic_name>]"
-                "\n", argv[0]);
+  usage:
+    fprintf(stderr, "Usage: %s -f <filepath> "
+                    "[-b <host:port>] "
+                    "[-t <topic_name>]"
+                    "\n",
+            argv[0]);
     exit(1);
   }
 

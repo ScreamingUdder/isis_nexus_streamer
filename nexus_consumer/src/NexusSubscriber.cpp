@@ -17,6 +17,5 @@ void NexusSubscriber::listen() {
     if (!(m_subscriber->listenForMessage(message)))
       break;
     // TODO do something with the message
-
   }
 }

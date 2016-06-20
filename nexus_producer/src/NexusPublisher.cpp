@@ -1,9 +1,9 @@
 #include "NexusPublisher.h"
 
 NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
-                             const std::string &brokerAddress,
-                             const std::string &streamName,
-                             const std::string &filename)
+                               const std::string &brokerAddress,
+                               const std::string &streamName,
+                               const std::string &filename)
     : m_publisher(publisher),
       m_fileReader(std::make_shared<NexusFileReader>(filename)) {
   publisher->setUp(brokerAddress, streamName);
@@ -19,7 +19,8 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
   auto eventData = std::make_shared<EventData>();
   eventData->setDetId(detIds);
   eventData->setTof(tofs);
-  eventData->setNumberOfFrames(static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
+  eventData->setNumberOfFrames(
+      static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
   eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
 
   return eventData;
@@ -34,7 +35,7 @@ void NexusPublisher::streamData() {
 }
 
 void NexusPublisher::createAndSendMessage(std::string &rawbuf,
-                                         size_t frameNumber) {
+                                          size_t frameNumber) {
   auto messageData = createMessageData(frameNumber);
   m_publisher->sendMessage(
       reinterpret_cast<char *>(messageData->getBufferPointer(rawbuf).get()),

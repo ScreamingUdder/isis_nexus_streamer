@@ -2,8 +2,8 @@
 
 #include "KafkaEventSubscriber.h"
 
-namespace{
-  const int static PARTITION = 0;
+namespace {
+const int static PARTITION = 0;
 }
 
 KafkaEventSubscriber::~KafkaEventSubscriber() {
@@ -11,7 +11,8 @@ KafkaEventSubscriber::~KafkaEventSubscriber() {
   // rdkafka example polls after stop() is called,
   // not sure why but doing the same here for now
   m_consumer_ptr->poll(1000);
-  // Wait for RdKafka to decommission, avoids complaints of memory leak from valgrind etc.
+  // Wait for RdKafka to decommission, avoids complaints of memory leak from
+  // valgrind etc.
   RdKafka::wait_destroyed(5000);
 }
 
@@ -54,33 +55,35 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 }
 
 bool KafkaEventSubscriber::listenForMessage(std::string &message) {
-  RdKafka::Message *msg = m_consumer_ptr->consume(m_topic_ptr.get(), PARTITION, 1000);
+  RdKafka::Message *msg =
+      m_consumer_ptr->consume(m_topic_ptr.get(), PARTITION, 1000);
   bool success = messageConsume(msg, message);
   m_consumer_ptr->poll(0);
   delete msg;
   return success;
 }
 
-bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg, std::string &message) {
+bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg,
+                                          std::string &message) {
   bool success = false;
   switch (msg->err()) {
-    case RdKafka::ERR__TIMED_OUT:
-      break;
+  case RdKafka::ERR__TIMED_OUT:
+    break;
 
-    case RdKafka::ERR_NO_ERROR:
-      /* Real message */
-      std::cout << "Read msg at offset " << msg->offset() << " with length "
-      << msg->len() << " bytes" << std::endl;
-      if (msg->key()) {
-        std::cout << "Key: " << *msg->key() << std::endl;
-      }
-      message.assign(static_cast<const char *>(msg->payload()));
-      success = true;
-      break;
+  case RdKafka::ERR_NO_ERROR:
+    /* Real message */
+    std::cout << "Read msg at offset " << msg->offset() << " with length "
+              << msg->len() << " bytes" << std::endl;
+    if (msg->key()) {
+      std::cout << "Key: " << *msg->key() << std::endl;
+    }
+    message.assign(static_cast<const char *>(msg->payload()));
+    success = true;
+    break;
 
-    default:
-      /* Errors */
-      std::cerr << "Consume failed: " << msg->errstr() << std::endl;
+  default:
+    /* Errors */
+    std::cerr << "Consume failed: " << msg->errstr() << std::endl;
   }
   return success;
 }

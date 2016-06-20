@@ -17,7 +17,9 @@ public:
   // Setters
   void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; };
   void setTof(std::vector<uint64_t> tofs) { m_tof = tofs; };
-  void setNumberOfFrames(uint32_t numberOfFrames) { m_numberOfFrames = numberOfFrames; };
+  void setNumberOfFrames(uint32_t numberOfFrames) {
+    m_numberOfFrames = numberOfFrames;
+  };
   void setFrameNumber(uint32_t frameNumber) { m_frameNumber = frameNumber; };
 
   // Getters
