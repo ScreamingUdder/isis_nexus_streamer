@@ -72,12 +72,18 @@ bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg,
 
   case RdKafka::ERR_NO_ERROR:
     /* Real message */
+    if (msg->len() == 0) {
+      std::cout << "Warning: message received had 0 length payload!"
+                << std::endl;
+      return false;
+    }
     std::cout << "Read msg at offset " << msg->offset() << " with length "
               << msg->len() << " bytes" << std::endl;
     if (msg->key()) {
       std::cout << "Key: " << *msg->key() << std::endl;
     }
-    message.assign(static_cast<const char *>(msg->payload()));
+    message.assign(static_cast<const char *>(msg->payload()),
+                   static_cast<int>(msg->len()));
     success = true;
     break;
 
