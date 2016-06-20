@@ -9,7 +9,10 @@
 class EventData {
 
 public:
+  // Construct a new empty EventData object
   EventData();
+  // Construct an EventData object from a flatbuf buffer
+  EventData(const uint8_t *buf);
 
   // Setters
   void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; };
@@ -22,6 +25,7 @@ public:
   std::vector<uint64_t> getTof() { return m_tof; };
   uint32_t getNumberOfFrames() { return m_numberOfFrames; };
   uint32_t getFrameNumber() { return m_frameNumber; };
+  uint32_t getNumberOfEvents() { return m_tof.size(); };
 
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
 

@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "../../event_data/include/EventDataTestHelper.h"
 #include "MockEventPublisher.h"
 #include "NexusPublisher.h"
 
@@ -41,11 +40,11 @@ TEST(NexusPublisherTest, test_create_message_data) {
   std::string rawbuf;
   eventData->getBufferPointer(rawbuf);
 
-  auto testHelper =
-      EventDataTestHelper(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
-  EXPECT_EQ(770, testHelper.getCount());
-  EXPECT_EQ(18131, testHelper.getNumberOfFrames());
-  EXPECT_EQ(1, testHelper.getFrameNumber());
+  auto receivedEventData =
+      EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+  EXPECT_EQ(770, receivedEventData.getNumberOfEvents());
+  EXPECT_EQ(18131, receivedEventData.getNumberOfFrames());
+  EXPECT_EQ(1, receivedEventData.getFrameNumber());
 }
 
 TEST(NexusPublisherTest, test_stream_data) {

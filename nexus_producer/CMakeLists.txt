@@ -57,7 +57,6 @@ target_link_libraries(main_nexusReader
 set(tests_LINK_LIBRARIES
         gtest
         gmock
-        eventDataTestHelper_lib
         ${core_libraries})
 if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)

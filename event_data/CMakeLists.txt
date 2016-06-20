@@ -17,7 +17,6 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
-add_library(eventDataTestHelper_lib ${PROJECT_SOURCE_DIR}/src/EventDataTestHelper.cpp)
 
 #####################
 ## Unit Tests      ##
@@ -26,8 +25,7 @@ add_library(eventDataTestHelper_lib ${PROJECT_SOURCE_DIR}/src/EventDataTestHelpe
 set(eventData_tests_LINK_LIBRARIES
         gtest
         gmock
-        eventdata_lib
-        eventDataTestHelper_lib)
+        eventdata_lib)
 if(UNIX)
     list(APPEND tests_LINK_LIBRARIES pthread)
 endif()

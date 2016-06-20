@@ -1,5 +1,4 @@
-#include "../include/EventData.h"
-#include "../include/EventDataTestHelper.h"
+#include "EventData.h"
 #include <gtest/gtest.h>
 
 class EventDataTest : public ::testing::Test {};
@@ -28,13 +27,13 @@ TEST(EventDataTest, get_buffer_pointer) {
   std::string rawbuf;
   EXPECT_NO_THROW(events.getBufferPointer(rawbuf));
 
-  auto testHelper =
-      EventDataTestHelper(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
-  EXPECT_EQ(4, testHelper.getCount());
-  EXPECT_EQ(detIds, testHelper.getDetId());
-  EXPECT_EQ(tofs, testHelper.getTof());
-  EXPECT_EQ(numberOfFrames, testHelper.getNumberOfFrames());
-  EXPECT_EQ(frameNumber, testHelper.getFrameNumber());
+  auto receivedEventData =
+      EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+  EXPECT_EQ(4, receivedEventData.getNumberOfEvents());
+  EXPECT_EQ(detIds, receivedEventData.getDetId());
+  EXPECT_EQ(tofs, receivedEventData.getTof());
+  EXPECT_EQ(numberOfFrames, receivedEventData.getNumberOfFrames());
+  EXPECT_EQ(frameNumber, receivedEventData.getFrameNumber());
 }
 
 TEST(EventDataTest, get_buffer_size) {
