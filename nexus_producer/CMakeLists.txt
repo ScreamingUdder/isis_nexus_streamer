@@ -46,8 +46,8 @@ set(core_libraries
 ## Main executable ##
 #####################
 
-add_executable(main_nexusReader ${PROJECT_SOURCE_DIR}/src/main.cpp)
-target_link_libraries(main_nexusReader
+add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp)
+target_link_libraries(main_nexusPublisher
         ${core_libraries})
 
 #####################
