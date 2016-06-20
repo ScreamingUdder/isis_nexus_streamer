@@ -9,6 +9,9 @@ NexusFileReader::NexusFileReader(const std::string &filename)
   size_t *numOfFrames = new size_t[1];
   dataset.read(numOfFrames, PredType::NATIVE_UINT64);
   m_numberOfFrames = *numOfFrames;
+  // Reduce number of frames by 1, this is a fix for an inconsistency between
+  // the SANS and WISH files
+  m_numberOfFrames--;
   delete[] numOfFrames;
 }
 

@@ -39,20 +39,6 @@ TEST_F(NexusSubscriberTest, test_create_subscriber) {
   NexusSubscriber streamer(subscriber, broker, topic);
 }
 
-TEST_F(NexusSubscriberTest, test_listen_for_messages_none_received) {
-  const std::string broker = "broker_name";
-  const std::string topic = "topic_name";
-
-  auto subscriber = std::make_shared<MockEventSubscriber>();
-  EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
-
-  NexusSubscriber streamer(subscriber, broker, topic);
-  ON_CALL(*subscriber.get(), listenForMessage(_)).WillByDefault(Return(false));
-  EXPECT_CALL(*subscriber.get(), listenForMessage(_)).Times(1);
-
-  EXPECT_NO_THROW(streamer.listen());
-}
-
 TEST_F(NexusSubscriberTest, decode_received_message) {
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";

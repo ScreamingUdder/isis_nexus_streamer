@@ -65,7 +65,6 @@ bool KafkaEventSubscriber::listenForMessage(std::string &message) {
 
 bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg,
                                           std::string &message) {
-  bool success = false;
   switch (msg->err()) {
   case RdKafka::ERR__TIMED_OUT:
     break;
@@ -84,12 +83,14 @@ bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg,
     }
     message.assign(static_cast<const char *>(msg->payload()),
                    static_cast<int>(msg->len()));
-    success = true;
-    break;
+    return true;
+
+  case RdKafka::ERR__PARTITION_EOF:
+    return false;
 
   default:
     /* Errors */
     std::cerr << "Consume failed: " << msg->errstr() << std::endl;
   }
-  return success;
+  return false;
 }
