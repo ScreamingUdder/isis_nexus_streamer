@@ -27,6 +27,9 @@ add_library(eventSubscriber_lib
 target_link_libraries(eventSubscriber_lib
         ${LibRDKafka_LIBRARIES})
 
+target_link_libraries(nexusSubscriber_lib
+        eventdata_lib)
+
 set(core_libraries
         eventSubscriber_lib
         nexusSubscriber_lib)
