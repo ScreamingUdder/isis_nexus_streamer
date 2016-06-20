@@ -4,6 +4,9 @@
 
 void KafkaEventPublisher::setUp(const std::string &broker_str,
                                 const std::string &topic_str) {
+
+  std::cout << "Setting up Kafka producer" << std::endl;
+
   std::string error_str;
 
   RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "NexusPublisher.h"
 
 NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
@@ -23,6 +25,9 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
       static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
   eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
 
+  std::cout << "Creating message: frame " << frameNumber << "/"
+            << m_fileReader->getNumberOfFrames() << std::endl;
+
   return eventData;
 }
 
@@ -37,7 +42,8 @@ void NexusPublisher::streamData() {
 void NexusPublisher::createAndSendMessage(std::string &rawbuf,
                                           size_t frameNumber) {
   auto messageData = createMessageData(frameNumber);
+  auto buffer_uptr = messageData->getBufferPointer(rawbuf);
   m_publisher->sendMessage(
-      reinterpret_cast<char *>(messageData->getBufferPointer(rawbuf).get()),
+      reinterpret_cast<char *>(buffer_uptr.get()),
       messageData->getBufferSize());
 }
