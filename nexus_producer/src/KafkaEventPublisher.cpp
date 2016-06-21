@@ -2,6 +2,12 @@
 
 #include "KafkaEventPublisher.h"
 
+/**
+ * Set up the configuration for the publisher and initialise it
+ *
+ * @param broker_str - the IP or hostname of the broker
+ * @param topic_str - the name of the datastream (topic) to publish the data to
+ */
 void KafkaEventPublisher::setUp(const std::string &broker_str,
                                 const std::string &topic_str) {
 
@@ -31,6 +37,12 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
   }
 }
 
+/**
+ * Publish the provided message to the datastream
+ *
+ * @param buf - pointer to the message buffer
+ * @param messageSize - the size of the message in bytes
+ */
 void KafkaEventPublisher::sendMessage(char *buf, size_t messageSize) {
   RdKafka::ErrorCode resp = m_producer_ptr->produce(
       m_topic_ptr.get(), 0, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
