@@ -126,3 +126,12 @@ if (COVERALLS)
             "${PROJECT_SOURCE_DIR}/cmake"
     )
 endif ()
+
+#####################
+## System tests    ##
+#####################
+
+find_package(Git)
+
+# Get the Ansible/Vagrant deployment scripts from the repository on github
+add_custom_target(system_tests COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/system_tests/SYSTest.cmake)

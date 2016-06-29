@@ -16,7 +16,7 @@ void NexusSubscriber::listen() {
   std::string message;
   auto receivedData = std::make_shared<EventData>();
   // frame numbers run from 0 to numberOfFrames-1
-  while (frameNumber < numberOfFrames) {
+  while (frameNumber < (numberOfFrames - 1)) {
     if (!(m_subscriber->listenForMessage(message)))
       continue;
     decodeMessage(receivedData, message);
