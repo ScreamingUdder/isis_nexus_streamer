@@ -131,7 +131,7 @@ endif ()
 ## System tests    ##
 #####################
 
-find_package(Git)
+file(COPY ${PROJECT_SOURCE_DIR}/system_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-# Get the Ansible/Vagrant deployment scripts from the repository on github
-add_custom_target(system_tests COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/system_tests/SYSTest.cmake)
+find_package(PythonInterp REQUIRED)
+add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py)
