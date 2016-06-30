@@ -16,7 +16,9 @@ int main(int argc, char **argv) {
   std::string broker = "sakura";
   std::string topic = "test_topic";
 
-  while ((opt = getopt(argc, argv, "b:t")) != -1) {
+  std::cout << "reaches here" << std::endl;
+
+  while ((opt = getopt(argc, argv, "b:t:")) != -1) {
     switch (opt) {
 
     case 'b':
@@ -29,13 +31,15 @@ int main(int argc, char **argv) {
 
     default:
       fprintf(stderr, "Usage: %s "
-                      "[-b <host:port>] "
+                      "[-b <host>] "
                       "[-t <topic_name>]"
                       "\n",
               argv[0]);
       exit(1);
     }
   }
+
+  std::cout << "broker is " << broker << std::endl << "topic is " << topic << std::endl;
 
   auto subscriber = std::make_shared<KafkaEventSubscriber>();
   NexusSubscriber streamer(subscriber, broker, topic);

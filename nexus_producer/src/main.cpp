@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   std::string broker = "sakura";
   std::string topic = "test_topic";
 
-  while ((opt = getopt(argc, argv, "f:b:t")) != -1) {
+  while ((opt = getopt(argc, argv, "f:b:t:")) != -1) {
     switch (opt) {
 
     case 'f':
