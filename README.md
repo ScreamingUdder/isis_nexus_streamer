@@ -8,13 +8,21 @@ Currently requires having `librdkafka` and the HDF5 C++ library installed.
 
 `Google Test` and `Google Mock` are used for unit testing but are not required to be installed; CMake will download and build them at configure-time.
 
-The repository contains a NeXus file for testing and therefore requires `git lfs` to be installed:
+The test data, NeXus file requires `git lfs` to be installed:
 https://git-lfs.github.com/
 
-## Running the unit tests
+## Unit tests
 The unit test executable `unitTests` needs to be passed the path of the test data directory as an argument.
 Alternatively, run all units tests using ctest with
 ```
 ctest -VV
 ```
 from the build directory.
+
+## System tests
+The CMake target for the system tests is `system_test`. Running the tests has the following dependencies:
+- Vagrant (`apt-get install vagrant`)
+- Ansible (`apt-get install ansible`)
+- Python 2.7
+- gitpython (`pip install gitpython`)
+- python-vagrant (`pip install python-vagrant`)
