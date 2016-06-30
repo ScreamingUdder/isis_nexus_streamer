@@ -1,8 +1,11 @@
 import os
-import subprocess
 import test_utils
+import sys
 from git import Repo
 import vagrant
+
+# Redirect stdout to a system test output file
+# sys.stdout = open('system_test_output.txt', 'w')
 
 # Clone ansible-kafka-centos git repo
 # if already exists in build director make sure up-to-date by pulling master
@@ -15,9 +18,11 @@ except:
     origin.pull()
 
 # Start up the virtual cluster
+print "Starting up the virtual cluster..."
 with test_utils.cd(repo_dir):
-    v = vagrant.Vagrant()
+    v = vagrant.Vagrant(quiet_stdout=False)
     v.up()
+print "...virtual cluster is up."
 
 #    [os.path.join(consumer_path, "main_nexusSubscriber"),
 #     "-b", "localhost"])
@@ -61,6 +66,8 @@ producer_path = os.path.join(build_dir, "nexus_producer")
 #print producer_process.output
 
 # Shut down the virtual cluster
+print "Shutting down virtual cluster..."
 with test_utils.cd(repo_dir):
-    v = vagrant.Vagrant()
+    v = vagrant.Vagrant(quiet_stdout=False)
     v.halt()
+print "...virtual cluster is down."

@@ -49,8 +49,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/DownloadProject.cmake)
 download_project(PROJ                googletest
         GIT_REPOSITORY      https://github.com/google/googletest.git
         GIT_TAG             master
-        ${UPDATE_DISCONNECTED_IF_AVAILABLE}
-        )
+        ${UPDATE_DISCONNECTED_IF_AVAILABLE})
 
 # Prevent GoogleTest from overriding our compiler/linker options
 # when building with Visual Studio
@@ -84,8 +83,7 @@ include_directories(
         ${LibRDKafka_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/nexus_consumer/include
         ${PROJECT_SOURCE_DIR}/nexus_producer/include
-        ${PROJECT_SOURCE_DIR}/event_data/include
-)
+        ${PROJECT_SOURCE_DIR}/event_data/include)
 
 file(GLOB TEST_SRC_FILES
         ${PROJECT_SOURCE_DIR}/nexus_consumer/test/*.cpp
@@ -123,8 +121,7 @@ if (COVERALLS)
     coveralls_setup(
             "${SRCS_FILENAME}"
             ON
-            "${PROJECT_SOURCE_DIR}/cmake"
-    )
+            "${PROJECT_SOURCE_DIR}/cmake")
 endif ()
 
 #####################
@@ -134,4 +131,5 @@ endif ()
 file(COPY ${PROJECT_SOURCE_DIR}/system_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(PythonInterp REQUIRED)
-add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py)
+add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py
+        COMMENT "Executing system tests..." VERBATIM)
