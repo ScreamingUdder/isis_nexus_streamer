@@ -3,7 +3,7 @@ import test_utils
 import sys
 from git import Repo
 import vagrant
-import datetime
+import time
 
 if len(sys.argv) is not 2:
     print "System test script requires the full path of the test data directory containing SANS_test.nxs"
@@ -15,9 +15,7 @@ sys.stdout = open('system_test_output.txt', 'w')
 data_path = str(sys.argv[1])
 print "Path of data directory was given as " + data_path
 
-# Create a unique topic name, ensures clean topic for test without problematic topic deletion
-topic_base_name = "system_test"
-topic_name = topic_base_name + "_" + datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+topic_name = "system_test"
 
 # Clone ansible-kafka-centos git repo
 # if already exists in build director make sure up-to-date by pulling master
@@ -40,6 +38,7 @@ print "...virtual cluster is up."
 build_dir = os.path.join(os.getcwd())
 
 # Start the stopwatch
+t0 = time.time()
 
 # Launch the consumer
 consumer_process = test_utils.Subprocess(
@@ -56,16 +55,27 @@ producer_process = test_utils.Subprocess(
 
 # Wait for the consumer subprocess to complete
 consumer_process.wait()
-print consumer_process.output
-
 # Stop the stopwatch
-
-# Check the output from the consumer (consumer_process.output)
-# Did all messages (frames) arrive?
+t1 = time.time()
+total_time = t1 - t0
+print "Total time taken to send and received all event data is " + str(total_time) + " seconds"
 
 # Make sure the producer also finished
 producer_process.wait()
-print producer_process.output
+
+# Check the output from the consumer (consumer_process.output)
+# Did all messages (frames) arrive?
+all_messages_received = True
+# Remove any lines before one starting with "message: "
+producer_output = "message: " + producer_process.output.split("message: ", 1)[1]
+consumer_output = "message: " + consumer_process.output.split("message: ", 1)[1]
+for send_line, recv_line in zip(producer_output.splitlines(), consumer_output.splitlines()):
+    if send_line.split("message: ", 1)[1] != recv_line.split("message: ", 1)[1]:
+        print "Received message (" + send_line.split("message: ", 1)[1] + ") does not match sent message (" + \
+              recv_line.split("message: ", 1)[1] + ")"
+        all_messages_received = False
+if all_messages_received:
+    print "Received and sent messages match in size and frame number."
 
 # Shut down the virtual cluster
 print "Shutting down virtual cluster..."
