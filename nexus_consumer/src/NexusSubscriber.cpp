@@ -12,7 +12,7 @@ NexusSubscriber::NexusSubscriber(std::shared_ptr<EventSubscriber> subscriber,
 
 void NexusSubscriber::listen() {
   int32_t frameNumber = 0;
-  int32_t numberOfFrames = 1;
+  int32_t numberOfFrames = 2;
   std::string message;
   auto receivedData = std::make_shared<EventData>();
   // frame numbers run from 0 to numberOfFrames-1
@@ -22,9 +22,9 @@ void NexusSubscriber::listen() {
     decodeMessage(receivedData, message);
     frameNumber = receivedData->getFrameNumber();
     numberOfFrames = receivedData->getNumberOfFrames();
-    std::cout << "Received message: " << receivedData->getNumberOfEvents()
-              << " events, frame " << frameNumber << "/" << (numberOfFrames - 1)
-              << std::endl;
+    std::cout << "Received message: "
+              << "frame " << frameNumber << "/" << (numberOfFrames - 1)
+              << ", size " << message.size() << std::endl;
   }
 }
 

@@ -47,7 +47,7 @@ void KafkaEventPublisher::sendMessage(char *buf, size_t messageSize) {
   RdKafka::ErrorCode resp = m_producer_ptr->produce(
       m_topic_ptr.get(), 0, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
       NULL, NULL);
-  std::cout << "Sending buffer with size: " << messageSize << std::endl;
+  std::cout << " size " << messageSize << std::endl;
 
   if (resp != RdKafka::ERR_NO_ERROR)
     std::cerr << "% Produce failed: " << RdKafka::err2str(resp) << std::endl;

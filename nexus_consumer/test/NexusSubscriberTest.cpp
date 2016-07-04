@@ -94,14 +94,14 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   // twice
   auto exampleEventData_first = createEventData();
   exampleEventData_first->setNumberOfFrames(9);
-  exampleEventData_first->setFrameNumber(8);
+  exampleEventData_first->setFrameNumber(7);
   std::string rawbuf_first;
   EXPECT_NO_THROW(exampleEventData_first->getBufferPointer(rawbuf_first));
 
   // Last frame
   auto exampleEventData_second = createEventData();
   exampleEventData_second->setNumberOfFrames(9);
-  exampleEventData_second->setFrameNumber(9);
+  exampleEventData_second->setFrameNumber(8);
   std::string rawbuf_second;
   EXPECT_NO_THROW(exampleEventData_second->getBufferPointer(rawbuf_second));
 

@@ -76,8 +76,6 @@ bool KafkaEventSubscriber::messageConsume(RdKafka::Message *msg,
                 << std::endl;
       return false;
     }
-    std::cout << "Read msg at offset " << msg->offset() << " with length "
-              << msg->len() << " bytes" << std::endl;
     if (msg->key()) {
       std::cout << "Key: " << *msg->key() << std::endl;
     }

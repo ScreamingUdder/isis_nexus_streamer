@@ -47,7 +47,7 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
   eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
 
   std::cout << "Creating message: frame " << frameNumber << "/"
-            << (m_fileReader->getNumberOfFrames() - 1) << std::endl;
+            << (m_fileReader->getNumberOfFrames() - 1) << ",";
 
   return eventData;
 }

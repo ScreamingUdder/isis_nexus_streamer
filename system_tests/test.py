@@ -3,16 +3,21 @@ import test_utils
 import sys
 from git import Repo
 import vagrant
+import datetime
 
 if len(sys.argv) is not 2:
     print "System test script requires the full path of the test data directory containing SANS_test.nxs"
     exit()
 
+# Redirect stdout to a system test output file
+sys.stdout = open('system_test_output.txt', 'w')
+
 data_path = str(sys.argv[1])
 print "Path of data directory was given as " + data_path
 
-# Redirect stdout to a system test output file
-sys.stdout = open('system_test_output.txt', 'w')
+# Create a unique topic name, ensures clean topic for test without problematic topic deletion
+topic_base_name = "system_test"
+topic_name = topic_base_name + "_" + datetime.datetime.now().strftime("%y%m%d_%H%M%S")
 
 # Clone ansible-kafka-centos git repo
 # if already exists in build director make sure up-to-date by pulling master
@@ -34,31 +39,20 @@ print "...virtual cluster is up."
 # Build directory as an input argument
 build_dir = os.path.join(os.getcwd())
 
-# Mark the test topic for deletion
-with test_utils.cd(repo_dir):
-    delete_topic_process = test_utils.Subprocess([
-        "vagrant", "ssh",
-        "kafka-node-1",
-        "--command",
-        "\"/etc/kafka_2.11-0.9.0.1/bin/kafka-topics.sh --zookeeper zk-node-1:2181 --delete --topic system_test\""
-    ])
-    delete_topic_process.wait()
-    print "marked for deletion successfully"
-
 # Start the stopwatch
 
 # Launch the consumer
 consumer_process = test_utils.Subprocess(
     [os.path.join(build_dir, "nexus_consumer", "main_nexusSubscriber"),
      "-b", "localhost",
-     "-t", "system_test"])
+     "-t", topic_name])
 
 # Run the producer
 producer_process = test_utils.Subprocess(
     [os.path.join(build_dir, "nexus_producer", "main_nexusPublisher"),
      "-f", os.path.join(data_path, "SANS_test.nxs"),
      "-b", "localhost",
-     "-t", "system_test"])
+     "-t", topic_name])
 
 # Wait for the consumer subprocess to complete
 consumer_process.wait()
@@ -72,16 +66,6 @@ print consumer_process.output
 # Make sure the producer also finished
 producer_process.wait()
 print producer_process.output
-
-# Mark the test topic for deletion
-with test_utils.cd(repo_dir):
-    delete_topic_process = test_utils.Subprocess([
-        "vagrant", "ssh",
-        "kafka-node-1",
-        "--command",
-        "\"/etc/kafka_2.11-0.9.0.1/bin/kafka-topics.sh --zookeeper zk-node-1:2181 --delete --topic system_test\""
-    ])
-    delete_topic_process.wait()
 
 # Shut down the virtual cluster
 print "Shutting down virtual cluster..."
