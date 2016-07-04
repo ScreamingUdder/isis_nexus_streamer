@@ -16,8 +16,6 @@ int main(int argc, char **argv) {
   std::string broker = "sakura";
   std::string topic = "test_topic";
 
-  std::cout << "reaches here" << std::endl;
-
   while ((opt = getopt(argc, argv, "b:t:")) != -1) {
     switch (opt) {
 
@@ -38,8 +36,6 @@ int main(int argc, char **argv) {
       exit(1);
     }
   }
-
-  std::cout << "broker is " << broker << std::endl << "topic is " << topic << std::endl;
 
   auto subscriber = std::make_shared<KafkaEventSubscriber>();
   NexusSubscriber streamer(subscriber, broker, topic);
