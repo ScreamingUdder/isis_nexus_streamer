@@ -129,6 +129,9 @@ endif ()
 #####################
 
 file(COPY ${PROJECT_SOURCE_DIR}/system_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(DOWNLOAD http://downloads.sourceforge.net/cyclops-group/jmxterm-1.0-alpha-4-uber.jar
+        ${CMAKE_CURRENT_BINARY_DIR}/system_tests/jmxterm.jar
+        TIMEOUT 30)
 
 find_package(PythonInterp REQUIRED)
 add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data

@@ -24,5 +24,6 @@ The CMake target for the system tests is `system_test`. Running the tests has th
 - Vagrant (`apt-get install vagrant`)
 - Ansible (`apt-get install ansible`)
 - Python 2.7
+- JRE (`apt-get install default-jre`)
 - gitpython (`pip install gitpython`)
 - python-vagrant (`pip install python-vagrant`)

@@ -1,5 +1,6 @@
 import os
 import subprocess
+import pexpect
 
 
 class Subprocess:
@@ -66,3 +67,29 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.saved_path)
+
+
+class JmxMetrics:
+    """Uses JMXTerm to get metrics from the Kafka broker"""
+
+    def __init__(self, connection):
+        """
+        :param connection: JMX address in form <hostname>:<port>
+        """
+        connection_timeout = 2
+
+        self.jmxterm = pexpect.spawn("java -jar jmxterm.jar")
+        self.jmxterm.expect_exact("$>")  # got prompt, can continue
+        self.jmxterm.sendline("open " + connection)
+        self.jmxterm.expect_exact("#Connection to " + connection + " is opened", connection_timeout)
+
+    def get_metric(self, bean_type, bean_name, bean_value):
+        self.jmxterm.sendline("get -b kafka.server:type=" + bean_type + ",name=" + bean_name + " " + bean_value)
+        response_lines = [self.jmxterm.readline()]
+        while response_lines and response_lines[-1] != "\r\n":
+            response_lines.append(self.jmxterm.readline())
+
+        return response_lines
+
+    def __del__(self):
+        self.jmxterm.sendline("quit")
