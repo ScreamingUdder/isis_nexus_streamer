@@ -15,6 +15,7 @@ void NexusSubscriber::listen() {
   int32_t numberOfFrames = 2;
   std::string message;
   auto receivedData = std::make_shared<EventData>();
+  int numberOfFramesReceived = 0; // to check no messages lost
   // frame numbers run from 0 to numberOfFrames-1
   while (frameNumber < (numberOfFrames - 1)) {
     if (!(m_subscriber->listenForMessage(message)))
@@ -22,10 +23,9 @@ void NexusSubscriber::listen() {
     decodeMessage(receivedData, message);
     frameNumber = receivedData->getFrameNumber();
     numberOfFrames = receivedData->getNumberOfFrames();
-    std::cout << "Received message: "
-              << "frame " << frameNumber << "/" << (numberOfFrames - 1)
-              << ", size " << message.size() << std::endl;
+    numberOfFramesReceived++;
   }
+  std::cout << "Counted number of frames received: " << numberOfFramesReceived << std::endl;
 }
 
 void NexusSubscriber::decodeMessage(std::shared_ptr<EventData> eventData,

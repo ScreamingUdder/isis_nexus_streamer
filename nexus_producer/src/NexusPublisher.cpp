@@ -46,8 +46,8 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
       static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
   eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
 
-  std::cout << "Creating message: frame " << frameNumber << "/"
-            << (m_fileReader->getNumberOfFrames() - 1) << ",";
+  //std::cout << "Creating message: frame " << frameNumber << "/"
+  //          << (m_fileReader->getNumberOfFrames() - 1) << ",";
 
   return eventData;
 }
@@ -62,6 +62,7 @@ void NexusPublisher::streamData() {
        frameNumber++) {
     createAndSendMessage(rawbuf, frameNumber);
   }
+  std::cout << "Total number of frames sent: " << m_fileReader->getNumberOfFrames() << std::endl;
 }
 
 /**
