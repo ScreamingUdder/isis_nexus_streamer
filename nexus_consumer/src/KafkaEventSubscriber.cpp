@@ -19,7 +19,6 @@ KafkaEventSubscriber::~KafkaEventSubscriber() {
 void KafkaEventSubscriber::setUp(const std::string &broker_str,
                                  const std::string &topic_str) {
   std::string error_str;
-  const int start_offset = 0;
 
   RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
   RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
@@ -46,7 +45,7 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
   // Start consumer for topic+partition at start offset
   RdKafka::ErrorCode resp =
-      m_consumer_ptr->start(m_topic_ptr.get(), PARTITION, start_offset);
+      m_consumer_ptr->start(m_topic_ptr.get(), PARTITION, RdKafka::Topic::OFFSET_END);
   if (resp != RdKafka::ERR_NO_ERROR) {
     std::cerr << "Failed to start consumer: " << RdKafka::err2str(resp)
               << std::endl;
