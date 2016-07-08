@@ -131,7 +131,8 @@ endif ()
 file(COPY ${PROJECT_SOURCE_DIR}/system_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(DOWNLOAD http://downloads.sourceforge.net/cyclops-group/jmxterm-1.0-alpha-4-uber.jar
         ${CMAKE_CURRENT_BINARY_DIR}/system_tests/jmxterm.jar
-        TIMEOUT 30)
+        TIMEOUT 30
+        EXPECTED_MD5 f3c307163673d9f70c27b3f440df9dd4)
 
 find_package(PythonInterp REQUIRED)
 add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data
