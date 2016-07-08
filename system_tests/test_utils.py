@@ -4,7 +4,7 @@ import pexpect
 
 
 class Subprocess:
-    def __init__(self, command, working_dir=None, capture_stderr=True, env=None):
+    def __init__(self, command, working_dir=None, env=None):
         """Changes into a specified directory, if provided, and executes a command.
         Restores the old directory afterwards.
         Args:
@@ -28,13 +28,9 @@ class Subprocess:
         # The subprocess module is the preferable way of running programs
         # since it is available and behaves consistently on all platforms,
         # including Windows. Note it is only available starting in python 2.4.
-        if capture_stderr:
-            stderr = subprocess.STDOUT
-        else:
-            stderr = subprocess.PIPE
 
         self.p = subprocess.Popen(command,
-                                  stdout=subprocess.PIPE, stderr=stderr,
+                                  stderr=subprocess.STDOUT, stdout=subprocess.PIPE,
                                   cwd=working_dir, universal_newlines=True, env=env)
 
     def wait(self):
@@ -56,7 +52,9 @@ class Subprocess:
 
 
 class cd:
-    """Context manager for changing the current working directory"""
+    """
+    Context manager for changing the current working directory
+    """
 
     def __init__(self, new_path):
         self.new_path = os.path.expanduser(new_path)
@@ -70,7 +68,9 @@ class cd:
 
 
 class JmxMetrics:
-    """Uses JMXTerm to get metrics from the Kafka broker"""
+    """
+    Uses JMXTerm to get metrics from the Kafka broker
+    """
 
     def __init__(self, connection):
         """
@@ -85,7 +85,7 @@ class JmxMetrics:
 
     def get_metric(self, bean_type, bean_name, bean_value):
         self.jmxterm.sendline("get -b kafka.server:type=" + bean_type + ",name=" + bean_name + " " + bean_value)
-        response_lines = [self.jmxterm.readline()]
+        response_lines = [self.jmxterm.readline(), self.jmxterm.readline()]
         while response_lines and response_lines[-1] != "\r\n":
             response_lines.append(self.jmxterm.readline())
 
