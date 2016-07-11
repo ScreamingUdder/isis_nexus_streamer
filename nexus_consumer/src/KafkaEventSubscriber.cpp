@@ -24,6 +24,8 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
   RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
 
   conf->set("metadata.broker.list", broker_str, error_str);
+  conf->set("message.max.bytes", "10000000", error_str);
+  conf->set("fetch.message.max.bytes", "10000000", error_str);
 
   // Create consumer using accumulated global configuration.
   m_consumer_ptr = std::unique_ptr<RdKafka::Consumer>(

@@ -19,6 +19,8 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
   RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
 
   conf->set("metadata.broker.list", broker_str, error_str);
+  conf->set("message.max.bytes", "10000000", error_str);
+  conf->set("fetch.message.max.bytes", "10000000", error_str);
 
   // Create producer
   m_producer_ptr = std::unique_ptr<RdKafka::Producer>(
@@ -48,8 +50,10 @@ void KafkaEventPublisher::sendMessage(char *buf, size_t messageSize) {
       m_topic_ptr.get(), 0, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
       NULL, NULL);
 
-  if (resp != RdKafka::ERR_NO_ERROR)
+  if (resp != RdKafka::ERR_NO_ERROR) {
     std::cerr << "% Produce failed: " << RdKafka::err2str(resp) << std::endl;
+    std::cerr << "message size was " << messageSize << std::endl;
+  }
 
   m_producer_ptr->poll(0);
 }
