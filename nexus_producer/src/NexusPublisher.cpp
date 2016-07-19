@@ -19,9 +19,11 @@
 NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
                                const std::string &brokerAddress,
                                const std::string &streamName,
-                               const std::string &filename)
+                               const std::string &filename,
+                               const bool quietMode)
     : m_publisher(publisher),
-      m_fileReader(std::make_shared<NexusFileReader>(filename)) {
+      m_fileReader(std::make_shared<NexusFileReader>(filename)),
+      m_quietMode(quietMode) {
   publisher->setUp(brokerAddress, streamName);
 }
 
@@ -46,7 +48,7 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
       static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
   eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
 
-  //std::cout << "Creating message: frame " << frameNumber << "/"
+  // std::cout << "Creating message: frame " << frameNumber << "/"
   //          << (m_fileReader->getNumberOfFrames() - 1) << ",";
 
   return eventData;
@@ -58,11 +60,17 @@ NexusPublisher::createMessageData(hsize_t frameNumber) {
 void NexusPublisher::streamData() {
   std::string rawbuf;
   // frame numbers run from 0 to numberOfFrames-1
-  for (size_t frameNumber = 0; frameNumber < m_fileReader->getNumberOfFrames();
-       frameNumber++) {
+  reportProgress(0.0);
+  const auto numberOfFrames = m_fileReader->getNumberOfFrames();
+  for (size_t frameNumber = 0; frameNumber < numberOfFrames; frameNumber++) {
     createAndSendMessage(rawbuf, frameNumber);
+    reportProgress(static_cast<float>(frameNumber) /
+                   static_cast<float>(numberOfFrames));
   }
-  std::cout << "Total number of frames sent: " << m_fileReader->getNumberOfFrames() << std::endl;
+  reportProgress(1.0);
+  std::cout << std::endl
+            << "Total number of frames sent: "
+            << m_fileReader->getNumberOfFrames() << std::endl;
 }
 
 /**
@@ -78,4 +86,27 @@ void NexusPublisher::createAndSendMessage(std::string &rawbuf,
   auto buffer_uptr = messageData->getBufferPointer(rawbuf);
   m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
                            messageData->getBufferSize());
+}
+
+/**
+ * Display a progress bar
+ *
+ * @param progress - progress between 0 (starting) and 1 (complete)
+ */
+void NexusPublisher::reportProgress(const float progress) {
+  if (!m_quietMode) {
+    const int barWidth = 70;
+    std::cout << "[";
+    auto pos = static_cast<int>(barWidth * progress);
+    for (int i = 0; i < barWidth; ++i) {
+      if (i < pos)
+        std::cout << "=";
+      else if (i == pos)
+        std::cout << ">";
+      else
+        std::cout << " ";
+    }
+    std::cout << "] " << int(progress * 100.0) << " %\r";
+    std::cout.flush();
+  }
 }

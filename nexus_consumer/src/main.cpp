@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
   int opt;
   std::string broker = "sakura";
   std::string topic = "test_topic";
+  bool quietMode = false;
 
   while ((opt = getopt(argc, argv, "b:t:")) != -1) {
     switch (opt) {
@@ -25,6 +26,10 @@ int main(int argc, char **argv) {
 
     case 't':
       topic = optarg;
+      break;
+
+    case 'q':
+      quietMode = true;
       break;
 
     default:
@@ -38,7 +43,7 @@ int main(int argc, char **argv) {
   }
 
   auto subscriber = std::make_shared<KafkaEventSubscriber>();
-  NexusSubscriber streamer(subscriber, broker, topic);
+  NexusSubscriber streamer(subscriber, broker, topic, quietMode);
   streamer.listen();
 
   return 0;

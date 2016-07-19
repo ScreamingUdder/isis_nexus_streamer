@@ -5,8 +5,9 @@
 
 NexusSubscriber::NexusSubscriber(std::shared_ptr<EventSubscriber> subscriber,
                                  const std::string &brokerAddress,
-                                 const std::string &streamName)
-    : m_subscriber(subscriber) {
+                                 const std::string &streamName,
+                                 const bool quietMode)
+    : m_subscriber(subscriber), m_quietMode(quietMode) {
   subscriber->setUp(brokerAddress, streamName);
 }
 
@@ -17,6 +18,7 @@ void NexusSubscriber::listen() {
   auto receivedData = std::make_shared<EventData>();
   int numberOfFramesReceived = 0; // to check no messages lost
   // frame numbers run from 0 to numberOfFrames-1
+  reportProgress(0.0);
   while (frameNumber < (numberOfFrames - 1)) {
     if (!(m_subscriber->listenForMessage(message)))
       continue;
@@ -24,11 +26,39 @@ void NexusSubscriber::listen() {
     frameNumber = receivedData->getFrameNumber();
     numberOfFrames = receivedData->getNumberOfFrames();
     numberOfFramesReceived++;
+    reportProgress(static_cast<float>(frameNumber) /
+                   static_cast<float>(numberOfFrames));
   }
-  std::cout << "Counted number of frames received: " << numberOfFramesReceived << std::endl;
+  reportProgress(1.0);
+  std::cout << std::endl
+            << "Counted number of frames received: " << numberOfFramesReceived
+            << std::endl;
 }
 
 void NexusSubscriber::decodeMessage(std::shared_ptr<EventData> eventData,
                                     const std::string &rawbuf) {
   eventData->decodeMessage(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+}
+
+/**
+ * Display a progress bar
+ *
+ * @param progress - progress between 0 (starting) and 1 (complete)
+ */
+void NexusSubscriber::reportProgress(const float progress) {
+  if (!m_quietMode) {
+    const int barWidth = 70;
+    std::cout << "[";
+    auto pos = static_cast<int>(barWidth * progress);
+    for (int i = 0; i < barWidth; ++i) {
+      if (i < pos)
+        std::cout << "=";
+      else if (i == pos)
+        std::cout << ">";
+      else
+        std::cout << " ";
+    }
+    std::cout << "] " << int(progress * 100.0) << " %\r";
+    std::cout.flush();
+  }
 }

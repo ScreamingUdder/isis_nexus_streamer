@@ -21,6 +21,7 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
   conf->set("metadata.broker.list", broker_str, error_str);
   conf->set("message.max.bytes", "10000000", error_str);
   conf->set("fetch.message.max.bytes", "10000000", error_str);
+  conf->set("replica.fetch.max.bytes", "10000000", error_str);
 
   // Create producer
   m_producer_ptr = std::unique_ptr<RdKafka::Producer>(

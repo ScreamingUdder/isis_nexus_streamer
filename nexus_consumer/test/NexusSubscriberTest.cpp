@@ -36,7 +36,7 @@ TEST_F(NexusSubscriberTest, test_create_subscriber) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic);
+  NexusSubscriber streamer(subscriber, broker, topic, true);
 }
 
 TEST_F(NexusSubscriberTest, decode_received_message) {
@@ -52,7 +52,7 @@ TEST_F(NexusSubscriberTest, decode_received_message) {
 
   // Decode the message
   auto receivedEvents = std::make_shared<EventData>();
-  NexusSubscriber streamer(subscriber, broker, topic);
+  NexusSubscriber streamer(subscriber, broker, topic, true);
   EXPECT_NO_THROW(streamer.decodeMessage(receivedEvents, rawbuf));
 
   EXPECT_EQ(receivedEvents->getDetId(), exampleEventData->getDetId());
@@ -77,7 +77,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic);
+  NexusSubscriber streamer(subscriber, broker, topic, true);
 
   // Should be called exactly once because the message contains the last frame
   EXPECT_CALL(*subscriber.get(), listenForMessage(_))
@@ -108,7 +108,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic);
+  NexusSubscriber streamer(subscriber, broker, topic, true);
 
   // Should be called exactly twice because there are messages containing the
   // last two frames
