@@ -16,7 +16,8 @@ if len(sys.argv) is not 2:
 data_path = str(sys.argv[1])
 print("Path of data directory was given as " + data_path)
 
-topic_name = "system_test"
+topic_name = "topic_system_test"
+broker = "localhost"
 
 # Clone ansible-kafka-centos git repo
 # if already exists in build director make sure up-to-date by pulling master
@@ -45,8 +46,9 @@ t0 = time.time()
 print("Launching consumer...", end="")
 consumer_process = test_utils.Subprocess(
     [os.path.join(build_dir, "nexus_consumer", "main_nexusSubscriber"),
-     "-b", "localhost",
-     "-t", topic_name])
+     "-b", broker,
+     "-t", topic_name,
+     "-q"])
 print(" done.")
 
 time.sleep(2)
@@ -56,8 +58,9 @@ print("Launching producer...", end="")
 producer_process = test_utils.Subprocess(
     [os.path.join(build_dir, "nexus_producer", "main_nexusPublisher"),
      "-f", os.path.join(data_path, "SANS_test.nxs"),
-     "-b", "localhost",
-     "-t", topic_name])
+     "-b", broker,
+     "-t", topic_name,
+     "-q"])
 print(" done.")
 
 # Collect metrics from broker
@@ -88,16 +91,20 @@ print("...producer process completed.")
 all_messages_received = True
 # Remove any lines before one starting with "message: "
 try:
-    producer_output = producer_process.output.split("Total number of frames sent: ", 1)[1]
-    consumer_output = consumer_process.output.split("Counted number of frames received: ", 1)[1]
+    producer_frames = producer_process.output.split("Frames sent: ", 1)[1].split('\n', 1)[0]
+    producer_bytes = producer_process.output.split("Bytes sent: ", 1)[1].split('\n', 1)[0]
+    consumer_frames = consumer_process.output.split("Frames received: ", 1)[1].split('\n', 1)[0]
+    consumer_bytes = consumer_process.output.split("Bytes received: ", 1)[1].split('\n', 1)[0]
 
-    frames_sent = producer_output.split('\n', 1)[0]
-    frames_received = consumer_output.split('\n', 1)[0]
-    if frames_sent != frames_received:
-        print("FAIL " + frames_sent + " frames sent but " + frames_received + " frames received")
+    if producer_frames != consumer_frames:
+        print("FAIL " + producer_frames + " frames sent but " + consumer_frames + " frames received")
+        raise IndexError("")
+    elif producer_bytes != consumer_bytes:
+        print("FAIL " + producer_bytes + " bytes sent but " + consumer_bytes + " bytes received")
         raise IndexError("")
     else:
-        print("PASS " + frames_sent + " frames sent and " + frames_received + " frames received.")
+        print("PASS " + producer_frames + " frames sent and " + consumer_frames + " frames received.")
+        print(producer_bytes + " bytes sent and " + consumer_bytes + " bytes received.")
 except IndexError:
     print("Unexpected output from producer or consumer, try running unit tests")
     sys.exit()

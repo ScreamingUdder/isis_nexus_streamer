@@ -61,16 +61,19 @@ void NexusPublisher::streamData() {
   std::string rawbuf;
   // frame numbers run from 0 to numberOfFrames-1
   reportProgress(0.0);
+  int64_t totalBytesSent = 0;
   const auto numberOfFrames = m_fileReader->getNumberOfFrames();
   for (size_t frameNumber = 0; frameNumber < numberOfFrames; frameNumber++) {
     createAndSendMessage(rawbuf, frameNumber);
     reportProgress(static_cast<float>(frameNumber) /
                    static_cast<float>(numberOfFrames));
+    totalBytesSent += rawbuf.size();
   }
   reportProgress(1.0);
   std::cout << std::endl
-            << "Total number of frames sent: "
-            << m_fileReader->getNumberOfFrames() << std::endl;
+            << "Frames sent: " << m_fileReader->getNumberOfFrames()
+            << std::endl
+            << "Bytes sent: " << totalBytesSent << std::endl;
 }
 
 /**
