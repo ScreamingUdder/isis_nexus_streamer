@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   std::string topic = "test_topic";
   bool quietMode = false;
 
-  while ((opt = getopt(argc, argv, "b:t:")) != -1) {
+  while ((opt = getopt(argc, argv, "b:t:q")) != -1) {
     switch (opt) {
 
     case 'b':
