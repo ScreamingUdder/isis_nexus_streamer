@@ -40,7 +40,8 @@ matrix:
 install:
   - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
   - sudo apt-get install git-lfs=1.1.0
-  - ssh git@github.com git-lfs-authenticate ScreamingUdder/isis_nexus_streamer.git download
+  - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
+  - cd $TRAVIS_REPO_SLUG
   - git lfs pull
 script:
   - sudo bash travis.sh
