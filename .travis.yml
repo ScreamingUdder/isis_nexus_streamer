@@ -42,6 +42,7 @@ install:
   - sudo apt-get install git-lfs=1.1.0
   - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
   - cd $TRAVIS_REPO_SLUG
+  - rm data/SANS_test_uncompressed.hdf5
   - git lfs pull
 script:
   - sudo bash travis.sh
