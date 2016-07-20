@@ -22,6 +22,7 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
   conf->set("message.max.bytes", "10000000", error_str);
   conf->set("fetch.message.max.bytes", "10000000", error_str);
   conf->set("replica.fetch.max.bytes", "10000000", error_str);
+  // conf->set("compression.codec", "snappy", error_str);
 
   // Create producer
   m_producer_ptr = std::unique_ptr<RdKafka::Producer>(
@@ -47,8 +48,11 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
  * @param messageSize - the size of the message in bytes
  */
 void KafkaEventPublisher::sendMessage(char *buf, size_t messageSize) {
+  // using -1 as the partition number will cause rdkafka to distribute messages
+  // across multiple partitions to load balance (if the topic has multiple
+  // partitions)
   RdKafka::ErrorCode resp = m_producer_ptr->produce(
-      m_topic_ptr.get(), 0, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
+      m_topic_ptr.get(), -1, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
       NULL, NULL);
 
   if (resp != RdKafka::ERR_NO_ERROR) {
