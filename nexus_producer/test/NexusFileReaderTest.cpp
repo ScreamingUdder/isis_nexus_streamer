@@ -16,6 +16,11 @@ TEST(NexusFileReaderTest, nexus_file_open_exists) {
   EXPECT_NO_THROW(NexusFileReader(testDataPath + "SANS_test.nxs"));
 }
 
+TEST(NexusFileReaderTest, nexus_uncompressed_file_open_exists) {
+  extern std::string testDataPath;
+  EXPECT_NO_THROW(NexusFileReader(testDataPath + "SANS_test_uncompressed.hdf5"));
+}
+
 TEST(NexusFileReaderTest, nexus_read_file_size) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
