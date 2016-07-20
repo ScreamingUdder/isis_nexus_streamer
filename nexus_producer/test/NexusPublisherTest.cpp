@@ -74,6 +74,6 @@ TEST(NexusPublisherTest, test_stream_data) {
       .Times(static_cast<int>(299));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test_reduced.hdf5", true);
+                          testDataPath + "SANS_test_reduced.hdf5", false);
   EXPECT_NO_THROW(streamer.streamData());
 }

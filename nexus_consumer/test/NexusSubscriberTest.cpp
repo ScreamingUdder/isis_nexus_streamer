@@ -118,7 +118,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic, true);
+  NexusSubscriber streamer(subscriber, broker, topic, false);
 
   // Should be called exactly twice because there are messages containing the
   // last two frames
