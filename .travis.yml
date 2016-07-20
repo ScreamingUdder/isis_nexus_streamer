@@ -13,7 +13,6 @@ matrix:
             - llvm-toolchain-trusty-3.6
           packages:
             - clang-3.6
-            - git-lfs
       env: COMPILER=clang++-3.6
     - compiler: gcc
       addons:
@@ -22,7 +21,6 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
-            - git-lfs
       env: COMPILER=g++-5
     - env: TEST_NAME="cppcheck"
       script:
@@ -32,10 +30,6 @@ matrix:
       before_install: sudo apt-get -y install cppcheck
     - env: TEST_NAME="coveralls"
       compiler: gcc
-      addons:
-        apt:
-          packages:
-            - git-lfs
       script:
         - sudo bash travis.sh
         - mkdir build
@@ -43,6 +37,11 @@ matrix:
         - cmake -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=Debug -DCOVERALLS=ON .. && make
         - make coveralls
 
+install:
+  - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+  - sudo apt-get install git-lfs=1.1.0
+  - ssh git@github.com git-lfs-authenticate matthew-d-jones/isis_nexus_streamer.git download
+  - git lfs pull
 script:
   - sudo bash travis.sh
   - mkdir build
