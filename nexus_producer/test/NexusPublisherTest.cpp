@@ -48,10 +48,10 @@ TEST(NexusPublisherTest, test_create_message_data) {
 
   NexusPublisher streamer(publisher, broker, topic,
                           testDataPath + "SANS_test_reduced.hdf5", true);
-  auto eventData = streamer.createMessageData(static_cast<hsize_t>(1));
+  auto eventData = streamer.createMessageData(static_cast<hsize_t>(1), 1);
 
   std::string rawbuf;
-  eventData->getBufferPointer(rawbuf);
+  eventData[0]->getBufferPointer(rawbuf);
 
   auto receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));

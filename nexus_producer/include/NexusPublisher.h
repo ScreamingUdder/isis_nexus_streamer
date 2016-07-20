@@ -13,7 +13,8 @@ public:
                  const std::string &brokerAddress,
                  const std::string &streamName, const std::string &filename,
                  const bool quietMode);
-  std::shared_ptr<EventData> createMessageData(hsize_t frameNumber);
+  std::vector<std::shared_ptr<EventData>>
+  createMessageData(hsize_t frameNumber, int messagesPerFrame);
   void streamData();
 
 private:
