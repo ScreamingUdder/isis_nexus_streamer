@@ -20,7 +20,7 @@ TEST(NexusPublisherTest, test_create_streamer) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test.nxs", true);
+                          testDataPath + "SANS_test_uncompressed.hdf5", true);
 }
 
 TEST(NexusPublisherTest, test_create_message_data) {
@@ -34,7 +34,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test.nxs", true);
+                          testDataPath + "SANS_test_uncompressed.hdf5", true);
   auto eventData = streamer.createMessageData(static_cast<hsize_t>(1));
 
   std::string rawbuf;
