@@ -20,7 +20,20 @@ TEST(NexusPublisherTest, test_create_streamer) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test_reduced.hdf5", true);
+                          testDataPath + "SANS_test_reduced.hdf5", false);
+}
+
+TEST(NexusPublisherTest, test_create_streamer_quiet) {
+extern std::string testDataPath;
+
+const std::string broker = "broker_name";
+const std::string topic = "topic_name";
+
+auto publisher = std::make_shared<MockEventPublisher>();
+EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
+
+NexusPublisher streamer(publisher, broker, topic,
+                        testDataPath + "SANS_test_reduced.hdf5", true);
 }
 
 TEST(NexusPublisherTest, test_create_message_data) {

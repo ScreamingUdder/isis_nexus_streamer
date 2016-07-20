@@ -36,6 +36,16 @@ TEST_F(NexusSubscriberTest, test_create_subscriber) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
+  NexusSubscriber streamer(subscriber, broker, topic, false);
+}
+
+TEST_F(NexusSubscriberTest, test_create_subscriber_quiet) {
+  const std::string broker = "broker_name";
+  const std::string topic = "topic_name";
+
+  auto subscriber = std::make_shared<MockEventSubscriber>();
+  EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
+
   NexusSubscriber streamer(subscriber, broker, topic, true);
 }
 
