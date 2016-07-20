@@ -20,7 +20,7 @@ TEST(NexusPublisherTest, test_create_streamer) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test_uncompressed.hdf5", true);
+                          testDataPath + "SANS_test_reduced.hdf5", true);
 }
 
 TEST(NexusPublisherTest, test_create_message_data) {
@@ -34,7 +34,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test_uncompressed.hdf5", true);
+                          testDataPath + "SANS_test_reduced.hdf5", true);
   auto eventData = streamer.createMessageData(static_cast<hsize_t>(1));
 
   std::string rawbuf;
@@ -43,7 +43,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   auto receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   EXPECT_EQ(770, receivedEventData.getNumberOfEvents());
-  EXPECT_EQ(18130, receivedEventData.getNumberOfFrames());
+  EXPECT_EQ(299, receivedEventData.getNumberOfFrames());
   EXPECT_EQ(1, receivedEventData.getFrameNumber());
 }
 
@@ -58,9 +58,9 @@ TEST(NexusPublisherTest, test_stream_data) {
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
   EXPECT_CALL(*publisher.get(), sendMessage(_, _))
-      .Times(static_cast<int>(18130));
+      .Times(static_cast<int>(299));
 
   NexusPublisher streamer(publisher, broker, topic,
-                          testDataPath + "SANS_test_uncompressed.hdf5", true);
+                          testDataPath + "SANS_test_reduced.hdf5", true);
   EXPECT_NO_THROW(streamer.streamData());
 }

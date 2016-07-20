@@ -18,7 +18,7 @@ TEST(NexusFileReaderTest, nexus_file_open_exists) {
 
 TEST(NexusFileReaderTest, nexus_uncompressed_file_open_exists) {
   extern std::string testDataPath;
-  EXPECT_NO_THROW(NexusFileReader(testDataPath + "SANS_test_uncompressed.hdf5"));
+  EXPECT_NO_THROW(NexusFileReader(testDataPath + "SANS_test_reduced.hdf5"));
 }
 
 TEST(NexusFileReaderTest, nexus_read_file_size) {
