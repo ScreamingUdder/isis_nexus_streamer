@@ -51,7 +51,7 @@ void KafkaEventPublisher::sendMessage(char *buf, size_t messageSize) {
   // using -1 as the partition number will cause rdkafka to distribute messages
   // across multiple partitions to load balance (if the topic has multiple
   // partitions)
-  RdKafka::ErrorCode resp = m_producer_ptr->produce(
+  auto resp = m_producer_ptr->produce(
       m_topic_ptr.get(), -1, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
       NULL, NULL);
 

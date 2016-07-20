@@ -44,7 +44,7 @@ uint64_t NexusFileReader::getTotalEventCount() {
  * @return - event index corresponding to the start of the specified frame
  */
 hsize_t NexusFileReader::getFrameStart(hsize_t frameNumber) {
-  DataSet dataset =
+  auto dataset =
       m_file->openDataSet("/raw_data_1/detector_1_events/event_index");
   uint64_t *frameStart = new uint64_t[1];
 
@@ -87,10 +87,10 @@ bool NexusFileReader::getEventDetIds(std::vector<uint32_t> &detIds,
                                      hsize_t frameNumber) {
   if (frameNumber >= m_numberOfFrames)
     return false;
-  DataSet dataset =
+  auto dataset =
       m_file->openDataSet("/raw_data_1/detector_1_events/event_id");
 
-  hsize_t numberOfEventsInFrame = getNumberOfEventsInFrame(frameNumber);
+  auto numberOfEventsInFrame = getNumberOfEventsInFrame(frameNumber);
 
   hsize_t count[1], offset[1], stride[1], block[1];
   count[0] = numberOfEventsInFrame;
@@ -125,10 +125,10 @@ bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
                                    hsize_t frameNumber) {
   if (frameNumber >= m_numberOfFrames)
     return false;
-  DataSet dataset =
+  auto dataset =
       m_file->openDataSet("/raw_data_1/detector_1_events/event_time_offset");
 
-  hsize_t numberOfEventsInFrame = getNumberOfEventsInFrame(frameNumber);
+  auto numberOfEventsInFrame = getNumberOfEventsInFrame(frameNumber);
 
   hsize_t count[1], offset[1], stride[1], block[1];
   count[0] = numberOfEventsInFrame;
