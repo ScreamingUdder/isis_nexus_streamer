@@ -115,7 +115,7 @@ def main():
         # Stop the stopwatch
         t1 = time.time()
         total_time = t1 - t0
-        print("Total time taken to send and received all event data is " + str(total_time) + " seconds")
+        print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
 
         # Make sure the producer also finished
         print("Checking producer has finished...")
