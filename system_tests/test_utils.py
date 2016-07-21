@@ -1,6 +1,7 @@
 import os
 import subprocess
 import pexpect
+import vagrant
 
 
 class Subprocess:
@@ -65,6 +66,28 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.saved_path)
+
+
+class Cluster:
+    """
+    Manage the virtual cluster
+    """
+
+    def __init__(self, repo_dir):
+        self.repo_dir = repo_dir
+
+    def __enter__(self):
+        if self.repo_dir:
+            with cd(self.repo_dir):
+                v = vagrant.Vagrant(quiet_stdout=False)
+                v.up()
+                print("...virtual cluster is up.")
+
+    def __exit__(self, etype, value, traceback):
+        if self.repo_dir:
+            with cd(self.repo_dir):
+                v = vagrant.Vagrant(quiet_stdout=False)
+                v.halt()
 
 
 class JmxMetrics:

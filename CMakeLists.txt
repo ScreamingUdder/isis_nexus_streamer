@@ -149,5 +149,6 @@ file(DOWNLOAD http://downloads.sourceforge.net/cyclops-group/jmxterm-1.0-alpha-4
         EXPECTED_MD5 f3c307163673d9f70c27b3f440df9dd4)
 
 find_package(PythonInterp REQUIRED)
-add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data
+set(system_test_args )
+add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data -p -j 9997
         COMMENT "Executing system tests..." VERBATIM)
