@@ -14,11 +14,12 @@ public:
                  const std::string &streamName, const std::string &filename,
                  const bool quietMode);
   std::vector<std::shared_ptr<EventData>>
-  createMessageData(hsize_t frameNumber, int messagesPerFrame);
-  void streamData();
+  createMessageData(hsize_t frameNumber, const int messagesPerFrame);
+  void streamData(const int messagesPerFrame);
 
 private:
-  void createAndSendMessage(std::string &rawbuf, size_t frameNumber);
+  void createAndSendMessage(std::string &rawbuf, size_t frameNumber,
+                            const int messagesPerFrame);
   void reportProgress(const float progress);
 
   std::shared_ptr<EventPublisher> m_publisher;

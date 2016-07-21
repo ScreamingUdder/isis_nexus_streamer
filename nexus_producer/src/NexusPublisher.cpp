@@ -28,44 +28,66 @@ NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
 }
 
 /**
- * For a given frame number, reads the data from file and stores it in an
- * EventData object
+ * For a given frame number, reads the data from file and stores them in
+ * messagesPerFrame EventData objects
  *
  * @param frameNumber - the number of the frame for which to construct a message
  * @return - an object containing the data from the specified frame
  */
 std::vector<std::shared_ptr<EventData>>
-NexusPublisher::createMessageData(hsize_t frameNumber, int messagesPerFrame) {
+NexusPublisher::createMessageData(hsize_t frameNumber,
+                                  const int messagesPerFrame) {
+  std::vector<std::shared_ptr<EventData>> eventDataVector;
+
   std::vector<uint32_t> detIds;
   m_fileReader->getEventDetIds(detIds, frameNumber);
   std::vector<uint64_t> tofs;
   m_fileReader->getEventTofs(tofs, frameNumber);
 
-  auto eventData = std::make_shared<EventData>();
-  eventData->setDetId(detIds);
-  eventData->setTof(tofs);
-  eventData->setNumberOfFrames(
-      static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
-  eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
+  uint32_t eventsPerMessage =
+      static_cast<uint32_t>(ceil(static_cast<double>(detIds.size()) /
+                                 static_cast<double>(messagesPerFrame)));
+  for (int messageNumber = 0; messageNumber < messagesPerFrame;
+       messageNumber++) {
 
-  // std::cout << "Creating message: frame " << frameNumber << "/"
-  //          << (m_fileReader->getNumberOfFrames() - 1) << ",";
+    auto upToDetId = detIds.begin() + ((messageNumber + 1) * eventsPerMessage);
+    auto upToTof = tofs.begin() + ((messageNumber + 1) * eventsPerMessage);
 
-  std::vector<std::shared_ptr<EventData>> eventDataVector {eventData};
+    // The last message of the frame will contain any remaining events
+    if (messageNumber == (messagesPerFrame - 1)) {
+      upToDetId = detIds.end();
+      upToTof = tofs.end();
+    }
+
+    std::vector<uint32_t> detIdsCurrentMessage(
+        detIds.begin() + (messageNumber * eventsPerMessage), upToDetId);
+    std::vector<uint64_t> tofsCurrentMessage(
+        tofs.begin() + (messageNumber * eventsPerMessage), upToTof);
+
+    auto eventData = std::make_shared<EventData>();
+    eventData->setDetId(detIdsCurrentMessage);
+    eventData->setTof(tofsCurrentMessage);
+    eventData->setNumberOfFrames(
+        static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
+    eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
+
+    eventDataVector.push_back(eventData);
+  }
+
   return eventDataVector;
 }
 
 /**
  * Start streaming all the data from the file
  */
-void NexusPublisher::streamData() {
+void NexusPublisher::streamData(const int messagesPerFrame) {
   std::string rawbuf;
   // frame numbers run from 0 to numberOfFrames-1
   reportProgress(0.0);
   int64_t totalBytesSent = 0;
   const auto numberOfFrames = m_fileReader->getNumberOfFrames();
   for (size_t frameNumber = 0; frameNumber < numberOfFrames; frameNumber++) {
-    createAndSendMessage(rawbuf, frameNumber);
+    createAndSendMessage(rawbuf, frameNumber, messagesPerFrame);
     reportProgress(static_cast<float>(frameNumber) /
                    static_cast<float>(numberOfFrames));
     totalBytesSent += rawbuf.size();
@@ -84,11 +106,14 @@ void NexusPublisher::streamData() {
  * @param frameNumber - the number of the frame for which data will be sent
  */
 void NexusPublisher::createAndSendMessage(std::string &rawbuf,
-                                          size_t frameNumber) {
-  auto messageData = createMessageData(frameNumber, 1);
-  auto buffer_uptr = messageData[0]->getBufferPointer(rawbuf);
-  m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
-                           messageData[0]->getBufferSize());
+                                          size_t frameNumber,
+                                          const int messagesPerFrame) {
+  auto messageData = createMessageData(frameNumber, messagesPerFrame);
+  for (const auto &message : messageData) {
+    auto buffer_uptr = message->getBufferPointer(rawbuf);
+    m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
+                             message->getBufferSize());
+  }
 }
 
 /**

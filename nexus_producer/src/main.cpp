@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
   auto publisher = std::make_shared<KafkaEventPublisher>();
   NexusPublisher streamer(publisher, broker, topic, filename, quietMode);
-  streamer.streamData();
+  streamer.streamData(1);
 
   return 0;
 }
