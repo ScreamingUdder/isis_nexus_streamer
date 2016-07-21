@@ -18,7 +18,7 @@ public:
   void streamData(const int messagesPerFrame);
 
 private:
-  void createAndSendMessage(std::string &rawbuf, size_t frameNumber,
+  int64_t createAndSendMessage(std::string &rawbuf, size_t frameNumber,
                             const int messagesPerFrame);
   void reportProgress(const float progress);
 

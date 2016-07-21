@@ -87,15 +87,19 @@ void NexusPublisher::streamData(const int messagesPerFrame) {
   int64_t totalBytesSent = 0;
   const auto numberOfFrames = m_fileReader->getNumberOfFrames();
   for (size_t frameNumber = 0; frameNumber < numberOfFrames; frameNumber++) {
-    createAndSendMessage(rawbuf, frameNumber, messagesPerFrame);
+    totalBytesSent +=
+        createAndSendMessage(rawbuf, frameNumber, messagesPerFrame);
     reportProgress(static_cast<float>(frameNumber) /
                    static_cast<float>(numberOfFrames));
-    totalBytesSent += rawbuf.size();
   }
   reportProgress(1.0);
   std::cout << std::endl
             << "Frames sent: " << m_fileReader->getNumberOfFrames() << std::endl
-            << "Bytes sent: " << totalBytesSent << std::endl;
+            << "Bytes sent: " << totalBytesSent << std::endl
+            << "Average message size: "
+            << totalBytesSent / (messagesPerFrame * numberOfFrames * 1000)
+            << " kB"
+            << std::endl;
 }
 
 /**
@@ -105,15 +109,18 @@ void NexusPublisher::streamData(const int messagesPerFrame) {
  * @param rawbuf - a buffer for the message
  * @param frameNumber - the number of the frame for which data will be sent
  */
-void NexusPublisher::createAndSendMessage(std::string &rawbuf,
-                                          size_t frameNumber,
-                                          const int messagesPerFrame) {
+int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
+                                             size_t frameNumber,
+                                             const int messagesPerFrame) {
   auto messageData = createMessageData(frameNumber, messagesPerFrame);
+  int64_t dataSize = 0;
   for (const auto &message : messageData) {
     auto buffer_uptr = message->getBufferPointer(rawbuf);
     m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
                              message->getBufferSize());
+    dataSize += rawbuf.size();
   }
+  return dataSize;
 }
 
 /**
