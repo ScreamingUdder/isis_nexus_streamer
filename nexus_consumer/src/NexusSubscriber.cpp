@@ -20,7 +20,7 @@ void NexusSubscriber::listen() {
   auto receivedData = std::make_shared<EventData>();
   int numberOfFramesReceived = 0; // to check no messages lost
   int32_t previousFrameNumber = std::numeric_limits<int32_t>::max();
-  int messagesPerFrame = -2;
+  int messagesPerFrame = 1;
 
   reportProgress(0.0);
 
@@ -35,7 +35,7 @@ void NexusSubscriber::listen() {
     numberOfFrames = receivedData->getNumberOfFrames();
     frameNumber = receivedData->getFrameNumber();
     if (frameNumber != previousFrameNumber) {
-      if (frameNumber == 1 && messagesPerFrame == -2)
+      if (frameNumber == 1 && messagesPerFrame == 1)
         messagesPerFrame = numberOfmessagesReceived;
       numberOfFramesReceived++;
       reportProgress(static_cast<float>(frameNumber) /
