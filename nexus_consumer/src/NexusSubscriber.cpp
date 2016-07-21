@@ -15,27 +15,41 @@ void NexusSubscriber::listen() {
   int32_t frameNumber = 0;
   int32_t numberOfFrames = 2;
   int64_t totalBytesReceived = 0;
+  int32_t numberOfmessagesReceived = 0;
   std::string message;
   auto receivedData = std::make_shared<EventData>();
   int numberOfFramesReceived = 0; // to check no messages lost
-  // frame numbers run from 0 to numberOfFrames-1
+  int32_t previousFrameNumber = std::numeric_limits<int32_t>::max();
+  int messagesPerFrame = -2;
+
   reportProgress(0.0);
-  while (frameNumber < (numberOfFrames - 1)) {
+
+  // frame numbers run from 0 to numberOfFrames-1
+  while ((frameNumber < (numberOfFrames - 1)) ||
+         (numberOfmessagesReceived % messagesPerFrame) != 0) {
     if (!(m_subscriber->listenForMessage(message)))
       continue;
+
     decodeMessage(receivedData, message);
     totalBytesReceived += message.size();
-    frameNumber = receivedData->getFrameNumber();
     numberOfFrames = receivedData->getNumberOfFrames();
-    numberOfFramesReceived++;
-    reportProgress(static_cast<float>(frameNumber) /
-                   static_cast<float>(numberOfFrames));
+    frameNumber = receivedData->getFrameNumber();
+    if (frameNumber != previousFrameNumber) {
+      if (frameNumber == 1 && messagesPerFrame == -2)
+        messagesPerFrame = numberOfmessagesReceived;
+      numberOfFramesReceived++;
+      reportProgress(static_cast<float>(frameNumber) /
+                     static_cast<float>(numberOfFrames));
+    }
+    previousFrameNumber = frameNumber;
+    numberOfmessagesReceived++;
   }
   reportProgress(1.0);
   std::cout << std::endl
-            << "Frames received: " << numberOfFramesReceived
-            << std::endl
-            << "Bytes received: " << totalBytesReceived << std::endl;
+            << "Frames received: " << numberOfFramesReceived << std::endl
+            << "Bytes received: " << totalBytesReceived << std::endl
+            << "Number of messages received: " << numberOfmessagesReceived
+            << std::endl;
 }
 
 void NexusSubscriber::decodeMessage(std::shared_ptr<EventData> eventData,
