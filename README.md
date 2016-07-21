@@ -4,7 +4,7 @@
 Stream event data from a NeXus file from RAL/ISIS using Apache Kafka. A producer and a consumer client are included. Each message sent over the wire consists of a single frame of event mode data.
 
 ## Dependencies
-Currently requires having `librdkafka` and the HDF5 C++ library installed.
+Currently requires having `librdkafka` and the HDF5 C++ library installed. If `tcmalloc` is available then it will be used, but it is not a requirement.
 
 `Google Test` and `Google Mock` are used for unit testing but are not required to be installed; CMake will download and build them at configure-time.
 

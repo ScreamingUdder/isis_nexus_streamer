@@ -8,6 +8,7 @@ set(CMAKE_MODULE_PATH
 
 find_package(HDF5 COMPONENTS CXX HL REQUIRED)
 find_package(LibRDKafka)
+find_package(Tcmalloc)
 
 include(CTest)
 enable_testing()
@@ -18,6 +19,19 @@ option(COVERALLS "Generate coveralls data" OFF)
 if (COVERALLS)
     include(Coveralls)
     coveralls_turn_on_coverage()
+endif()
+
+#####################
+## TCMalloc        ##
+#####################
+if (TCMALLOC_FOUND)
+    macro (add_executable _name)
+        # invoke built-in add_executable
+        _add_executable(${ARGV})
+        if (TARGET ${_name})
+            target_link_libraries(${_name} tcmalloc_minimal)
+        endif()
+    endmacro()
 endif()
 
 #####################
