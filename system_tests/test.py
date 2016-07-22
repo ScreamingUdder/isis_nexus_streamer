@@ -52,6 +52,7 @@ def main():
 
     topic_name = "topic_system_test"
     broker = "localhost"
+    jmxhosts = ["localhost:9990", "localhost:9991", "localhost:9992"]
     #datafile = "SANS_test.nxs"
     datafile = "WISH00034509_uncompressed.hdf5"
 
@@ -70,6 +71,7 @@ def main():
         print("Using real cluster")
         repo_dir = ""
         broker = "sakura"
+        jmxhosts = ["sakura:"+args.jmxport, "hinata:"+args.jmxport]
 
     # Start up the virtual cluster
     with test_utils.Cluster(repo_dir):
@@ -102,10 +104,11 @@ def main():
         # Collect metrics from broker
         print("Collecting metrics from broker...")
         with test_utils.cd("system_tests"):
-            jmx = test_utils.JmxMetrics(broker + ":" + args.jmxport)
-            # Wait 60 seconds, then get the average rates from last minute
-            time.sleep(60)
-            print(jmx.get_metric("BrokerTopicMetrics", "BytesInPerSec", "OneMinuteRate"))
+            # Wait 110 seconds, then get the average rates from last minute
+            time.sleep(110)
+            for host in jmxhosts:
+                jmx = test_utils.JmxMetrics(host)
+                print(jmx.get_metric("BrokerTopicMetrics", "BytesInPerSec", topic_name, "OneMinuteRate"))
         print("...done collecting metrics.")
 
         # Wait for the consumer subprocess to complete
