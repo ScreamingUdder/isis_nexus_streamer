@@ -165,3 +165,5 @@ find_package(PythonInterp REQUIRED)
 set(system_test_args )
 add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data -p -j 9997
         COMMENT "Executing system tests..." VERBATIM)
+add_custom_target(system_test_virtual COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data
+        COMMENT "Executing system tests..." VERBATIM)
