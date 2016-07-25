@@ -143,10 +143,20 @@ endif ()
 #####################
 
 file(COPY ${PROJECT_SOURCE_DIR}/system_tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Download jmxterm and kafka binaries to use for collecting metrics
+# if the file already exists with the correct checksum then it won't be redownloaded
 file(DOWNLOAD http://downloads.sourceforge.net/cyclops-group/jmxterm-1.0-alpha-4-uber.jar
         ${CMAKE_CURRENT_BINARY_DIR}/system_tests/jmxterm.jar
         TIMEOUT 30
         EXPECTED_MD5 f3c307163673d9f70c27b3f440df9dd4)
+file(DOWNLOAD http://mirror.ox.ac.uk/sites/rsync.apache.org/kafka/0.9.0.1/kafka_2.11-0.9.0.1.tgz
+        ${CMAKE_CURRENT_BINARY_DIR}/system_tests/kafka_2.11-0.9.0.1.tgz
+        TIMEOUT 30
+        EXPECTED_MD5 b71e5cbc78165c1ca483279c27402663)
+execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_BINARY_DIR}/system_tests/kafka_2.11-0.9.0.1.tgz
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/system_tests
+)
 
 find_package(PythonInterp REQUIRED)
 set(system_test_args )
