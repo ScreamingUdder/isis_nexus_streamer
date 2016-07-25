@@ -24,6 +24,8 @@ endif()
 #####################
 ## TCMalloc        ##
 #####################
+
+# if tcmalloc is available then link all executables against it
 if (TCMALLOC_FOUND)
     macro (add_executable _name)
         # invoke built-in add_executable
@@ -53,6 +55,7 @@ endif(DOXYGEN_FOUND)
 ## Get gtest       ##
 #####################
 
+# download and  build gtest and gmock
 if (CMAKE_VERSION VERSION_LESS 3.2)
     set(UPDATE_DISCONNECTED_IF_AVAILABLE "")
 else()
