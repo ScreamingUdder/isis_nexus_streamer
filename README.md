@@ -27,3 +27,5 @@ The CMake target for the system tests is `system_test`. Running the tests has th
 - JRE (`apt-get install default-jre`)
 - gitpython (`pip install gitpython`)
 - python-vagrant (`pip install python-vagrant`)
+- numpy (`pip install numpy`)
+- matplotlib (`pip install matplotlib`)

@@ -5,6 +5,7 @@ import sys
 from git import Repo
 import time
 import argparse
+import matplotlib.pyplot as pl
 
 """
 Launch with:
@@ -94,7 +95,7 @@ def main():
         print("Start collecting metrics from broker...")
         jmxtool_broker = test_utils.JmxTool(build_dir, jmxhosts[1], topic=topic_name)
         jmxtool_cpu = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="cpu")
-        #jmxtool_memory = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="memory")
+        # jmxtool_memory = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="memory")
 
         # Start the stopwatch
         t0 = time.time()
@@ -140,12 +141,11 @@ def main():
         total_time = t1 - t0
         print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
 
-        # Finish collecting metrics
-        # TODO plot metrics rather than print them
-        print("Output from JmxTool:")
-        print(jmxtool_broker.get_output())
-        print(jmxtool_cpu.get_output())
-        #print(jmxtool_memory.get_output())
+        # Finish collecting metrics and plot them
+        test_utils.plot_metrics(jmxtool_cpu.get_output(), ylabel="CPU use [%]", yscale=100)
+        test_utils.plot_metrics(jmxtool_broker.get_output(), ylabel="broker in and out, 1 minute average [Mbps]",
+                                yscale=8e-6)
+        # print(jmxtool_memory.get_output())
 
         if not args.producer_only:
             check_all_received(producer_process.output, consumer_process.output)
@@ -160,3 +160,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    pl.show()

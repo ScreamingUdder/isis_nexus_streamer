@@ -2,6 +2,22 @@ import os
 import subprocess
 import pexpect
 import vagrant
+import matplotlib.pyplot as pl
+import numpy as np
+import csv
+
+
+def plot_metrics(results, ylabel="", yscale=1):
+    pl.figure()
+    reader = csv.reader(results.splitlines())
+    data = []
+    for row in reader:
+        data.append(row)
+    data = np.array(data)
+    pl.plot((data[1:, 0].astype(float)-data[1, 0].astype(float))*1e-3, data[1:, 1:].astype(float)*yscale)
+    pl.xlabel("time [s]")
+    pl.ylabel(ylabel)
+    pl.title("Consumer and producer are started at around time 0")
 
 
 class Subprocess:
