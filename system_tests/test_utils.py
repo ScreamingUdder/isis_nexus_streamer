@@ -14,7 +14,7 @@ def plot_metrics(results, ylabel="", yscale=1):
     for row in reader:
         data.append(row)
     data = np.array(data)
-    pl.plot((data[1:, 0].astype(float)-data[1, 0].astype(float))*1e-3, data[1:, 1:].astype(float)*yscale)
+    pl.plot((data[1:, 0].astype(float) - data[1, 0].astype(float)) * 1e-3, data[1:, 1:].astype(float) * yscale)
     pl.xlabel("time [s]")
     pl.ylabel(ylabel)
     pl.title("Consumer and producer are started at around time 0")
@@ -148,24 +148,26 @@ class JmxTool:
 
         if metrics is "cpu":
             mbean1 = "'java.lang:type=OperatingSystem' "
-            mbean2 = mbean1
-            attributes = "SystemCpuLoad ProcessCpuLoad "
+            mbean2 = None
+            attributes = "ProcessCpuLoad "  # SystemCpuLoad
         elif metrics is "memory":
             mbean1 = "'java.lang:type=Memory' "
-            mbean2 = mbean1
+            mbean2 = None
             attributes = "HeapMemoryUsage "
 
         bash_script = "bash " + os.path.join(build_dir, "system_tests", "kafka_2.11-0.9.0.1", "bin",
                                              "kafka-run-class.sh")
 
         command = bash_script + (" kafka.tools.JmxTool "
-                                 "--object-name " + mbean1 +
-                                 "--object-name " + mbean2 +
-                                 "--jmx-url "
-                                 "service:jmx:rmi:///jndi/rmi://" + host +
-                                 "/jmxrmi "
-                                 "--attributes " + attributes +
-                                 "--reporting-interval 2000")
+                                 "--object-name " + mbean1)
+        if mbean2:
+            command = command + "--object-name " + mbean2
+
+        command = (command + "--jmx-url "
+                             "service:jmx:rmi:///jndi/rmi://" + host +
+                   "/jmxrmi "
+                   "--attributes " + attributes +
+                   "--reporting-interval 2000")
         self.jmxtool = pexpect.spawn(command)
 
     def get_output(self):
