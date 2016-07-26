@@ -92,15 +92,9 @@ def main():
         build_dir = os.path.join(os.getcwd())
 
         print("Start collecting metrics from broker...")
-        jmxtool = test_utils.JmxTool("bash " +
-                                     os.path.join(build_dir, "system_tests", "kafka_2.11-0.9.0.1", "bin",
-                                                  "kafka-run-class.sh") +
-                                     " kafka.tools.JmxTool " +
-                                     "--object-name " + "'kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=" + topic_name + "' " +
-                                     "--object-name " + "'kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=" + topic_name + "' " +
-                                     "--jmx-url " + "service:jmx:rmi:///jndi/rmi://" + jmxhosts[1] + "/jmxrmi " +
-                                     "--attributes " + "OneMinuteRate " +
-                                     "--reporting-interval " + "2000")
+        jmxtool_broker = test_utils.JmxTool(build_dir, jmxhosts[1], topic=topic_name)
+        jmxtool_cpu = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="cpu")
+        #jmxtool_memory = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="memory")
 
         # Start the stopwatch
         t0 = time.time()
@@ -147,8 +141,11 @@ def main():
         print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
 
         # Finish collecting metrics
+        # TODO plot metrics rather than print them
         print("Output from JmxTool:")
-        print(jmxtool.get_output())
+        print(jmxtool_broker.get_output())
+        print(jmxtool_cpu.get_output())
+        #print(jmxtool_memory.get_output())
 
         if not args.producer_only:
             check_all_received(producer_process.output, consumer_process.output)
