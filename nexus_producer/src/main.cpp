@@ -17,8 +17,9 @@ int main(int argc, char **argv) {
   std::string broker = "sakura";
   std::string topic = "test_topic";
   bool quietMode = false;
+  int messagesPerFrame = 1;
 
-  while ((opt = getopt(argc, argv, "f:b:t:q")) != -1) {
+  while ((opt = getopt(argc, argv, "f:b:t:m:q")) != -1) {
     switch (opt) {
 
     case 'f':
@@ -31,6 +32,10 @@ int main(int argc, char **argv) {
 
     case 't':
       topic = optarg;
+      break;
+
+    case 'm':
+      messagesPerFrame = std::stoi(optarg);
       break;
 
     case 'q':
@@ -46,7 +51,9 @@ int main(int argc, char **argv) {
   usage:
     fprintf(stderr, "Usage: %s -f <filepath> "
                     "[-b <host:port>] "
-                    "[-t <topic_name>]"
+                    "[-t <topic_name>] "
+                    "[-m <messages_per_frame>] "
+                    "[-q] "
                     "\n",
             argv[0]);
     exit(1);
@@ -54,7 +61,7 @@ int main(int argc, char **argv) {
 
   auto publisher = std::make_shared<KafkaEventPublisher>();
   NexusPublisher streamer(publisher, broker, topic, filename, quietMode);
-  streamer.streamData();
+  streamer.streamData(messagesPerFrame);
 
   return 0;
 }

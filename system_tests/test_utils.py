@@ -1,6 +1,7 @@
 import os
 import subprocess
 import pexpect
+import vagrant
 
 
 class Subprocess:
@@ -40,12 +41,12 @@ class Subprocess:
         # communicate returns a tuple with the file object for the child's
         # output.
         self.output = self.p.communicate()[0]
-        self._return_code = self.p.returncode
+        _return_code = self.p.returncode
 
-        if self._return_code < 0:
+        if _return_code < 0:
             self.terminated_by_signal = True
             self.exited = False
-            self.signal = -self._return_code
+            self.signal = -_return_code
         else:
             self.terminated_by_signal = False
             self.exited = True
@@ -67,6 +68,28 @@ class cd:
         os.chdir(self.saved_path)
 
 
+class Cluster:
+    """
+    Manage the virtual cluster
+    """
+
+    def __init__(self, repo_dir):
+        self.repo_dir = repo_dir
+
+    def __enter__(self):
+        if self.repo_dir:
+            with cd(self.repo_dir):
+                v = vagrant.Vagrant(quiet_stdout=False)
+                v.up()
+                print("...virtual cluster is up.")
+
+    def __exit__(self, etype, value, traceback):
+        if self.repo_dir:
+            with cd(self.repo_dir):
+                v = vagrant.Vagrant(quiet_stdout=False)
+                v.halt()
+
+
 class JmxMetrics:
     """
     Uses JMXTerm to get metrics from the Kafka broker
@@ -84,12 +107,54 @@ class JmxMetrics:
         self.jmxterm.expect_exact("#Connection to " + connection + " is opened", connection_timeout)
 
     def get_metric(self, bean_type, bean_name, bean_value):
-        self.jmxterm.sendline("get -b kafka.server:type=" + bean_type + ",name=" + bean_name + " " + bean_value)
+        request = "get -b kafka.server:type=" + bean_type + ",name=" + bean_name + " " + bean_value
+        self.jmxterm.sendline(request)
         response_lines = [self.jmxterm.readline(), self.jmxterm.readline()]
         while response_lines and response_lines[-1] != "\r\n":
-            response_lines.append(self.jmxterm.readline())
+            try:
+                response_lines.append(self.jmxterm.readline())
+            except pexpect.exceptions.TIMEOUT:
+                print("Response to metric value request timed out.")
+                return response_lines
 
         return response_lines
 
     def __del__(self):
         self.jmxterm.sendline("quit")
+        self.jmxterm.expect_exact("#bye")
+
+
+class JmxTool:
+    def __init__(self, build_dir, host, topic="system_test_topic", metrics="broker"):
+        mbean1 = "'kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=" + topic + "' "
+        mbean2 = "'kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=" + topic + "' "
+        attributes = "OneMinuteRate "
+
+        if metrics is "cpu":
+            mbean1 = "'java.lang:type=OperatingSystem' "
+            mbean2 = mbean1
+            attributes = "SystemCpuLoad ProcessCpuLoad "
+        elif metrics is "memory":
+            mbean1 = "'java.lang:type=Memory' "
+            mbean2 = mbean1
+            attributes = "HeapMemoryUsage "
+
+        bash_script = "bash " + os.path.join(build_dir, "system_tests", "kafka_2.11-0.9.0.1", "bin",
+                                             "kafka-run-class.sh")
+
+        command = bash_script + (" kafka.tools.JmxTool "
+                                 "--object-name " + mbean1 +
+                                 "--object-name " + mbean2 +
+                                 "--jmx-url "
+                                 "service:jmx:rmi:///jndi/rmi://" + host +
+                                 "/jmxrmi "
+                                 "--attributes " + attributes +
+                                 "--reporting-interval 2000")
+        self.jmxtool = pexpect.spawn(command)
+
+    def get_output(self):
+        # Get all output up to a maximum of 1048576 characters
+        return self.jmxtool.read_nonblocking(size=1048576)
+
+    def __del__(self):
+        self.jmxtool.close(force=True)

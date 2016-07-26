@@ -13,11 +13,13 @@ public:
                  const std::string &brokerAddress,
                  const std::string &streamName, const std::string &filename,
                  const bool quietMode);
-  std::shared_ptr<EventData> createMessageData(hsize_t frameNumber);
-  void streamData();
+  std::vector<std::shared_ptr<EventData>>
+  createMessageData(hsize_t frameNumber, const int messagesPerFrame);
+  void streamData(const int messagesPerFrame);
 
 private:
-  void createAndSendMessage(std::string &rawbuf, size_t frameNumber);
+  int64_t createAndSendMessage(std::string &rawbuf, size_t frameNumber,
+                            const int messagesPerFrame);
   void reportProgress(const float progress);
 
   std::shared_ptr<EventPublisher> m_publisher;
