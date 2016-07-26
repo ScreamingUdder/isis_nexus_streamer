@@ -168,11 +168,18 @@ class JmxTool:
                    "/jmxrmi "
                    "--attributes " + attributes +
                    "--reporting-interval 2000")
+        print(command)
         self.jmxtool = pexpect.spawn(command)
 
     def get_output(self):
-        # Get all output up to a maximum of 1048576 characters
-        return self.jmxtool.read_nonblocking(size=1048576)
+        # Get all output
+        result = ""
+        try:
+            for n in range(1, 5):
+                result = result + self.jmxtool.read_nonblocking(size=16777216)
+        except:
+            print("Error reading from JmxTool, buffer too small?")
+        return result
 
     def __del__(self):
         self.jmxtool.close(force=True)

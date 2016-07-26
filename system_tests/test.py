@@ -143,7 +143,9 @@ def main():
 
         # Finish collecting metrics and plot them
         test_utils.plot_metrics(jmxtool_cpu.get_output(), ylabel="CPU use [%]", yscale=100)
-        test_utils.plot_metrics(jmxtool_broker.get_output(), ylabel="broker in and out, 1 minute average [Mbps]",
+        results = jmxtool_broker.get_output()
+        print(results)
+        test_utils.plot_metrics(results, ylabel="broker in and out, 1 minute average [Mbps]",
                                 yscale=8e-6)
         # print(jmxtool_memory.get_output())
 
