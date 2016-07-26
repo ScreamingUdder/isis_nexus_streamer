@@ -41,12 +41,12 @@ class Subprocess:
         # communicate returns a tuple with the file object for the child's
         # output.
         self.output = self.p.communicate()[0]
-        self._return_code = self.p.returncode
+        _return_code = self.p.returncode
 
-        if self._return_code < 0:
+        if _return_code < 0:
             self.terminated_by_signal = True
             self.exited = False
-            self.signal = -self._return_code
+            self.signal = -_return_code
         else:
             self.terminated_by_signal = False
             self.exited = True
@@ -122,3 +122,15 @@ class JmxMetrics:
     def __del__(self):
         self.jmxterm.sendline("quit")
         self.jmxterm.expect_exact("#bye")
+
+
+class JmxTool:
+    def __init__(self, command):
+        self.jmxtool = pexpect.spawn(command)
+
+    def get_output(self):
+        # Get all output up to a maximum of 1048576 characters
+        return self.jmxtool.read_nonblocking(size=1048576)
+
+    def __del__(self):
+        self.jmxtool.close(force=True)

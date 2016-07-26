@@ -36,8 +36,18 @@ def check_all_received(producer_process_output, consumer_process_output):
         sys.exit()
 
 
-def main():
+def get_single_metric(jmxhosts):
+    print("Collecting metrics from broker...")
+    with test_utils.cd("system_tests"):
+        # Wait 90 seconds, then get the average rates from last minute
+        time.sleep(90)
+        for host in jmxhosts:
+            jmx = test_utils.JmxMetrics(host)
+            print(jmx.get_metric("BrokerTopicMetrics", "BytesInPerSec", "OneMinuteRate"))
+    print("...done collecting metrics.")
 
+
+def main():
     parser = argparse.ArgumentParser(description='Run system tests.')
     parser.add_argument('data_path', type=str,
                         help='the full path of the test data directory')
@@ -45,15 +55,17 @@ def main():
                         help='use p flag to stream data across physical cluster instead of virtual cluster')
     parser.add_argument('-j', '--jmxport', type=str, default="9990",
                         help='specify the port on the broker for jmx')
+    parser.add_argument('-g', '--producer_only', action='store_true',
+                        help='use g flag to launch the producer but not consumer')
     args = parser.parse_args()
 
     # Redirect stdout to a system test output file
-    #sys.stdout = open('system_test_output.txt', 'w')
+    # sys.stdout = open('system_test_output.txt', 'w')
 
     topic_name = "topic_system_test"
     broker = "localhost"
     jmxhosts = ["localhost:9990", "localhost:9991", "localhost:9992"]
-    #datafile = "SANS_test.nxs"
+    # datafile = "SANS_test.nxs"
     datafile = "WISH00034509_uncompressed.hdf5"
 
     repo_dir = "ansible-kafka-centos"
@@ -71,23 +83,37 @@ def main():
         print("Using real cluster")
         repo_dir = ""
         broker = "sakura"
-        jmxhosts = ["sakura:"+args.jmxport, "hinata:"+args.jmxport]
+        jmxhosts = ["sakura:" + args.jmxport, "hinata:" + args.jmxport]
+
+    # Get kafka
 
     # Start up the virtual cluster
     with test_utils.Cluster(repo_dir):
         build_dir = os.path.join(os.getcwd())
 
+        print("Start collecting metrics from broker...")
+        jmxtool = test_utils.JmxTool("bash " +
+                                     os.path.join(build_dir, "system_tests", "kafka_2.11-0.9.0.1", "bin",
+                                                  "kafka-run-class.sh") +
+                                     " kafka.tools.JmxTool " +
+                                     "--object-name " + "'kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=" + topic_name + "' " +
+                                     "--object-name " + "'kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=" + topic_name + "' " +
+                                     "--jmx-url " + "service:jmx:rmi:///jndi/rmi://" + jmxhosts[1] + "/jmxrmi " +
+                                     "--attributes " + "OneMinuteRate " +
+                                     "--reporting-interval " + "2000")
+
         # Start the stopwatch
         t0 = time.time()
 
         # Launch the consumer
-        print("Launching consumer...", end="")
-        consumer_process = test_utils.Subprocess(
-            [os.path.join(build_dir, "nexus_consumer", "main_nexusSubscriber"),
-             "-b", broker,
-             "-t", topic_name,
-             "-q"])
-        print(" done.")
+        if not args.producer_only:
+            print("Launching consumer...", end="")
+            consumer_process = test_utils.Subprocess(
+                [os.path.join(build_dir, "nexus_consumer", "main_nexusSubscriber"),
+                 "-b", broker,
+                 "-t", topic_name,
+                 "-q"])
+            print(" done.")
 
         time.sleep(2)
 
@@ -98,34 +124,34 @@ def main():
              "-f", os.path.join(args.data_path, datafile),
              "-b", broker,
              "-t", topic_name,
+             "-m", "100",
              "-q"])
         print(" done.")
 
-        # Collect metrics from broker
-        print("Collecting metrics from broker...")
-        with test_utils.cd("system_tests"):
-            # Wait 110 seconds, then get the average rates from last minute
-            time.sleep(110)
-            for host in jmxhosts:
-                jmx = test_utils.JmxMetrics(host)
-                print(jmx.get_metric("BrokerTopicMetrics", "BytesInPerSec", topic_name, "OneMinuteRate"))
-        print("...done collecting metrics.")
+        get_single_metric(jmxhosts)
 
         # Wait for the consumer subprocess to complete
-        print("Waiting for consumer to finish...")
-        consumer_process.wait()
-        print("...consumer process completed.")
-        # Stop the stopwatch
-        t1 = time.time()
-        total_time = t1 - t0
-        print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
+        if not args.producer_only:
+            print("Waiting for consumer to finish...")
+            consumer_process.wait()
+            print("...consumer process completed.")
 
         # Make sure the producer also finished
         print("Checking producer has finished...")
         producer_process.wait()
         print("...producer process completed.")
 
-        check_all_received(producer_process.output, consumer_process.output)
+        # Stop the stopwatch
+        t1 = time.time()
+        total_time = t1 - t0
+        print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
+
+        # Finish collecting metrics
+        print("Output from JmxTool:")
+        print(jmxtool.get_output())
+
+        if not args.producer_only:
+            check_all_received(producer_process.output, consumer_process.output)
 
         # Shut down the virtual cluster
         print("Shutting down virtual cluster...")
