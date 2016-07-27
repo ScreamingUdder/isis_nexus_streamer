@@ -84,7 +84,7 @@ def main():
         print("Using real cluster")
         repo_dir = ""
         broker = "sakura"
-        jmxhosts = ["sakura:" + args.jmxport, "hinata:" + args.jmxport]
+        jmxhosts = ["sakura:" + args.jmxport, "hinata:" + args.jmxport, "tenten:" + args.jmxport]
 
     # Get kafka
 
@@ -93,9 +93,12 @@ def main():
         build_dir = os.path.join(os.getcwd())
 
         print("Start collecting metrics from broker...")
-        jmxtool_broker = test_utils.JmxTool(build_dir, jmxhosts[1], topic=topic_name)
-        jmxtool_cpu = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="cpu")
-        # jmxtool_memory = test_utils.JmxTool(build_dir, jmxhosts[1], metrics="memory")
+        jmxtool_broker = {}
+        jmxtool_cpu = {}
+        for host in jmxhosts:
+            jmxtool_broker[host] = test_utils.JmxTool(build_dir, host, topic=topic_name)
+            jmxtool_cpu[host] = test_utils.JmxTool(build_dir, host, metrics="cpu")
+            # jmxtool_memory[host] = test_utils.JmxTool(build_dir, host, metrics="memory")
 
         # Start the stopwatch
         t0 = time.time()
@@ -142,12 +145,17 @@ def main():
         print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
 
         # Finish collecting metrics and plot them
-        test_utils.plot_metrics(jmxtool_cpu.get_output(), ylabel="CPU use [%]", yscale=100)
-        results = jmxtool_broker.get_output()
-        print(results)
-        test_utils.plot_metrics(results, ylabel="broker in and out, 1 minute average [Mbps]",
-                                yscale=8e-6)
-        # print(jmxtool_memory.get_output())
+        for host in jmxhosts:
+            test_utils.plot_metrics(jmxtool_cpu[host].get_output(), ylabel="CPU use [%]", title=host, yscale=100)
+            try:
+                test_utils.plot_metrics(jmxtool_broker[host].get_output(),
+                                        ylabel="broker in and out, 1 minute average [Mbps]",
+                                        title=host,
+                                        yscale=8e-6)
+            except IndexError:
+                print(
+                    "Error plotting metric for " + host +
+                    ", probably the topic (" + topic_name + ") does not exist on this broker")
 
         if not args.producer_only:
             check_all_received(producer_process.output, consumer_process.output)

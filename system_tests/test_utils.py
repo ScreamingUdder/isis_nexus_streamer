@@ -7,7 +7,7 @@ import numpy as np
 import csv
 
 
-def plot_metrics(results, ylabel="", yscale=1):
+def plot_metrics(results, ylabel="", title="", yscale=1):
     pl.figure()
     reader = csv.reader(results.splitlines())
     data = []
@@ -17,7 +17,7 @@ def plot_metrics(results, ylabel="", yscale=1):
     pl.plot((data[1:, 0].astype(float) - data[1, 0].astype(float)) * 1e-3, data[1:, 1:].astype(float) * yscale)
     pl.xlabel("time [s]")
     pl.ylabel(ylabel)
-    pl.title("Consumer and producer are started at around time 0")
+    pl.title(title)
 
 
 class Subprocess:
@@ -175,8 +175,8 @@ class JmxTool:
         # Get all output
         result = ""
         try:
-            for n in range(1, 5):
-                result = result + self.jmxtool.read_nonblocking(size=16777216)
+            for n in range(1, 10):
+                result = result + self.jmxtool.read_nonblocking(size=16777216, timeout=2)
         except:
             print("Error reading from JmxTool, buffer too small?")
         return result
