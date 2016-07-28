@@ -52,17 +52,26 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
  * @param messageSize - the size of the message in bytes
  */
 void KafkaEventPublisher::sendMessage(char *buf, size_t messageSize) {
-  // using -1 as the partition number will cause rdkafka to distribute messages
-  // across multiple partitions to load balance (if the topic has multiple
-  // partitions)
-  auto resp = m_producer_ptr->produce(
-      m_topic_ptr.get(), -1, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
-      NULL, NULL);
 
-  if (resp != RdKafka::ERR_NO_ERROR) {
-    std::cerr << "% Produce failed: " << RdKafka::err2str(resp) << std::endl;
-    std::cerr << "message size was " << messageSize << std::endl;
-  }
+  RdKafka::ErrorCode resp;
+  do {
+    // using -1 as the partition number will cause rdkafka to distribute messages
+    // across multiple partitions to load balance (if the topic has multiple
+    // partitions)
+    resp = m_producer_ptr->produce(
+        m_topic_ptr.get(), -1, RdKafka::Producer::RK_MSG_COPY, buf, messageSize,
+        NULL, NULL);
 
-  m_producer_ptr->poll(0);
+    if (resp != RdKafka::ERR_NO_ERROR) {
+      if (resp != RdKafka::ERR__QUEUE_FULL) {
+        std::cerr << "% Produce failed: " << RdKafka::err2str(resp) << std::endl;
+        std::cerr << "message size was " << messageSize << std::endl;
+      }
+      // This blocking poll call should give Kafka some time for the problem to be resolved
+      // for example for messages to leave the queue if it is full
+      m_producer_ptr->poll(1000);
+    } else {
+      m_producer_ptr->poll(0);
+    }
+  } while (resp == RdKafka::ERR__QUEUE_FULL);
 }
