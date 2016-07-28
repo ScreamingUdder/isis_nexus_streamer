@@ -101,15 +101,13 @@ bool NexusFileReader::getEventDetIds(std::vector<uint32_t> &detIds,
   auto dataspace = dataset.getSpace();
   dataspace.selectHyperslab(H5S_SELECT_SET, count, offset, stride, block);
 
-  uint32_t *detIdsArray = new uint32_t[numberOfEventsInFrame];
+  detIds.resize(numberOfEventsInFrame);
 
   hsize_t dimsm[1];
   dimsm[0] = numberOfEventsInFrame;
   DataSpace memspace(1, dimsm);
 
-  dataset.read(detIdsArray, PredType::NATIVE_UINT32, memspace, dataspace);
-  detIds.insert(detIds.end(), &detIdsArray[0],
-                &detIdsArray[numberOfEventsInFrame]);
+  dataset.read(detIds.data(), PredType::NATIVE_UINT32, memspace, dataspace);
 
   return true;
 }
@@ -139,20 +137,19 @@ bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
   auto dataspace = dataset.getSpace();
   dataspace.selectHyperslab(H5S_SELECT_SET, count, offset, stride, block);
 
-  double *timeOffsetArray = new double[numberOfEventsInFrame];
+  std::vector<double> timeOffsetArray(numberOfEventsInFrame);
 
   hsize_t dimsm[1];
   dimsm[0] = numberOfEventsInFrame;
   DataSpace memspace(1, dimsm);
 
-  dataset.read(timeOffsetArray, PredType::NATIVE_DOUBLE, memspace, dataspace);
+  dataset.read(timeOffsetArray.data(), PredType::NATIVE_DOUBLE, memspace, dataspace);
 
   tofs.resize(numberOfEventsInFrame);
 
   for (size_t tofIndex = 0; tofIndex < numberOfEventsInFrame; tofIndex++) {
     tofs[tofIndex] = static_cast<uint64_t>((timeOffsetArray[tofIndex] * 1e3));
   }
-  delete[] timeOffsetArray;
 
   return true;
 }
