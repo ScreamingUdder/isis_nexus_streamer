@@ -20,6 +20,7 @@ set( TEST_FILES
 include_directories(
         ${HDF5_INCLUDE_DIRS}
         ${LibRDKafka_INCLUDE_DIR}
+        ${PROJECT_SOURCE_DIR}/../compatibility/include
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(nexusFileReader_lib ${PROJECT_SOURCE_DIR}/src/NexusFileReader.cpp)

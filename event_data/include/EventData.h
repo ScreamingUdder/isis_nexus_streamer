@@ -4,9 +4,10 @@
 #include <cstdint>
 #include <vector>
 
+#include "Compatibility.h"
 #include "eventDataFlatBuffer_generated.h"
 
-class EventData {
+class DLLExport EventData {
 
 public:
   // Construct a new empty EventData object

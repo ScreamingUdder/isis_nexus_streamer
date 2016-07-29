@@ -4,9 +4,10 @@
 #include <librdkafka/rdkafkacpp.h>
 #include <memory>
 
+#include "Compatibility.h"
 #include "EventPublisher.h"
 
-class KafkaEventPublisher : public EventPublisher {
+class DLLExport KafkaEventPublisher : public EventPublisher {
 public:
   KafkaEventPublisher() {};
   KafkaEventPublisher(const std::string &compression) : m_compression(compression) {};

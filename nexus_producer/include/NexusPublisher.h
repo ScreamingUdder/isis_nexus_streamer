@@ -4,10 +4,11 @@
 #include <memory>
 
 #include "../../event_data/include/EventData.h"
+#include "Compatibility.h"
 #include "EventPublisher.h"
 #include "NexusFileReader.h"
 
-class NexusPublisher {
+class DLLExport NexusPublisher {
 public:
   NexusPublisher(std::shared_ptr<EventPublisher> publisher,
                  const std::string &brokerAddress,

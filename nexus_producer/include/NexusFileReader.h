@@ -5,10 +5,12 @@
 #include <memory>
 #include <vector>
 
+#include "Compatibility.h"
+
 // a typedef for our managed H5File pointer
 typedef std::shared_ptr<H5::H5File> H5FilePtr;
 
-class NexusFileReader {
+class DLLExport NexusFileReader {
 public:
   NexusFileReader(const std::string &filename);
 
