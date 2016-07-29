@@ -28,7 +28,7 @@ TEST(EventDataTest, get_buffer_pointer) {
   EXPECT_NO_THROW(events.getBufferPointer(rawbuf));
 
   auto receivedEventData =
-      EventData(rawbuf.c_str());
+      EventData(rawbuf.c_str(), rawbuf.size());
   EXPECT_EQ(4, receivedEventData.getNumberOfEvents());
   EXPECT_EQ(detIds, receivedEventData.getDetId());
   EXPECT_EQ(tofs, receivedEventData.getTof());
@@ -47,5 +47,9 @@ TEST(EventDataTest, get_buffer_size) {
 
   std::string rawbuf;
   EXPECT_NO_THROW(events.getBufferPointer(rawbuf));
-  EXPECT_EQ(96, events.getBufferSize());
+  if (events.getUsingSnappy()) {
+    EXPECT_EQ(74, events.getBufferSize());
+  } else {
+    EXPECT_EQ(96, events.getBufferSize());
+  }
 }

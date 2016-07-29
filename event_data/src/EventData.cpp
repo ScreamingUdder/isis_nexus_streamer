@@ -4,14 +4,26 @@
 EventData::EventData()
     : m_bufferSize(0), m_frameNumber(0), m_numberOfFrames(0){};
 
-EventData::EventData(const char *buf) {
-  decodeMessage(buf);
+EventData::EventData(const char *buf, size_t buf_length) {
+  decodeMessage(buf, buf_length);
 }
 
-void EventData::decodeMessage(const char *buf) {
+void EventData::decodeMessage(const char *buf, size_t buf_length) {
 
+  std::string buf_uncompressed;
+  if (m_snappy) {
+    size_t uncompressed_length;
+    snappy::GetUncompressedLength(buf, buf_length, &uncompressed_length);
+    buf_uncompressed.resize(uncompressed_length);
+    snappy::RawUncompress(buf, buf_length, &buf_uncompressed[0]);
+    decodeUncompressedMessage(buf_uncompressed.c_str());
+  }
+  else {
+    decodeUncompressedMessage(buf);
+  }
+}
 
-
+void EventData::decodeUncompressedMessage(const char *buf) {
   auto eventData = GetFlatbufEventData(reinterpret_cast<const uint8_t *>(buf));
   auto detIdFBVector = eventData->detId();
   auto tofFBVector = eventData->tof();

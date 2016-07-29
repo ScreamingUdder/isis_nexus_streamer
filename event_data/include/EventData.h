@@ -12,10 +12,10 @@ public:
   // Construct a new empty EventData object
   EventData();
   // Construct an EventData object from a flatbuf buffer
-  EventData(const char *buf);
+  EventData(const char *buf, size_t buf_length);
 
   // Decode message into existing EventData instance
-  void decodeMessage(const char *buf);
+  void decodeMessage(const char *buf, size_t buf_length);
 
   // Setters
   void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; };
@@ -35,14 +35,16 @@ public:
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
 
   size_t getBufferSize() { return m_bufferSize; };
+  bool getUsingSnappy() { return m_snappy; };
 
 private:
+  void decodeUncompressedMessage(const char *buf);
   std::vector<uint32_t> m_detId = {};
   std::vector<uint64_t> m_tof = {};
   uint32_t m_numberOfFrames;
   uint32_t m_frameNumber;
   size_t m_bufferSize;
-  bool m_snappy = false;
+  bool m_snappy = true;
 };
 
 #endif // ISIS_NEXUS_STREAMER_EVENTDATA_H
