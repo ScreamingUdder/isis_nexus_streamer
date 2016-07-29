@@ -15,8 +15,10 @@ The "-p" flag executes on the physical cluster rather than launching virtual mac
 
 
 def check_all_received(producer_process_output, consumer_process_output):
-    # Check the output from the consumer (consumer_process.output)
-    # Did all messages and frames arrive?
+    """
+    Check the output from the consumer (consumer_process.output)
+    Did all messages and frames arrive?
+    """
     try:
         producer_frames = producer_process_output.split("Frames sent: ", 1)[1].split('\n', 1)[0]
         producer_bytes = producer_process_output.split("Bytes sent: ", 1)[1].split('\n', 1)[0]
@@ -38,6 +40,9 @@ def check_all_received(producer_process_output, consumer_process_output):
 
 
 def get_single_metric(jmxhosts):
+    """
+    Get a single value using JmxTerm
+    """
     print("Collecting metrics from broker...")
     with test_utils.cd("system_tests"):
         # Wait 90 seconds, then get the average rates from last minute
@@ -48,7 +53,24 @@ def get_single_metric(jmxhosts):
     print("...done collecting metrics.")
 
 
-def main():
+def finish_collect_and_plot_metrics(jmxhosts, jmxtool_cpu, jmxtool_broker, topic_name):
+    """
+    Finish collecting metrics with JmxTool and plot them
+    """
+    for host in jmxhosts:
+        test_utils.plot_metrics(jmxtool_cpu[host].get_output(), ylabel="CPU use [%]", title=host, yscale=100)
+        try:
+            test_utils.plot_metrics(jmxtool_broker[host].get_output(),
+                                    ylabel="broker in and out, 1 minute average [Mbps]",
+                                    title=host,
+                                    yscale=8e-6)
+        except IndexError:
+            print(
+                "Error plotting metric for " + host +
+                ", probably the topic (" + topic_name + ") does not exist on this broker")
+
+
+def parse_arguments():
     parser = argparse.ArgumentParser(description='Run system tests.')
     parser.add_argument('data_path', type=str,
                         help='the full path of the test data directory')
@@ -58,7 +80,11 @@ def main():
                         help='specify the port on the broker for jmx')
     parser.add_argument('-g', '--producer_only', action='store_true',
                         help='use g flag to launch the producer but not consumer')
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    args = parse_arguments()
 
     # Redirect stdout to a system test output file
     # sys.stdout = open('system_test_output.txt', 'w')
@@ -68,6 +94,7 @@ def main():
     jmxhosts = ["localhost:9990", "localhost:9991", "localhost:9992"]
     # datafile = "SANS_test.nxs"
     datafile = "WISH00034509_uncompressed.hdf5"
+    # datafile = "WISH00034510_uncompressed.hdf5"
 
     repo_dir = "ansible-kafka-centos"
     # Clone git repository
@@ -85,8 +112,6 @@ def main():
         repo_dir = ""
         broker = "sakura"
         jmxhosts = ["sakura:" + args.jmxport, "hinata:" + args.jmxport, "tenten:" + args.jmxport]
-
-    # Get kafka
 
     # Start up the virtual cluster
     with test_utils.Cluster(repo_dir):
@@ -144,18 +169,7 @@ def main():
         total_time = t1 - t0
         print("Total time taken to send and receive all event data is " + str(total_time) + " seconds")
 
-        # Finish collecting metrics and plot them
-        for host in jmxhosts:
-            test_utils.plot_metrics(jmxtool_cpu[host].get_output(), ylabel="CPU use [%]", title=host, yscale=100)
-            try:
-                test_utils.plot_metrics(jmxtool_broker[host].get_output(),
-                                        ylabel="broker in and out, 1 minute average [Mbps]",
-                                        title=host,
-                                        yscale=8e-6)
-            except IndexError:
-                print(
-                    "Error plotting metric for " + host +
-                    ", probably the topic (" + topic_name + ") does not exist on this broker")
+        finish_collect_and_plot_metrics(jmxhosts, jmxtool_cpu, jmxtool_broker, topic_name)
 
         if not args.producer_only:
             check_all_received(producer_process.output, consumer_process.output)
