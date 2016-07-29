@@ -19,4 +19,5 @@ rm -Rf tmp_build
 echo "....fetching HDF5 dependency...."
 sudo apt-get update -qq
 apt-get -y install libhdf5-dev
+apt-get -y install libsnappy-dev
 echo "....done...."
