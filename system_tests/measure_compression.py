@@ -3,7 +3,6 @@ import test_utils
 import time
 import os
 import pexpect
-import csv
 import numpy as np
 
 """
