@@ -12,10 +12,10 @@ public:
   // Construct a new empty EventData object
   EventData();
   // Construct an EventData object from a flatbuf buffer
-  EventData(const uint8_t *buf);
+  EventData(const char *buf);
 
   // Decode message into existing EventData instance
-  void decodeMessage(const uint8_t *buf);
+  void decodeMessage(const char *buf);
 
   // Setters
   void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; };
@@ -42,7 +42,7 @@ private:
   uint32_t m_numberOfFrames;
   uint32_t m_frameNumber;
   size_t m_bufferSize;
-  bool m_snappy = true;
+  bool m_snappy = false;
 };
 
 #endif // ISIS_NEXUS_STREAMER_EVENTDATA_H

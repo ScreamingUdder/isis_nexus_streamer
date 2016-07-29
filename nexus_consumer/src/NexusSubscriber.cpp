@@ -54,7 +54,7 @@ void NexusSubscriber::listen() {
 
 void NexusSubscriber::decodeMessage(std::shared_ptr<EventData> eventData,
                                     const std::string &rawbuf) {
-  eventData->decodeMessage(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+  eventData->decodeMessage(rawbuf.c_str());
 }
 
 /**

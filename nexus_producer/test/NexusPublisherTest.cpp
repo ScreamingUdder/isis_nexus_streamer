@@ -54,7 +54,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   eventData[0]->getBufferPointer(rawbuf);
 
   auto receivedEventData =
-      EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+      EventData(rawbuf.c_str());
   EXPECT_EQ(770, receivedEventData.getNumberOfEvents());
   EXPECT_EQ(299, receivedEventData.getNumberOfFrames());
   EXPECT_EQ(1, receivedEventData.getFrameNumber());
@@ -78,7 +78,7 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
   eventData[0]->getBufferPointer(rawbuf);
 
   auto receivedEventData =
-      EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+      EventData(rawbuf.c_str());
   // First message should have ceil(770/3) events
   EXPECT_EQ(257, receivedEventData.getNumberOfEvents());
   EXPECT_EQ(299, receivedEventData.getNumberOfFrames());
@@ -86,7 +86,7 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
 
   eventData[2]->getBufferPointer(rawbuf);
   receivedEventData =
-      EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+      EventData(rawbuf.c_str());
   // Last message should have remaining 256 events
   EXPECT_EQ(256, receivedEventData.getNumberOfEvents());
 }

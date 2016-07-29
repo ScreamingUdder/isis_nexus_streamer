@@ -4,12 +4,15 @@
 EventData::EventData()
     : m_bufferSize(0), m_frameNumber(0), m_numberOfFrames(0){};
 
-EventData::EventData(const uint8_t *buf) {
+EventData::EventData(const char *buf) {
   decodeMessage(buf);
 }
 
-void EventData::decodeMessage(const uint8_t *buf) {
-  auto eventData = GetFlatbufEventData(buf);
+void EventData::decodeMessage(const char *buf) {
+
+
+
+  auto eventData = GetFlatbufEventData(reinterpret_cast<const uint8_t *>(buf));
   auto detIdFBVector = eventData->detId();
   auto tofFBVector = eventData->tof();
 
@@ -39,7 +42,6 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
   if (m_snappy) {
     size_t input_len = static_cast<size_t>(builder.GetSize());
     buffer.resize(snappy::MaxCompressedLength(input_len));
-    // &buffer[0] is probably hacky and unwise
     snappy::RawCompress(bufferpointer, input_len, &buffer[0], &m_bufferSize);
   } else {
     buffer.assign(bufferpointer, bufferpointer + builder.GetSize());
