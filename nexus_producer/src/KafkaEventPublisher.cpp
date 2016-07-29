@@ -22,11 +22,14 @@ void KafkaEventPublisher::setUp(const std::string &broker_str,
   conf->set("message.max.bytes", "10000000", error_str);
   conf->set("fetch.message.max.bytes", "10000000", error_str);
   conf->set("replica.fetch.max.bytes", "10000000", error_str);
-  //if (conf->set("compression.codec", "snappy", error_str) !=
-  //    RdKafka::Conf::CONF_OK) {
-  //  std::cerr << error_str << std::endl;
-  //  exit(1);
-  //}
+  if (!m_compression.empty()) {
+    if (conf->set("compression.codec", m_compression, error_str) !=
+        RdKafka::Conf::CONF_OK) {
+      std::cerr << error_str << std::endl;
+      exit(1);
+    }
+    std::cout << "Using " << m_compression << " compression codec" << std::endl;
+  }
 
   // Create producer
   m_producer_ptr = std::unique_ptr<RdKafka::Producer>(

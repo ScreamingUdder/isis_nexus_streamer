@@ -83,10 +83,10 @@ def stream_data(build_dir, broker, topic_name, network_interface, data_path, dat
     for line in output_strings:
         data.append([float(i) for i in line.split()])
     data = np.array(data)
-    print(str(sum(data[:, 0])) + ' KB sent')
-    print(str(sum(data[:, 1])) + ' KB received')
+    print(str(sum(data[:, 1])) + ' KB sent')
+    print(str(sum(data[:, 0])) + ' KB received')
 
-    return sum(data[:, 0])
+    return sum(data[:, 1])
 
 
 def main():

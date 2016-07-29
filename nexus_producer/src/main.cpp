@@ -16,10 +16,11 @@ int main(int argc, char **argv) {
   std::string filename;
   std::string broker = "sakura";
   std::string topic = "test_topic";
+  std::string compression = "";
   bool quietMode = false;
   int messagesPerFrame = 1;
 
-  while ((opt = getopt(argc, argv, "f:b:t:m:q")) != -1) {
+  while ((opt = getopt(argc, argv, "f:b:t:c:m:q")) != -1) {
     switch (opt) {
 
     case 'f':
@@ -32,6 +33,10 @@ int main(int argc, char **argv) {
 
     case 't':
       topic = optarg;
+      break;
+
+    case 'c':
+      compression = optarg;
       break;
 
     case 'm':
@@ -59,7 +64,7 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  auto publisher = std::make_shared<KafkaEventPublisher>();
+  auto publisher = std::make_shared<KafkaEventPublisher>(compression);
   NexusPublisher streamer(publisher, broker, topic, filename, quietMode);
   streamer.streamData(messagesPerFrame);
 
