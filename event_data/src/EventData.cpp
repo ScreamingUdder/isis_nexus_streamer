@@ -1,4 +1,5 @@
 #include "EventData.h"
+#include <snappy.h>
 
 EventData::EventData()
     : m_bufferSize(0), m_frameNumber(0), m_numberOfFrames(0){};
@@ -34,9 +35,16 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
 
   auto bufferpointer =
       reinterpret_cast<const char *>(builder.GetBufferPointer());
-  buffer.assign(bufferpointer, bufferpointer + builder.GetSize());
 
-  m_bufferSize = builder.GetSize();
+  if (m_snappy) {
+    size_t input_len = static_cast<size_t>(builder.GetSize());
+    buffer.resize(snappy::MaxCompressedLength(input_len));
+    // &buffer[0] is probably hacky and unwise
+    snappy::RawCompress(bufferpointer, input_len, &buffer[0], &m_bufferSize);
+  } else {
+    buffer.assign(bufferpointer, bufferpointer + builder.GetSize());
+    m_bufferSize = builder.GetSize();
+  }
 
   return builder.ReleaseBufferPointer();
 }

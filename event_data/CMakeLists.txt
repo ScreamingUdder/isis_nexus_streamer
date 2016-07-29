@@ -1,5 +1,7 @@
 project(isis_nexus_streamer)
 
+find_package(Snappy)
+
 set( SRC_FILES
         src/EventData.cpp)
 
@@ -14,9 +16,11 @@ set( TEST_FILES
 #####################
 
 include_directories(
+        ${SNAPPY_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
+target_link_libraries(eventdata_lib ${SNAPPY_LIBRARIES})
 
 #####################
 ## Unit Tests      ##

@@ -116,9 +116,11 @@ int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
   int64_t dataSize = 0;
   for (const auto &message : messageData) {
     auto buffer_uptr = message->getBufferPointer(rawbuf);
-    m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
+    //m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
+    //                         message->getBufferSize());
+    m_publisher->sendMessage(&rawbuf[0],
                              message->getBufferSize());
-    dataSize += rawbuf.size();
+    dataSize += message->getBufferSize();
   }
   return dataSize;
 }

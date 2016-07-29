@@ -42,6 +42,7 @@ private:
   uint32_t m_numberOfFrames;
   uint32_t m_frameNumber;
   size_t m_bufferSize;
+  bool m_snappy = true;
 };
 
 #endif // ISIS_NEXUS_STREAMER_EVENTDATA_H
