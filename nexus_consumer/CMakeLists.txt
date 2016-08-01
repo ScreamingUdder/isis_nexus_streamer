@@ -18,7 +18,6 @@ set( TEST_FILES
 include_directories(
         ${LibRDKafka_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/../compatibility/include
         ${PROJECT_SOURCE_DIR}/../event_data/include)
 
 add_library(nexusSubscriber_lib ${PROJECT_SOURCE_DIR}/src/NexusSubscriber.cpp)
@@ -40,7 +39,8 @@ set(core_libraries
 #####################
 
 if (WIN32)
-    add_executable(main_nexusSubscriber ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/../compatibility/src/wingetopt.c)
+    add_executable(main_nexusSubscriber ${PROJECT_SOURCE_DIR}/src/main.cpp 
+	${PROJECT_SOURCE_DIR}src/wingetopt.c)
 else ()
     add_executable(main_nexusSubscriber ${PROJECT_SOURCE_DIR}/src/main.cpp)
 endif (WIN32)

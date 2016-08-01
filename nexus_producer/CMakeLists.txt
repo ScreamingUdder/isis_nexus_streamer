@@ -24,7 +24,7 @@ set( TEST_FILES
 include_directories(
         ${HDF5_INCLUDE_DIRS}
         ${LibRDKafka_INCLUDE_DIR}
-        ${PROJECT_SOURCE_DIR}/../compatibility/include
+        ${PROJECT_SOURCE_DIR}/../nexus_consumer/include
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(nexusFileReader_lib ${PROJECT_SOURCE_DIR}/src/NexusFileReader.cpp)
@@ -52,7 +52,7 @@ set(core_libraries
 #####################
 
 if (WIN32)
-    add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/../compatibility/src/wingetopt.c)
+    add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/../nexus_consumer/src/wingetopt.c)
 else ()
     add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp)
 endif (WIN32)
