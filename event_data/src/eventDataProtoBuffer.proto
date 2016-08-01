@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message ProtobufEventData {
+    int32 count = 1;
+    repeated int32 detId = 2;
+    repeated int64 tof = 3;
+    int32 frameNumber = 4;
+    int32 totalFrames = 5;
+}

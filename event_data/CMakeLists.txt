@@ -1,5 +1,7 @@
 project(isis_nexus_streamer)
 
+find_package(Protobuf REQUIRED)
+
 set( SRC_FILES
         src/EventData.cpp)
 
@@ -14,15 +16,17 @@ set( TEST_FILES
 #####################
 
 include_directories(
+        ${PROTOBUF_INCLUDE_DIRS}
         ${PROJECT_SOURCE_DIR}/include)
 
-add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
+add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/eventDataProtoBuffer.pb.cc)
 
 #####################
 ## Unit Tests      ##
 #####################
 
 set(eventData_tests_LINK_LIBRARIES
+        ${PROTOBUF_LIBRARIES}
         gtest
         gmock
         eventdata_lib)
