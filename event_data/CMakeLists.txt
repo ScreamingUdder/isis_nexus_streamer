@@ -3,10 +3,10 @@ project(isis_nexus_streamer)
 find_package(Protobuf REQUIRED)
 
 set( SRC_FILES
-        src/EventData.cpp)
+        src/ProtoEventData.cpp)
 
 set( INC_FILES
-        include/EventData.h)
+        include/ProtoEventData.h)
 
 set( TEST_FILES
         test/EventDataTest.cpp)
@@ -19,7 +19,7 @@ include_directories(
         ${PROTOBUF_INCLUDE_DIRS}
         ${PROJECT_SOURCE_DIR}/include)
 
-add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/eventDataProtoBuffer.pb.cc)
+add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/ProtoEventData.cpp ${PROJECT_SOURCE_DIR}/src/eventDataProtoBuffer.pb.cc)
 
 #####################
 ## Unit Tests      ##
