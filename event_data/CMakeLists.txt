@@ -14,7 +14,7 @@ set( TEST_FILES
 #####################
 
 include_directories(
-        ${PROJECT_SOURCE_DIR}/../compatibility/include
+        ${PROJECT_SOURCE_DIR}/../nexus_consumer/include
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
