@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include "NexusPublisher.h"
 
@@ -34,10 +35,10 @@ NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
  * @param frameNumber - the number of the frame for which to construct a message
  * @return - an object containing the data from the specified frame
  */
-std::vector<std::shared_ptr<EventData>>
+std::vector<std::shared_ptr<ProtoEventData>>
 NexusPublisher::createMessageData(hsize_t frameNumber,
                                   const int messagesPerFrame) {
-  std::vector<std::shared_ptr<EventData>> eventDataVector;
+  std::vector<std::shared_ptr<ProtoEventData>> eventDataVector;
 
   std::vector<uint32_t> detIds;
   m_fileReader->getEventDetIds(detIds, frameNumber);
@@ -64,7 +65,7 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
     std::vector<uint64_t> tofsCurrentMessage(
         tofs.begin() + (messageNumber * eventsPerMessage), upToTof);
 
-    auto eventData = std::make_shared<EventData>();
+    auto eventData = std::make_shared<ProtoEventData>();
     eventData->setDetId(detIdsCurrentMessage);
     eventData->setTof(tofsCurrentMessage);
     eventData->setNumberOfFrames(
@@ -115,8 +116,8 @@ int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
   auto messageData = createMessageData(frameNumber, messagesPerFrame);
   int64_t dataSize = 0;
   for (const auto &message : messageData) {
-    auto buffer_uptr = message->getBufferPointer(rawbuf);
-    m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
+    message->getBufferPointer(rawbuf);
+    m_publisher->sendMessage(&rawbuf[0],
                              message->getBufferSize());
     dataSize += rawbuf.size();
   }

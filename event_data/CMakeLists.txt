@@ -1,7 +1,5 @@
 project(isis_nexus_streamer)
 
-find_package(Protobuf REQUIRED)
-
 set( SRC_FILES
         src/ProtoEventData.cpp)
 
@@ -9,7 +7,7 @@ set( INC_FILES
         include/ProtoEventData.h)
 
 set( TEST_FILES
-        test/EventDataTest.cpp)
+        test/ProtoEventDataTest.cpp)
 
 #####################
 ## Libraries       ##

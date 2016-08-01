@@ -28,7 +28,8 @@ target_link_libraries(eventSubscriber_lib
         ${LibRDKafka_LIBRARIES})
 
 target_link_libraries(nexusSubscriber_lib
-        eventdata_lib)
+        eventdata_lib
+        ${PROTOBUF_LIBRARIES})
 
 set(core_libraries
         eventSubscriber_lib

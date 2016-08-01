@@ -41,6 +41,8 @@ bool ProtoEventData::getBufferPointer(std::string &buffer) {
 
   protoEventData.SerializePartialToString(&buffer);
 
+  m_bufferSize = buffer.size();
+
   return 0;
 }
 

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "EventData.h"
+#include "ProtoEventData.h"
 #include "MockEventSubscriber.h"
 #include "NexusSubscriber.h"
 
@@ -12,8 +12,8 @@ using ::testing::SetArgReferee;
 class NexusSubscriberTest : public ::testing::Test {
 
 public:
-  std::shared_ptr<EventData> createEventData() {
-    auto exampleEventData = std::make_shared<EventData>();
+  std::shared_ptr<ProtoEventData> createEventData() {
+    auto exampleEventData = std::make_shared<ProtoEventData>();
 
     std::vector<uint32_t> detIds = {1, 2, 3, 4};
     std::vector<uint64_t> tofs = {4, 3, 2, 1};
@@ -61,7 +61,7 @@ TEST_F(NexusSubscriberTest, decode_received_message) {
   EXPECT_NO_THROW(exampleEventData->getBufferPointer(rawbuf));
 
   // Decode the message
-  auto receivedEvents = std::make_shared<EventData>();
+  auto receivedEvents = std::make_shared<ProtoEventData>();
   NexusSubscriber streamer(subscriber, broker, topic, true);
   EXPECT_NO_THROW(streamer.decodeMessage(receivedEvents, rawbuf));
 

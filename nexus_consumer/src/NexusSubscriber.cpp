@@ -17,7 +17,7 @@ void NexusSubscriber::listen() {
   int64_t totalBytesReceived = 0;
   int32_t numberOfmessagesReceived = 0;
   std::string message;
-  auto receivedData = std::make_shared<EventData>();
+  auto receivedData = std::make_shared<ProtoEventData>();
   int numberOfFramesReceived = 0; // to check no messages lost
   int32_t previousFrameNumber = std::numeric_limits<int32_t>::max();
   int messagesPerFrame = 1;
@@ -52,9 +52,9 @@ void NexusSubscriber::listen() {
             << std::endl;
 }
 
-void NexusSubscriber::decodeMessage(std::shared_ptr<EventData> eventData,
-                                    const std::string &rawbuf) {
-  eventData->decodeMessage(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
+void NexusSubscriber::decodeMessage(std::shared_ptr<ProtoEventData> eventData,
+                                    std::string &rawbuf) {
+  eventData->decodeMessage(rawbuf);
 }
 
 /**

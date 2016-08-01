@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "../../event_data/include/EventData.h"
+#include "../../event_data/include/ProtoEventData.h"
 #include "EventPublisher.h"
 #include "NexusFileReader.h"
 
@@ -13,7 +13,7 @@ public:
                  const std::string &brokerAddress,
                  const std::string &streamName, const std::string &filename,
                  const bool quietMode);
-  std::vector<std::shared_ptr<EventData>>
+  std::vector<std::shared_ptr<ProtoEventData>>
   createMessageData(hsize_t frameNumber, const int messagesPerFrame);
   void streamData(const int messagesPerFrame);
 
