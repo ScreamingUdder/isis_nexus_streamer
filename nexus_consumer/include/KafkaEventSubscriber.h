@@ -4,9 +4,10 @@
 #include <librdkafka/rdkafkacpp.h>
 #include <memory>
 
+#include "Compatibility.h"
 #include "EventSubscriber.h"
 
-class KafkaEventSubscriber : public EventSubscriber {
+class DLLExport KafkaEventSubscriber : public EventSubscriber {
 public:
   void setUp(const std::string &broker, const std::string &topic) override;
   bool listenForMessage(std::string &message) override;

@@ -3,10 +3,11 @@
 
 #include <memory>
 
+#include "Compatibility.h"
 #include "EventData.h"
 #include "EventSubscriber.h"
 
-class NexusSubscriber {
+class DLLExport NexusSubscriber {
 public:
   NexusSubscriber(std::shared_ptr<EventSubscriber> subscriber,
                   const std::string &brokerAddress,

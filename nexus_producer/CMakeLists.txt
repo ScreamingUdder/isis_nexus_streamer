@@ -1,5 +1,9 @@
 project(isis_nexus_streamer)
 
+if (BUILD_SHARED_LIBS AND WIN32)
+    add_definitions(-DH5_BUILT_AS_DYNAMIC_LIB)
+endif (BUILD_SHARED_LIBS AND WIN32)
+
 set( SRC_FILES
         src/NexusFileReader.cpp
         src/NexusPublisher.cpp)
@@ -47,7 +51,12 @@ set(core_libraries
 ## Main executable ##
 #####################
 
-add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp)
+if (WIN32)
+    add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/../compatibility/src/wingetopt.c)
+else ()
+    add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp)
+endif (WIN32)
+
 target_link_libraries(main_nexusPublisher
         ${core_libraries})
 
