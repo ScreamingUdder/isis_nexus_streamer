@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "NexusFileReader.h"
+#include "../include/NexusFileReader.h"
 
 class NexusFileReaderTest : public ::testing::Test {};
 

@@ -1,4 +1,4 @@
-#include "NexusFileReader.h"
+#include "../include/NexusFileReader.h"
 #include <iostream>
 
 using namespace H5;

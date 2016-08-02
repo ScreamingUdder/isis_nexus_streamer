@@ -90,6 +90,7 @@ endif()
 add_subdirectory("${PROJECT_SOURCE_DIR}/event_data")
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_producer")
 add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_consumer")
+add_subdirectory("${PROJECT_SOURCE_DIR}/nexus_file_reader")
 
 ####################
 ## Unit tests     ##
@@ -100,12 +101,14 @@ include_directories(
         ${LibRDKafka_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/nexus_consumer/include
         ${PROJECT_SOURCE_DIR}/nexus_producer/include
-        ${PROJECT_SOURCE_DIR}/event_data/include)
+        ${PROJECT_SOURCE_DIR}/event_data/include
+        ${PROJECT_SOURCE_DIR}/nexus_file_reader/include)
 
 file(GLOB TEST_SRC_FILES
         ${PROJECT_SOURCE_DIR}/nexus_consumer/test/*.cpp
         ${PROJECT_SOURCE_DIR}/nexus_producer/test/*.cpp
         ${PROJECT_SOURCE_DIR}/event_data/test/*.cpp
+        ${PROJECT_SOURCE_DIR}/nexus_file_reader/test/*.cpp
         unitTestRunner.cpp)
 
 add_executable(unitTests ${TEST_SRC_FILES})
@@ -115,7 +118,8 @@ target_link_libraries(unitTests
         gmock
         producerUnitTests
         consumerUnitTests
-        eventDataUnitTests)
+        eventDataUnitTests
+        fileReaderUnitTests)
 
 # Make the tests available to run through ctest
 # Do "ctest -VV" in the build directory

@@ -5,7 +5,7 @@
 
 #include "../../event_data/include/EventData.h"
 #include "EventPublisher.h"
-#include "NexusFileReader.h"
+#include "../../nexus_file_reader/include/NexusFileReader.h"
 
 class NexusPublisher {
 public:
