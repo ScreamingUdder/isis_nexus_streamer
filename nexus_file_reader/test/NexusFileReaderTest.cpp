@@ -36,7 +36,7 @@ TEST(NexusFileReaderTest, nexus_read_number_events) {
 TEST(NexusFileReaderTest, nexus_read_number_frames) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
-  EXPECT_EQ(18130, fileReader.getNumberOfFrames());
+  EXPECT_EQ(18131, fileReader.getNumberOfFrames());
 }
 
 TEST(NexusFileReaderTest, get_detIds_first_frame) {

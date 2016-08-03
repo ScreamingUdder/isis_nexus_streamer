@@ -36,13 +36,15 @@ target_link_libraries(nexusSubscriber_lib
         eventdata_lib)
 
 target_link_libraries(nexusFileWriter_lib
+        eventdata_lib
         ${HDF5_LIBRARIES}
         ${HDF5_CXX_LIBRARIES})
 
 set(core_libraries
         eventSubscriber_lib
         nexusSubscriber_lib
-        nexusFileWriter_lib)
+        nexusFileWriter_lib
+        nexusFileReader_lib)
 
 #####################
 ## Main executable ##

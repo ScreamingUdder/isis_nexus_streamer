@@ -56,7 +56,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   auto receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   EXPECT_EQ(770, receivedEventData.getNumberOfEvents());
-  EXPECT_EQ(299, receivedEventData.getNumberOfFrames());
+  EXPECT_EQ(300, receivedEventData.getNumberOfFrames());
   EXPECT_EQ(1, receivedEventData.getFrameNumber());
 }
 
@@ -81,7 +81,7 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   // First message should have ceil(770/3) events
   EXPECT_EQ(257, receivedEventData.getNumberOfEvents());
-  EXPECT_EQ(299, receivedEventData.getNumberOfFrames());
+  EXPECT_EQ(300, receivedEventData.getNumberOfFrames());
   EXPECT_EQ(1, receivedEventData.getFrameNumber());
 
   eventData[2]->getBufferPointer(rawbuf);
@@ -100,7 +100,7 @@ TEST(NexusPublisherTest, test_stream_data) {
 
   auto publisher = std::make_shared<MockEventPublisher>();
 
-  const int numberOfFrames = 299;
+  const int numberOfFrames = 300;
   const int messagesPerFrame = 1;
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
@@ -121,7 +121,7 @@ TEST(NexusPublisherTest, test_stream_data_multiple_messages_per_frame) {
 
   auto publisher = std::make_shared<MockEventPublisher>();
 
-  const int numberOfFrames = 299;
+  const int numberOfFrames = 300;
   const int messagesPerFrame = 10;
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);

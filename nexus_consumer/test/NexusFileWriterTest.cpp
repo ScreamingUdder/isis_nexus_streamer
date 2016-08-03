@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "../../nexus_file_reader/include/NexusFileReader.h"
 #include "EventData.h"
 #include "NexusFileWriter.h"
 
@@ -10,7 +11,7 @@ public:
     extern std::string testDataPath;
     const std::string testfileFullPath = testDataPath + m_testFilename;
     if (file_exists(testfileFullPath)) {
-      std::remove(testfileFullPath.c_str());
+      // std::remove(testfileFullPath.c_str());
     }
   }
 
@@ -48,10 +49,24 @@ TEST_F(NexusFileWriterTest, creates_output_file) {
   EXPECT_TRUE(file_exists(testDataPath + m_testFilename));
 }
 
-TEST_F(NexusFileWriterTest, write_eventData_to_file) {
+TEST_F(NexusFileWriterTest, write_frameData_to_file) {
   extern std::string testDataPath;
-  EXPECT_NO_THROW(NexusFileWriter(testDataPath + m_testFilename));
+  auto fileWriter = std::unique_ptr<NexusFileWriter>(
+      new NexusFileWriter(testDataPath + m_testFilename));
 
   auto testEventData = createEventData(1, 1);
+  EXPECT_NO_THROW(fileWriter->writeData(testEventData, true));
 
+  // ensure the writer is not busy with the file when we try to read from it
+  fileWriter.reset();
+
+  auto fileReader = NexusFileReader(testDataPath + m_testFilename);
+  EXPECT_EQ(4, fileReader.getTotalEventCount());
+  EXPECT_EQ(1, fileReader.getNumberOfFrames());
+  std::vector<uint32_t> detIds;
+  std::vector<uint64_t> tofs;
+  EXPECT_TRUE(fileReader.getEventDetIds(detIds, 0));
+  EXPECT_TRUE(fileReader.getEventTofs(tofs, 0));
+  EXPECT_FLOAT_EQ(1, detIds[0]);
+  EXPECT_FLOAT_EQ(4000, tofs[0]); // times are multiplied by 1e3 to get integer value
 }
