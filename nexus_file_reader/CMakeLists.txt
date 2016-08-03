@@ -4,7 +4,6 @@ set( SRC_FILES
         src/NexusFileReader.cpp)
 
 set( INC_FILES
-        include/EventPublisher.h
         include/NexusFileReader.h)
 
 set( TEST_FILES
