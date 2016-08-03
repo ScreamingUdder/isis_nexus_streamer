@@ -16,13 +16,15 @@ public:
   void writeData(std::shared_ptr<EventData> eventData, const bool finalData);
 
 private:
-  void writeScalarDataset(const int64_t value, const std::string &datasetName,
-                          H5::PredType datatype);
+  void createScalarDataset(const int64_t value, const std::string &datasetName,
+                           H5::PredType datatype);
   template <typename T>
-  void write1DDataset(const std::vector<T> &values,
-                      const std::string &datasetName, H5::PredType datatype);
-  void writeTofs(const std::vector<uint64_t> &tofs);
-  void writeDetIds(const std::vector<uint32_t> &detids);
+  void create1DDataset(const std::vector<T> &values,
+                       const std::string &datasetName, H5::PredType datatype,
+                       const uint64_t datasize);
+  void createTofs(const std::vector<uint64_t> &tofs, const uint64_t datasize);
+  void createDetIds(const std::vector<uint32_t> &detids,
+                    const uint64_t datasize);
 
   H5FilePtr m_file = nullptr;
   int64_t m_eventsSoFar = 0;
