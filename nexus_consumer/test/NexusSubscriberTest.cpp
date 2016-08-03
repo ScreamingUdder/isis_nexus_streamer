@@ -41,6 +41,22 @@ TEST_F(NexusSubscriberTest, test_create_subscriber) {
   NexusSubscriber streamer(subscriber, broker, topic, false, "");
 }
 
+TEST_F(NexusSubscriberTest, test_create_subscriber_which_writes_to_file) {
+  const std::string broker = "broker_name";
+  const std::string topic = "topic_name";
+
+  extern std::string testDataPath;
+  const std::string testfileFullPath = testDataPath + "temp_unit_test_file.hdf5";
+
+  auto subscriber = std::make_shared<MockEventSubscriber>();
+  EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
+
+  NexusSubscriber streamer(subscriber, broker, topic, false, testfileFullPath);
+
+  // clean up the file created
+  std::remove(testfileFullPath.c_str());
+}
+
 TEST_F(NexusSubscriberTest, test_create_subscriber_quiet) {
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";
