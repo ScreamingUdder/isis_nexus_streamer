@@ -20,8 +20,7 @@ private:
                            H5::PredType datatype);
   template <typename T>
   void create1DDataset(const std::vector<T> &values,
-                       const std::string &datasetName, H5::PredType datatype,
-                       const uint64_t datasize);
+                       const std::string &datasetName, H5::PredType datatype);
   void writeTofs(const std::vector<uint64_t> &tofs, const uint64_t datasize);
   void writeDetIds(const std::vector<uint32_t> &detids,
                    const uint64_t datasize);

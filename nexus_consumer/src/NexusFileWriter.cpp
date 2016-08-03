@@ -13,8 +13,9 @@ void NexusFileWriter::writeData(std::shared_ptr<EventData> eventData) {
     auto group = m_file->createGroup("/raw_data_1");
     group.createGroup("detector_1_events");
     std::vector<uint64_t> eventIndices = {static_cast<uint64_t>(m_eventsSoFar)};
+    eventIndices.resize(eventData->getNumberOfFrames());
     create1DDataset(eventIndices, "/raw_data_1/detector_1_events/event_index",
-                    PredType::NATIVE_UINT64, eventData->getNumberOfFrames());
+                    PredType::NATIVE_UINT64);
     uint64_t totalCounts = eventData->getTotalCounts();
     writeTofs(eventData->getTof(), totalCounts);
     writeDetIds(eventData->getDetId(), totalCounts);
@@ -50,7 +51,7 @@ void NexusFileWriter::writeDetIds(const std::vector<uint32_t> &detids,
   std::vector<uint32_t> detids_u32(detids.begin(), detids.end());
   if (datasize != 0) {
     detids_u32.resize(datasize);
-    create1DDataset(detids_u32, datasetName, PredType::NATIVE_UINT32, datasize);
+    create1DDataset(detids_u32, datasetName, PredType::NATIVE_UINT32);
   } else {
     append1DDataset(detids, datasetName, static_cast<hsize_t>(m_eventsSoFar),
                     PredType::NATIVE_UINT32);
@@ -66,7 +67,7 @@ void NexusFileWriter::writeTofs(const std::vector<uint64_t> &tofs,
                  std::bind1st(std::multiplies<float>(), 0.001));
   if (datasize != 0) {
     tofs_float.resize(datasize);
-    create1DDataset(tofs_float, datasetName, PredType::NATIVE_FLOAT, datasize);
+    create1DDataset(tofs_float, datasetName, PredType::NATIVE_FLOAT);
   } else {
     append1DDataset(tofs_float, datasetName,
                     static_cast<hsize_t>(m_eventsSoFar),
@@ -87,9 +88,8 @@ void NexusFileWriter::createScalarDataset(const int64_t value,
 template <typename T>
 void NexusFileWriter::create1DDataset(const std::vector<T> &values,
                                       const std::string &datasetName,
-                                      PredType datatype,
-                                      const uint64_t datasize) {
-  hsize_t dim1[] = {datasize};
+                                      PredType datatype) {
+  hsize_t dim1[] = {values.size()};
   DataSpace scalarValueDataspace(m_rank, dim1);
   auto dataset =
       m_file->createDataSet(datasetName, datatype, scalarValueDataspace);
