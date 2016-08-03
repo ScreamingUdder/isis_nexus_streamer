@@ -15,9 +15,10 @@ int main(int argc, char **argv) {
   int opt;
   std::string broker = "sakura";
   std::string topic = "test_topic";
+  std::string filename = "";
   bool quietMode = false;
 
-  while ((opt = getopt(argc, argv, "b:t:q")) != -1) {
+  while ((opt = getopt(argc, argv, "b:t:f:q")) != -1) {
     switch (opt) {
 
     case 'b':
@@ -28,6 +29,10 @@ int main(int argc, char **argv) {
       topic = optarg;
       break;
 
+    case 'f':
+      filename = optarg;
+      break;
+
     case 'q':
       quietMode = true;
       break;
@@ -36,6 +41,8 @@ int main(int argc, char **argv) {
       fprintf(stderr, "Usage: %s "
                       "[-b <host>] "
                       "[-t <topic_name>]"
+                      "[-f <filename>]"
+                      "[-q]"
                       "\n",
               argv[0]);
       exit(1);
@@ -43,7 +50,7 @@ int main(int argc, char **argv) {
   }
 
   auto subscriber = std::make_shared<KafkaEventSubscriber>();
-  NexusSubscriber streamer(subscriber, broker, topic, quietMode);
+  NexusSubscriber streamer(subscriber, broker, topic, quietMode, filename);
   streamer.listen();
 
   return 0;

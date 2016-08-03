@@ -49,6 +49,7 @@ void NexusFileWriter::writeDetIds(const std::vector<uint32_t> &detids,
   const std::string datasetName = "/raw_data_1/detector_1_events/event_id";
   std::vector<uint32_t> detids_u32(detids.begin(), detids.end());
   if (datasize != 0) {
+    detids_u32.resize(datasize);
     create1DDataset(detids_u32, datasetName, PredType::NATIVE_UINT32, datasize);
   } else {
     append1DDataset(detids, datasetName, static_cast<hsize_t>(m_eventsSoFar),
@@ -64,6 +65,7 @@ void NexusFileWriter::writeTofs(const std::vector<uint64_t> &tofs,
   std::transform(tofs_float.begin(), tofs_float.end(), tofs_float.begin(),
                  std::bind1st(std::multiplies<float>(), 0.001));
   if (datasize != 0) {
+    tofs_float.resize(datasize);
     create1DDataset(tofs_float, datasetName, PredType::NATIVE_FLOAT, datasize);
   } else {
     append1DDataset(tofs_float, datasetName,
