@@ -95,6 +95,7 @@ def main():
     # datafile = "SANS_test.nxs"
     datafile = "WISH00034509_uncompressed.hdf5"
     # datafile = "WISH00034510_uncompressed.hdf5"
+    output_file = "systemtest_received_file.hdf5"
 
     repo_dir = "ansible-kafka-centos"
     # Clone git repository
@@ -135,6 +136,7 @@ def main():
                 [os.path.join(build_dir, "nexus_consumer", "main_nexusSubscriber"),
                  "-b", broker,
                  "-t", topic_name,
+                 "-f", os.path.join(args.data_path, output_file),
                  "-q"])
             print(" done.")
 
@@ -172,7 +174,8 @@ def main():
         finish_collect_and_plot_metrics(jmxhosts, jmxtool_cpu, jmxtool_broker, topic_name)
 
         if not args.producer_only:
-            check_all_received(producer_process.output, consumer_process.output)
+            #check_all_received(producer_process.output, consumer_process.output)
+            test_utils.nexus_files_equal(os.path.join(args.data_path, datafile), os.path.join(args.data_path, output_file))
 
         # Shut down the virtual cluster
         print("Shutting down virtual cluster...")

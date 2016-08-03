@@ -5,6 +5,7 @@ import vagrant
 import matplotlib.pyplot as pl
 import numpy as np
 import csv
+import h5py
 
 
 def plot_metrics(results, ylabel="", title="", yscale=1):
@@ -18,6 +19,26 @@ def plot_metrics(results, ylabel="", title="", yscale=1):
     pl.xlabel("time [s]")
     pl.ylabel(ylabel)
     pl.title(title)
+
+
+def nexus_files_equal(filename_1, filename_2):
+    success = True;
+    datasets = [
+        '/raw_data_1/detector_1_events/event_id',
+        '/raw_data_1/detector_1_events/total_counts',
+        '/raw_data_1/detector_1_events/event_index',
+        '/raw_data_1/good_frames',
+        '/raw_data_1/detector_1_events/event_time_offset'
+    ]
+    # Use numpy.isclose for float datasets (precision 0.01), equality should be fine for other datasets
+    with h5py.File(filename_1, 'r') as f_read_1:
+        with h5py.File(filename_2, 'r') as f_read_2:
+            for dataset in datasets:
+                if not np.allclose(f_read_1.get(dataset), f_read_2.get(dataset), atol=0.01):
+                    print("Files are different in dataset: " + dataset)
+                    success = False
+    if success:
+        print("PASS: Input and output file are almost (floats) equal!")
 
 
 class Subprocess:
