@@ -19,11 +19,13 @@ public:
     std::vector<uint64_t> tofs = {4, 3, 2, 1};
     uint32_t frameNumber = 2;
     uint32_t numberOfFrames = 9;
+    uint64_t totalCounts = 50;
 
     exampleEventData->setDetId(detIds);
     exampleEventData->setTof(tofs);
     exampleEventData->setNumberOfFrames(numberOfFrames);
     exampleEventData->setFrameNumber(frameNumber);
+    exampleEventData->setTotalCounts(totalCounts);
 
     return exampleEventData;
   };
@@ -71,6 +73,8 @@ TEST_F(NexusSubscriberTest, decode_received_message) {
             exampleEventData->getNumberOfFrames());
   EXPECT_EQ(receivedEvents->getFrameNumber(),
             exampleEventData->getFrameNumber());
+  EXPECT_EQ(receivedEvents->getTotalCounts(),
+            exampleEventData->getTotalCounts());
 }
 
 TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {

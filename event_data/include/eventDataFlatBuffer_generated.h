@@ -15,13 +15,15 @@ struct FlatbufEventData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_DETID = 6,
     VT_TOF = 8,
     VT_FRAMENUMBER = 10,
-    VT_TOTALFRAMES = 12
+    VT_TOTALFRAMES = 12,
+    VT_TOTALCOUNTS = 14
   };
   uint32_t count() const { return GetField<uint32_t>(VT_COUNT, 0); }
   const flatbuffers::Vector<uint32_t> *detId() const { return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_DETID); }
   const flatbuffers::Vector<uint64_t> *tof() const { return GetPointer<const flatbuffers::Vector<uint64_t> *>(VT_TOF); }
   uint32_t frameNumber() const { return GetField<uint32_t>(VT_FRAMENUMBER, 0); }
   uint32_t totalFrames() const { return GetField<uint32_t>(VT_TOTALFRAMES, 0); }
+  uint64_t totalCounts() const { return GetField<uint64_t>(VT_TOTALCOUNTS, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_COUNT) &&
@@ -31,6 +33,7 @@ struct FlatbufEventData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.Verify(tof()) &&
            VerifyField<uint32_t>(verifier, VT_FRAMENUMBER) &&
            VerifyField<uint32_t>(verifier, VT_TOTALFRAMES) &&
+           VerifyField<uint64_t>(verifier, VT_TOTALCOUNTS) &&
            verifier.EndTable();
   }
 };
@@ -43,10 +46,11 @@ struct FlatbufEventDataBuilder {
   void add_tof(flatbuffers::Offset<flatbuffers::Vector<uint64_t>> tof) { fbb_.AddOffset(FlatbufEventData::VT_TOF, tof); }
   void add_frameNumber(uint32_t frameNumber) { fbb_.AddElement<uint32_t>(FlatbufEventData::VT_FRAMENUMBER, frameNumber, 0); }
   void add_totalFrames(uint32_t totalFrames) { fbb_.AddElement<uint32_t>(FlatbufEventData::VT_TOTALFRAMES, totalFrames, 0); }
+  void add_totalCounts(uint64_t totalCounts) { fbb_.AddElement<uint64_t>(FlatbufEventData::VT_TOTALCOUNTS, totalCounts, 0); }
   FlatbufEventDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   FlatbufEventDataBuilder &operator=(const FlatbufEventDataBuilder &);
   flatbuffers::Offset<FlatbufEventData> Finish() {
-    auto o = flatbuffers::Offset<FlatbufEventData>(fbb_.EndTable(start_, 5));
+    auto o = flatbuffers::Offset<FlatbufEventData>(fbb_.EndTable(start_, 6));
     return o;
   }
 };
@@ -56,8 +60,10 @@ inline flatbuffers::Offset<FlatbufEventData> CreateFlatbufEventData(flatbuffers:
    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> detId = 0,
    flatbuffers::Offset<flatbuffers::Vector<uint64_t>> tof = 0,
    uint32_t frameNumber = 0,
-   uint32_t totalFrames = 0) {
+   uint32_t totalFrames = 0,
+   uint64_t totalCounts = 0) {
   FlatbufEventDataBuilder builder_(_fbb);
+  builder_.add_totalCounts(totalCounts);
   builder_.add_totalFrames(totalFrames);
   builder_.add_frameNumber(frameNumber);
   builder_.add_tof(tof);

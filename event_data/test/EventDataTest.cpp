@@ -9,6 +9,7 @@ TEST(EventDataTest, get_tof_and_detid) {
   EXPECT_EQ(0, events.getDetId().size());
   EXPECT_EQ(0, events.getNumberOfFrames());
   EXPECT_EQ(0, events.getFrameNumber());
+  EXPECT_EQ(0, events.getTotalCounts());
 }
 
 TEST(EventDataTest, get_buffer_pointer) {
