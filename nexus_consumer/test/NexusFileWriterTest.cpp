@@ -35,6 +35,7 @@ public:
     exampleEventData->setTof(tofs);
     exampleEventData->setNumberOfFrames(numberOfFrames);
     exampleEventData->setFrameNumber(frameNumber);
+    exampleEventData->setTotalCounts(4);
 
     return exampleEventData;
   };

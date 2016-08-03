@@ -18,7 +18,9 @@ void NexusFileWriter::writeData(std::shared_ptr<EventData> eventData,
                        PredType::NATIVE_UINT64);
     writeTofs(eventData->getTof());
     writeDetIds(eventData->getDetId());
-
+    writeScalarDataset(eventData->getTotalCounts(),
+                       "/raw_data_1/detector_1_events/total_counts",
+                       PredType::NATIVE_UINT64);
   } else {
     // TODO append data to existing datasets
     // TODO write current m_eventsSoFar as the next element of event_index
@@ -29,9 +31,6 @@ void NexusFileWriter::writeData(std::shared_ptr<EventData> eventData,
   if (finalData) {
     writeScalarDataset(static_cast<int32_t>(eventData->getNumberOfFrames()),
                        "/raw_data_1/good_frames", PredType::NATIVE_INT32);
-    writeScalarDataset(static_cast<uint64_t>(m_eventsSoFar),
-                       "/raw_data_1/detector_1_events/total_counts",
-                       PredType::NATIVE_UINT64);
   }
 }
 
