@@ -68,5 +68,5 @@ TEST_F(NexusFileWriterTest, write_frameData_to_file) {
   EXPECT_TRUE(fileReader.getEventDetIds(detIds, 0));
   EXPECT_TRUE(fileReader.getEventTofs(tofs, 0));
   EXPECT_FLOAT_EQ(1, detIds[0]);
-  EXPECT_FLOAT_EQ(4000, tofs[0]); // times are multiplied by 1e3 to get integer value
+  EXPECT_FLOAT_EQ(4, tofs[0]);
 }

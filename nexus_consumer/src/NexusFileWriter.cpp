@@ -13,14 +13,12 @@ void NexusFileWriter::writeData(std::shared_ptr<EventData> eventData,
     // This is the first lot of data so the datasets must be created here
     auto group = m_file->createGroup("/raw_data_1");
     group.createGroup("detector_1_events");
-    writeScalarDataset(m_eventsSoFar,
-                       "/raw_data_1/detector_1_events/event_index");
-    write1DDataset(eventData->getTof(),
-                   "/raw_data_1/detector_1_events/event_time_offset",
-                   PredType::NATIVE_INT64);
-    auto ids = eventData->getDetId();
-    write1DDataset(ids, "/raw_data_1/detector_1_events/event_id",
-                   PredType::NATIVE_INT32);
+    writeScalarDataset(static_cast<uint64_t>(m_eventsSoFar),
+                       "/raw_data_1/detector_1_events/event_index",
+                       PredType::NATIVE_UINT64);
+    writeTofs(eventData->getTof());
+    writeDetIds(eventData->getDetId());
+
   } else {
     // TODO append data to existing datasets
     // TODO write current m_eventsSoFar as the next element of event_index
@@ -29,20 +27,36 @@ void NexusFileWriter::writeData(std::shared_ptr<EventData> eventData,
   m_eventsSoFar += eventData->getNumberOfEvents();
 
   if (finalData) {
-    int64_t good_frames = eventData->getNumberOfFrames();
-    writeScalarDataset(good_frames, "/raw_data_1/good_frames");
-    writeScalarDataset(m_eventsSoFar,
-                       "/raw_data_1/detector_1_events/total_counts");
+    writeScalarDataset(static_cast<int32_t>(eventData->getNumberOfFrames()),
+                       "/raw_data_1/good_frames", PredType::NATIVE_INT32);
+    writeScalarDataset(static_cast<uint64_t>(m_eventsSoFar),
+                       "/raw_data_1/detector_1_events/total_counts",
+                       PredType::NATIVE_UINT64);
   }
 }
 
+void NexusFileWriter::writeDetIds(const std::vector<uint32_t> &detids) {
+  std::vector<uint32_t> detids_u32(detids.begin(), detids.end());
+  write1DDataset(detids_u32, "/raw_data_1/detector_1_events/event_id",
+                 PredType::NATIVE_UINT32);
+}
+
+void NexusFileWriter::writeTofs(const std::vector<uint64_t> &tofs) {
+  std::vector<float> tofs_float(tofs.begin(), tofs.end());
+  std::transform(tofs_float.begin(), tofs_float.end(), tofs_float.begin(),
+                 std::bind1st(std::multiplies<float>(), 0.001));
+  write1DDataset(tofs_float, "/raw_data_1/detector_1_events/event_time_offset",
+                 PredType::NATIVE_FLOAT);
+}
+
 void NexusFileWriter::writeScalarDataset(const int64_t value,
-                                         const std::string &datasetName) {
+                                         const std::string &datasetName,
+                                         PredType datatype) {
   hsize_t dim1[] = {1};
   DataSpace scalarValueDataspace(m_rank, dim1);
-  auto dataset = m_file->createDataSet(datasetName, PredType::NATIVE_INT64,
-                                       scalarValueDataspace);
-  dataset.write(&value, PredType::NATIVE_INT64);
+  auto dataset =
+      m_file->createDataSet(datasetName, datatype, scalarValueDataspace);
+  dataset.write(&value, datatype);
 }
 
 template <typename T>
@@ -51,7 +65,7 @@ void NexusFileWriter::write1DDataset(const std::vector<T> &values,
                                      PredType datatype) {
   hsize_t dim1[] = {values.size()};
   DataSpace scalarValueDataspace(m_rank, dim1);
-  auto dataset = m_file->createDataSet(datasetName, PredType::NATIVE_INT64,
-                                       scalarValueDataspace);
+  auto dataset =
+      m_file->createDataSet(datasetName, datatype, scalarValueDataspace);
   dataset.write(values.data(), datatype);
 }
