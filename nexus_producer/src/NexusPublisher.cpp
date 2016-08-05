@@ -70,6 +70,7 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
     eventData->setNumberOfFrames(
         static_cast<uint32_t>(m_fileReader->getNumberOfFrames()));
     eventData->setFrameNumber(static_cast<uint32_t>(frameNumber));
+    eventData->setTotalCounts(m_fileReader->getTotalEventCount());
 
     eventDataVector.push_back(eventData);
   }

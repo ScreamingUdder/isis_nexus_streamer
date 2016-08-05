@@ -6,7 +6,7 @@
 #include <vector>
 
 // a typedef for our managed H5File pointer
-typedef std::shared_ptr<H5::H5File> H5FilePtr;
+typedef std::unique_ptr<H5::H5File> H5FilePtr;
 
 class NexusFileReader {
 public:

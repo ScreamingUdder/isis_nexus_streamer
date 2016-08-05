@@ -6,6 +6,7 @@ table FlatbufEventData {
     tof:[ulong];
     frameNumber:uint;
     totalFrames:uint;
+    totalCounts:ulong;
 }
 
 root_type FlatbufEventData;

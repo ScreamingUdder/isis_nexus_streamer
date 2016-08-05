@@ -1,4 +1,4 @@
-#include "NexusFileReader.h"
+#include "../include/NexusFileReader.h"
 #include <iostream>
 
 using namespace H5;
@@ -10,14 +10,11 @@ using namespace H5;
  * @return - an object with which to read information from the file
  */
 NexusFileReader::NexusFileReader(const std::string &filename)
-    : m_file(std::make_shared<H5File>(filename, H5F_ACC_RDONLY)) {
+    : m_file(new H5File(filename, H5F_ACC_RDONLY)) {
   DataSet dataset = m_file->openDataSet("/raw_data_1/good_frames");
   size_t *numOfFrames = new size_t[1];
   dataset.read(numOfFrames, PredType::NATIVE_UINT64);
   m_numberOfFrames = *numOfFrames;
-  // Reduce number of frames by 1, this is a fix for an inconsistency between
-  // the SANS and WISH files
-  m_numberOfFrames--;
   delete[] numOfFrames;
 }
 
@@ -73,6 +70,11 @@ hsize_t NexusFileReader::getFrameStart(hsize_t frameNumber) {
  * @return - the number of events in the specified frame
  */
 hsize_t NexusFileReader::getNumberOfEventsInFrame(hsize_t frameNumber) {
+  // if this is the last frame then we cannot get number of events by looking at event index of next frame
+  // instead use the total_counts field
+  if (frameNumber == (m_numberOfFrames - 1)) {
+    return getTotalEventCount() - getFrameStart(frameNumber);
+  }
   return getFrameStart(frameNumber + 1) - getFrameStart(frameNumber);
 }
 
@@ -101,6 +103,7 @@ bool NexusFileReader::getEventDetIds(std::vector<uint32_t> &detIds,
   auto dataspace = dataset.getSpace();
   dataspace.selectHyperslab(H5S_SELECT_SET, count, offset, stride, block);
 
+  // resize detIds to the correct size to put the new data in
   detIds.resize(numberOfEventsInFrame);
 
   hsize_t dimsm[1];

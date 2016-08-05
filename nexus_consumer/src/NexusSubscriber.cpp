@@ -6,9 +6,13 @@
 NexusSubscriber::NexusSubscriber(std::shared_ptr<EventSubscriber> subscriber,
                                  const std::string &brokerAddress,
                                  const std::string &streamName,
-                                 const bool quietMode)
+                                 const bool quietMode,
+                                 const std::string &filename)
     : m_subscriber(subscriber), m_quietMode(quietMode) {
   subscriber->setUp(brokerAddress, streamName);
+  if (!filename.empty()) {
+    m_filewriter = std::make_shared<NexusFileWriter>(NexusFileWriter(filename));
+  }
 }
 
 void NexusSubscriber::listen() {
@@ -34,6 +38,9 @@ void NexusSubscriber::listen() {
     totalBytesReceived += message.size();
     numberOfFrames = receivedData->getNumberOfFrames();
     frameNumber = receivedData->getFrameNumber();
+    if (m_filewriter) {
+      m_filewriter->writeData(receivedData);
+    }
     if (frameNumber != previousFrameNumber) {
       if (frameNumber == 1 && messagesPerFrame == 1)
         messagesPerFrame = numberOfmessagesReceived;

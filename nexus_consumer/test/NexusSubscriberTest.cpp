@@ -19,11 +19,13 @@ public:
     std::vector<uint64_t> tofs = {4, 3, 2, 1};
     uint32_t frameNumber = 2;
     uint32_t numberOfFrames = 9;
+    uint64_t totalCounts = 50;
 
     exampleEventData->setDetId(detIds);
     exampleEventData->setTof(tofs);
     exampleEventData->setNumberOfFrames(numberOfFrames);
     exampleEventData->setFrameNumber(frameNumber);
+    exampleEventData->setTotalCounts(totalCounts);
 
     return exampleEventData;
   };
@@ -36,7 +38,23 @@ TEST_F(NexusSubscriberTest, test_create_subscriber) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic, false);
+  NexusSubscriber streamer(subscriber, broker, topic, false, "");
+}
+
+TEST_F(NexusSubscriberTest, test_create_subscriber_which_writes_to_file) {
+  const std::string broker = "broker_name";
+  const std::string topic = "topic_name";
+
+  extern std::string testDataPath;
+  const std::string testfileFullPath = testDataPath + "temp_unit_test_file.hdf5";
+
+  auto subscriber = std::make_shared<MockEventSubscriber>();
+  EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
+
+  NexusSubscriber streamer(subscriber, broker, topic, false, testfileFullPath);
+
+  // clean up the file created
+  std::remove(testfileFullPath.c_str());
 }
 
 TEST_F(NexusSubscriberTest, test_create_subscriber_quiet) {
@@ -46,7 +64,7 @@ TEST_F(NexusSubscriberTest, test_create_subscriber_quiet) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic, true);
+  NexusSubscriber streamer(subscriber, broker, topic, true, "");
 }
 
 TEST_F(NexusSubscriberTest, decode_received_message) {
@@ -62,7 +80,7 @@ TEST_F(NexusSubscriberTest, decode_received_message) {
 
   // Decode the message
   auto receivedEvents = std::make_shared<EventData>();
-  NexusSubscriber streamer(subscriber, broker, topic, true);
+  NexusSubscriber streamer(subscriber, broker, topic, true, "");
   EXPECT_NO_THROW(streamer.decodeMessage(receivedEvents, rawbuf));
 
   EXPECT_EQ(receivedEvents->getDetId(), exampleEventData->getDetId());
@@ -71,6 +89,8 @@ TEST_F(NexusSubscriberTest, decode_received_message) {
             exampleEventData->getNumberOfFrames());
   EXPECT_EQ(receivedEvents->getFrameNumber(),
             exampleEventData->getFrameNumber());
+  EXPECT_EQ(receivedEvents->getTotalCounts(),
+            exampleEventData->getTotalCounts());
 }
 
 TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {
@@ -87,7 +107,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic, true);
+  NexusSubscriber streamer(subscriber, broker, topic, true, "");
 
   // Should be called exactly once because the message contains the last frame
   EXPECT_CALL(*subscriber.get(), listenForMessage(_))
@@ -118,7 +138,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic, false);
+  NexusSubscriber streamer(subscriber, broker, topic, false, "");
 
   // Should be called exactly twice because there are messages containing the
   // last two frames

@@ -1,16 +1,13 @@
 project(isis_nexus_streamer)
 
 set( SRC_FILES
-        src/NexusFileReader.cpp
         src/NexusPublisher.cpp)
 
 set( INC_FILES
         include/EventPublisher.h
-        include/NexusFileReader.h
         include/NexusPublisher.h)
 
 set( TEST_FILES
-        test/NexusFileReaderTest.cpp
         test/NexusPublisherTest.cpp)
 
 #####################
@@ -18,18 +15,14 @@ set( TEST_FILES
 #####################
 
 include_directories(
-        ${HDF5_INCLUDE_DIRS}
         ${LibRDKafka_INCLUDE_DIR}
+        ${HDF5_INCLUDE_DIRS}
         ${PROJECT_SOURCE_DIR}/include)
 
-add_library(nexusFileReader_lib ${PROJECT_SOURCE_DIR}/src/NexusFileReader.cpp)
 add_library(nexusPublisher_lib ${PROJECT_SOURCE_DIR}/src/NexusPublisher.cpp)
 add_library(eventPublisher_lib
         ${PROJECT_SOURCE_DIR}/src/KafkaEventPublisher.cpp)
 
-target_link_libraries(nexusFileReader_lib
-        ${HDF5_LIBRARIES}
-        ${HDF5_CXX_LIBRARIES})
 target_link_libraries(eventPublisher_lib
         ${LibRDKafka_LIBRARIES})
 target_link_libraries(nexusPublisher_lib

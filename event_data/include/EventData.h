@@ -24,6 +24,7 @@ public:
     m_numberOfFrames = numberOfFrames;
   };
   void setFrameNumber(uint32_t frameNumber) { m_frameNumber = frameNumber; };
+  void setTotalCounts(uint64_t totalCounts) { m_totalCounts = totalCounts; };
 
   // Getters
   std::vector<uint32_t> getDetId() { return m_detId; };
@@ -31,6 +32,7 @@ public:
   uint32_t getNumberOfFrames() { return m_numberOfFrames; };
   uint32_t getFrameNumber() { return m_frameNumber; };
   uint32_t getNumberOfEvents() { return m_tof.size(); };
+  uint64_t getTotalCounts() { return m_totalCounts; };
 
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
 
@@ -41,6 +43,7 @@ private:
   std::vector<uint64_t> m_tof = {};
   uint32_t m_numberOfFrames;
   uint32_t m_frameNumber;
+  uint64_t m_totalCounts;
   size_t m_bufferSize;
 };
 
