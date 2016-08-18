@@ -44,10 +44,10 @@ def nexus_files_equal(filename_1, filename_2):
                 data_1 = f_read_1.get(dataset)
                 data_2 = f_read_2.get(dataset)
                 n_slices = 10
-                slice_size = int(np.floor(len(data_1)/n_slices))
+                slice_size = int(np.floor(len(data_1) / n_slices))
                 for n in range(1, n_slices):
-                    lower = (n-1)*slice_size
-                    upper = n*slice_size
+                    lower = (n - 1) * slice_size
+                    upper = n * slice_size
                     if not np.allclose(data_1[lower:upper], data_2[lower:upper], atol=0.01):
                         print("Files are different in dataset: " + dataset)
                         success = False
@@ -82,8 +82,12 @@ class Subprocess:
         # since it is available and behaves consistently on all platforms,
         # including Windows. Note it is only available starting in python 2.4.
 
+        # Discard stdout by using os.devnull. Writing stdout to file causes a big performance
+        # problem whilst reading the nexus file. Using subprocess.PIPE is horrible it uses a very
+        # small buffer and the process will simply hang when the buffer is full.
+        self.discard_stdout = open(os.devnull, 'w')
         self.p = subprocess.Popen(command,
-                                  stderr=subprocess.STDOUT, stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT, stdout=self.discard_stdout,
                                   cwd=working_dir, universal_newlines=True, env=env)
 
     def wait(self):
@@ -102,6 +106,7 @@ class Subprocess:
         else:
             self.terminated_by_signal = False
             self.exited = True
+        self.discard_stdout.close()
 
 
 class cd:
@@ -204,7 +209,6 @@ class JmxTool:
                    "/jmxrmi "
                    "--attributes " + attributes +
                    "--reporting-interval 2000")
-        print(command)
         self.jmxtool = pexpect.spawn(command)
 
     def get_output(self):
@@ -214,7 +218,8 @@ class JmxTool:
             for n in range(1, 10):
                 result = result + self.jmxtool.read_nonblocking(size=16777216, timeout=2)
         except:
-            print("Error reading from JmxTool, buffer too small?")
+            pass
+            # print("Error reading from JmxTool, buffer too small?")
         return result
 
     def __del__(self):
