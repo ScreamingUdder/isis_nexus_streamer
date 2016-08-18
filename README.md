@@ -12,7 +12,7 @@ Due to large file sizes altering the test data requires `git lfs` to be installe
 https://git-lfs.github.com/
 
 ## Unit tests
-The unit test executable `unitTests` needs to be passed the path of the test data directory as an argument.
+The unit test executable `unitTests` needs to be passed the path of the test data **directory** as an argument.
 Alternatively, run all units tests using ctest with
 ```
 ctest -VV
