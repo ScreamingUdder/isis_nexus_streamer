@@ -37,7 +37,9 @@ def nexus_files_equal(filename_1, filename_2):
     with h5py.File(filename_1, 'r') as f_read_1:
         with h5py.File(filename_2, 'r') as f_read_2:
             for dataset in small_datasets:
-                if not np.allclose(f_read_1.get(dataset), f_read_2.get(dataset), atol=0.01):
+                data_1 = f_read_1.get(dataset)
+                data_2 = f_read_2.get(dataset),
+                if not len(data_1) == len(data_2) or not np.allclose(data_1, data_2, atol=0.01):
                     print("Files are different in dataset: " + dataset)
                     success = False
             for dataset in datasets:
@@ -48,7 +50,8 @@ def nexus_files_equal(filename_1, filename_2):
                 for n in range(1, n_slices):
                     lower = (n - 1) * slice_size
                     upper = n * slice_size
-                    if not np.allclose(data_1[lower:upper], data_2[lower:upper], atol=0.01):
+                    if not len(data_1) == len(data_2) or not np.allclose(data_1[lower:upper], data_2[lower:upper],
+                                                                         atol=0.01):
                         print("Files are different in dataset: " + dataset)
                         success = False
 
