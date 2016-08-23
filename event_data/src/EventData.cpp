@@ -7,6 +7,12 @@ EventData::EventData()
 
 EventData::EventData(const uint8_t *buf) { decodeMessage(buf); }
 
+uint64_t EventData::getMessageID(const std::string &rawbuf) {
+  auto buf = reinterpret_cast<const uint8_t *>(rawbuf.c_str());
+  auto messageData = GetEventMessage(buf);
+  return messageData->id();
+}
+
 void EventData::decodeMessage(const uint8_t *buf) {
   auto messageData = GetEventMessage(buf);
   if (messageData->message_type() == MessageTypes_FlatbufEventData) {
