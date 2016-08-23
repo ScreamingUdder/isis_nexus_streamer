@@ -119,7 +119,7 @@ def pull_virtual_cluster_repo(args):
 def launch_consumer(args):
     if not args.producer_only:
         print("Launching consumer...", end="")
-        consumer_process = test_utils.Subprocess(
+        consumer_process = test_utils.ClientSubprocess(
             [os.path.join(args.build_dir, "nexus_consumer", "main_nexusSubscriber"),
              "-b", args.broker,
              "-t", args.topic_name,
@@ -132,7 +132,7 @@ def launch_consumer(args):
 
 def launch_producer(args):
     print("Launching producer...", end="")
-    producer_process = test_utils.Subprocess(
+    producer_process = test_utils.ClientSubprocess(
         [os.path.join(args.build_dir, "nexus_producer", "main_nexusPublisher"),
          "-f", os.path.join(args.data_path, args.datafile),
          "-b", args.broker,
@@ -163,7 +163,6 @@ def main():
         for host in jmxhosts:
             jmxtool_broker[host] = test_utils.JmxTool(args.build_dir, host, topic=args.topic_name)
             jmxtool_cpu[host] = test_utils.JmxTool(args.build_dir, host, metrics="cpu")
-            # jmxtool_memory[host] = test_utils.JmxTool(build_dir, host, metrics="memory")
 
         # Start the stopwatch and launch clients
         t0 = time.time()

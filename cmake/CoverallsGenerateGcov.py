@@ -2,18 +2,18 @@ import json
 import os
 import sys
 import getopt
-import subprocess
+import clientsubprocess
 import re
 import copy
 import hashlib
 
 def getBranchName(directory):
     """Returns the name of the current git branch"""
-    return subprocess.check_output(["git","rev-parse","--abbrev-ref","HEAD"],cwd=directory).strip()
+    return clientsubprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=directory).strip()
 
 def getRemotes(directory):
     """Returns list of remote git repositories"""
-    gitRemoteOutput = subprocess.check_output(['git','remote','-v'],cwd=directory)
+    gitRemoteOutput = clientsubprocess.check_output(['git', 'remote', '-v'], cwd=directory)
     remotes = []
     for line in gitRemoteOutput.splitlines(): 
         if '(fetch)' in line:
@@ -23,7 +23,7 @@ def getRemotes(directory):
 
 def gitLogValue(format,directory):
     """Returns git log value specified by format"""
-    return subprocess.check_output(["git","log","-1","--pretty=format:%"+format],cwd=directory).strip()
+    return clientsubprocess.check_output(["git", "log", "-1", "--pretty=format:%" + format], cwd=directory).strip()
 
 def getAllFilesWithExtension(directory,extension):
     """Recursively return a list of all files in directory with specified extension"""
@@ -72,7 +72,7 @@ def main(argv):
     gcdaAllFiles = getAllFilesWithExtension(COV_PATH,".gcda")
     for gcdaFile in gcdaAllFiles:
         gcdaDirectory = os.path.dirname(gcdaFile)
-        subprocess.check_call(["gcov","-p","-o",gcdaDirectory,gcdaFile],cwd=COV_PATH)
+        clientsubprocess.check_call(["gcov", "-p", "-o", gcdaDirectory, gcdaFile], cwd=COV_PATH)
 
     gcovAllFiles = getAllFilesWithExtension(COV_PATH,".gcov")
 
