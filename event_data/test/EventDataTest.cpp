@@ -19,7 +19,7 @@ TEST(EventDataTest, get_buffer_pointer) {
   std::vector<uint64_t> tofs = {4, 3, 2, 1};
   uint32_t frameNumber = 2;
   uint32_t numberOfFrames = 10;
-  uint64_t messageID = 0;
+  uint64_t messageID = 3;
 
   EXPECT_NO_THROW(events.setDetId(detIds));
   EXPECT_NO_THROW(events.setTof(tofs));
