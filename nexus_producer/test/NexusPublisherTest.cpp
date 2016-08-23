@@ -93,8 +93,14 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
   EXPECT_EQ(256, receivedEventData.getNumberOfEvents());
 }
 
-TEST(NexusPublisherTest, test_stream_data) {
+MATCHER_P(CheckMessageID, messageID, "") {
+  auto buf = reinterpret_cast<const uint8_t *>(arg);
+  auto messageData = GetEventMessage(buf);
+  return (messageID ==  messageData->id());
+}
 
+TEST(NexusPublisherTest, test_stream_data) {
+  using ::testing::Sequence;
   extern std::string testDataPath;
 
   const std::string broker = "broker_name";
@@ -106,8 +112,12 @@ TEST(NexusPublisherTest, test_stream_data) {
   const int messagesPerFrame = 1;
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
-  EXPECT_CALL(*publisher.get(), sendMessage(_, _))
-      .Times(numberOfFrames * messagesPerFrame);
+
+  Sequence s1;
+  for (uint64_t messageID = 0; messageID < numberOfFrames * messagesPerFrame; messageID++) {
+    EXPECT_CALL(*publisher.get(), sendMessage(CheckMessageID(messageID), _))
+        .InSequence(s1);
+  }
 
   NexusPublisher streamer(publisher, broker, topic,
                           testDataPath + "SANS_test_reduced.hdf5", false);

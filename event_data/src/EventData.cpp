@@ -30,7 +30,7 @@ void EventData::decodeMessage(const uint8_t *buf) {
     setFrameNumber(eventData->frameNumber());
     setTotalCounts(eventData->totalCounts());
   } else {
-    std::cout << "Unrecognised mesage type" << std::endl;
+    std::cout << "Unrecognised message type" << std::endl;
   }
 }
 
