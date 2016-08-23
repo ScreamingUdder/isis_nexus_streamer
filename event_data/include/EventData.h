@@ -6,6 +6,8 @@
 
 #include "eventDataFlatBuffer_generated.h"
 
+uint64_t getMessageID(const std::string &rawbuf);
+
 class EventData {
 
 public:
@@ -34,7 +36,6 @@ public:
   uint32_t getNumberOfEvents() { return m_tof.size(); }
   uint64_t getTotalCounts() { return m_totalCounts; }
 
-  uint64_t getMessageID(const std::string &rawbuf);
   flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer, uint64_t messageID);
 
   size_t getBufferSize() { return m_bufferSize; }
