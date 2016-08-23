@@ -99,8 +99,7 @@ void NexusPublisher::streamData(const int messagesPerFrame) {
             << "Bytes sent: " << totalBytesSent << std::endl
             << "Average message size: "
             << totalBytesSent / (messagesPerFrame * numberOfFrames * 1000)
-            << " kB"
-            << std::endl;
+            << " kB" << std::endl;
 }
 
 /**
@@ -116,10 +115,11 @@ int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
   auto messageData = createMessageData(frameNumber, messagesPerFrame);
   int64_t dataSize = 0;
   for (const auto &message : messageData) {
-    auto buffer_uptr = message->getBufferPointer(rawbuf);
+    auto buffer_uptr = message->getBufferPointer(rawbuf, m_messageID);
     m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
                              message->getBufferSize());
     dataSize += rawbuf.size();
+    m_messageID++;
   }
   return dataSize;
 }

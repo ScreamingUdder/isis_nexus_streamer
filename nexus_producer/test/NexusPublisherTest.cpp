@@ -41,6 +41,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
 
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";
+  uint64_t messageID = 0;
 
   auto publisher = std::make_shared<MockEventPublisher>();
 
@@ -51,7 +52,7 @@ TEST(NexusPublisherTest, test_create_message_data) {
   auto eventData = streamer.createMessageData(static_cast<hsize_t>(1), 1);
 
   std::string rawbuf;
-  eventData[0]->getBufferPointer(rawbuf);
+  eventData[0]->getBufferPointer(rawbuf, messageID);
 
   auto receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
@@ -65,6 +66,7 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
 
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";
+  uint64_t messageID = 0;
 
   auto publisher = std::make_shared<MockEventPublisher>();
 
@@ -75,7 +77,7 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
   auto eventData = streamer.createMessageData(static_cast<hsize_t>(1), 3);
 
   std::string rawbuf;
-  eventData[0]->getBufferPointer(rawbuf);
+  eventData[0]->getBufferPointer(rawbuf, messageID);
 
   auto receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
@@ -84,7 +86,7 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
   EXPECT_EQ(300, receivedEventData.getNumberOfFrames());
   EXPECT_EQ(1, receivedEventData.getFrameNumber());
 
-  eventData[2]->getBufferPointer(rawbuf);
+  eventData[2]->getBufferPointer(rawbuf, messageID);
   receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   // Last message should have remaining 256 events

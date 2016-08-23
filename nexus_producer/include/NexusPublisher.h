@@ -25,6 +25,7 @@ private:
   std::shared_ptr<EventPublisher> m_publisher;
   std::shared_ptr<NexusFileReader> m_fileReader;
   bool m_quietMode = false;
+  uint64_t m_messageID = 0;
 };
 
 #endif // ISIS_NEXUS_STREAMER_NEXUSPUBLISHER_H

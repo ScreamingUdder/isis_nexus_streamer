@@ -28,7 +28,7 @@ void EventData::decodeMessage(const uint8_t *buf) {
   }
 }
 
-flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
+flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer, uint64_t messageID) {
   flatbuffers::FlatBufferBuilder builder;
 
   auto detIdsVector = builder.CreateVector(m_detId);
@@ -39,7 +39,7 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer) {
       m_frameNumber, m_numberOfFrames, m_totalCounts);
 
   auto messageOffset = CreateEventMessage(
-      builder, MessageTypes_FlatbufEventData, messageFlatbuf.Union());
+      builder, MessageTypes_FlatbufEventData, messageFlatbuf.Union(), messageID);
 
   builder.Finish(messageOffset);
 

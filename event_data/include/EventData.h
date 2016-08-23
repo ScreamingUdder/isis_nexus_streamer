@@ -34,7 +34,7 @@ public:
   uint32_t getNumberOfEvents() { return m_tof.size(); }
   uint64_t getTotalCounts() { return m_totalCounts; }
 
-  flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
+  flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer, uint64_t messageID);
 
   size_t getBufferSize() { return m_bufferSize; }
 

@@ -70,13 +70,14 @@ TEST_F(NexusSubscriberTest, test_create_subscriber_quiet) {
 TEST_F(NexusSubscriberTest, decode_received_message) {
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";
+  uint64_t messageID = 0;
 
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
   auto exampleEventData = createEventData();
   std::string rawbuf;
-  EXPECT_NO_THROW(exampleEventData->getBufferPointer(rawbuf));
+  EXPECT_NO_THROW(exampleEventData->getBufferPointer(rawbuf, messageID));
 
   // Decode the message
   auto receivedEvents = std::make_shared<EventData>();
@@ -96,13 +97,14 @@ TEST_F(NexusSubscriberTest, decode_received_message) {
 TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";
+  uint64_t messageID = 0;
 
   auto exampleEventData = createEventData();
   // Make this the last frame so that listenForMessage will only be called once
   exampleEventData->setNumberOfFrames(9);
   exampleEventData->setFrameNumber(9);
   std::string rawbuf;
-  EXPECT_NO_THROW(exampleEventData->getBufferPointer(rawbuf));
+  EXPECT_NO_THROW(exampleEventData->getBufferPointer(rawbuf, messageID));
 
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
@@ -119,6 +121,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {
 TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   const std::string broker = "broker_name";
   const std::string topic = "topic_name";
+  uint64_t messageID = 0;
 
   // Make this the second to last frame so that listenForMessage will be called
   // twice
@@ -126,14 +129,14 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   exampleEventData_first->setNumberOfFrames(9);
   exampleEventData_first->setFrameNumber(7);
   std::string rawbuf_first;
-  EXPECT_NO_THROW(exampleEventData_first->getBufferPointer(rawbuf_first));
+  EXPECT_NO_THROW(exampleEventData_first->getBufferPointer(rawbuf_first, messageID));
 
   // Last frame
   auto exampleEventData_second = createEventData();
   exampleEventData_second->setNumberOfFrames(9);
   exampleEventData_second->setFrameNumber(8);
   std::string rawbuf_second;
-  EXPECT_NO_THROW(exampleEventData_second->getBufferPointer(rawbuf_second));
+  EXPECT_NO_THROW(exampleEventData_second->getBufferPointer(rawbuf_second, messageID));
 
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
