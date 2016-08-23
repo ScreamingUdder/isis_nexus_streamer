@@ -113,6 +113,7 @@ TEST(NexusPublisherTest, test_stream_data) {
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
 
+  // test that messages have sequential id numbers
   Sequence s1;
   for (uint64_t messageID = 0; messageID < numberOfFrames * messagesPerFrame; messageID++) {
     EXPECT_CALL(*publisher.get(), sendMessage(CheckMessageID(messageID), _))
