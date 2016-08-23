@@ -119,7 +119,7 @@ def pull_virtual_cluster_repo(args):
 def launch_consumer(args):
     if not args.producer_only:
         print("Launching consumer...", end="")
-        consumer_process = test_utils.ClientSubprocess(
+        consumer_process = test_utils.KafkaSubprocess(
             [os.path.join(args.build_dir, "nexus_consumer", "main_nexusSubscriber"),
              "-b", args.broker,
              "-t", args.topic_name,
@@ -132,7 +132,7 @@ def launch_consumer(args):
 
 def launch_producer(args):
     print("Launching producer...", end="")
-    producer_process = test_utils.ClientSubprocess(
+    producer_process = test_utils.KafkaSubprocess(
         [os.path.join(args.build_dir, "nexus_producer", "main_nexusPublisher"),
          "-f", os.path.join(args.data_path, args.datafile),
          "-b", args.broker,

@@ -2,7 +2,7 @@ import os
 import subprocess
 
 
-class ClientSubprocess:
+class KafkaSubprocess:
     def __init__(self, command, working_dir=None, env=None):
         """Changes into a specified directory, if provided, and executes a command.
         Restores the old directory afterwards.
