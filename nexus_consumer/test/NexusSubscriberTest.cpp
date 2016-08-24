@@ -3,6 +3,7 @@
 #include "EventData.h"
 #include "MockEventSubscriber.h"
 #include "NexusSubscriber.h"
+#include "../../nexus_file_reader/include/NexusFileReader.h"
 
 using ::testing::AtLeast;
 using ::testing::_;
@@ -28,7 +29,23 @@ public:
     exampleEventData->setTotalCounts(totalCounts);
 
     return exampleEventData;
-  };
+  }
+
+  std::shared_ptr<EventData> createEventData(std::vector<uint32_t> detIds, uint32_t frameNumber) {
+    auto exampleEventData = std::make_shared<EventData>();
+
+    std::vector<uint64_t> tofs = {4, 3, 2, 1};
+    uint32_t numberOfFrames = 3;
+    uint64_t totalCounts = 12;
+
+    exampleEventData->setDetId(detIds);
+    exampleEventData->setTof(tofs);
+    exampleEventData->setNumberOfFrames(numberOfFrames);
+    exampleEventData->setFrameNumber(frameNumber);
+    exampleEventData->setTotalCounts(totalCounts);
+
+    return exampleEventData;
+  }
 };
 
 TEST_F(NexusSubscriberTest, test_create_subscriber) {
@@ -162,27 +179,28 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_received_out_of_order) {
   const std::string topic = "topic_name";
   uint64_t messageID = 0;
 
+  extern std::string testDataPath;
+  const std::string testfileFullPath =
+      testDataPath + "temp_unit_test_file.hdf5";
+
   // Make this the third to last frame so that listenForMessage will be called
-  // twice
-  auto exampleEventData_first = createEventData();
-  exampleEventData_first->setNumberOfFrames(9);
-  exampleEventData_first->setFrameNumber(6);
+  // three times
+  std::vector<uint32_t> firstIds = {1, 1, 1, 1};
+  auto exampleEventData_first = createEventData(firstIds, 0);
   std::string rawbuf_first;
   EXPECT_NO_THROW(
       exampleEventData_first->getBufferPointer(rawbuf_first, messageID));
 
   // Penultimate frame
-  auto exampleEventData_second = createEventData();
-  exampleEventData_second->setNumberOfFrames(9);
-  exampleEventData_second->setFrameNumber(7);
+  std::vector<uint32_t> secondIds = {2, 2, 2, 2};
+  auto exampleEventData_second = createEventData(secondIds, 1);
   std::string rawbuf_second;
   EXPECT_NO_THROW(
       exampleEventData_second->getBufferPointer(rawbuf_second, messageID + 1));
 
   // Last frame
-  auto exampleEventData_third = createEventData();
-  exampleEventData_third->setNumberOfFrames(9);
-  exampleEventData_third->setFrameNumber(8);
+  std::vector<uint32_t> thirdIds = {3, 3, 3, 3};
+  auto exampleEventData_third = createEventData(thirdIds, 2);
   std::string rawbuf_third;
   EXPECT_NO_THROW(
       exampleEventData_third->getBufferPointer(rawbuf_third, messageID + 2));
@@ -190,7 +208,7 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_received_out_of_order) {
   auto subscriber = std::make_shared<MockEventSubscriber>();
   EXPECT_CALL(*subscriber.get(), setUp(broker, topic)).Times(AtLeast(1));
 
-  NexusSubscriber streamer(subscriber, broker, topic, false, "");
+  NexusSubscriber streamer(subscriber, broker, topic, false, testfileFullPath);
 
   // Should be called exactly three times because there are messages containing the
   // last three frames
@@ -200,4 +218,20 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_received_out_of_order) {
       .WillOnce(DoAll(SetArgReferee<0>(rawbuf_second), Return(true)));
 
   EXPECT_NO_THROW(streamer.listen());
+
+  // Check data is in correct order in file
+  auto fileReader = NexusFileReader(testfileFullPath);
+  std::vector<uint32_t> firstIdsResult;
+  fileReader.getEventDetIds(firstIdsResult, 0);
+  std::vector<uint32_t> secondIdsResult;
+  fileReader.getEventDetIds(secondIdsResult, 1);
+  std::vector<uint32_t> thirdIdsResult;
+  fileReader.getEventDetIds(thirdIdsResult, 2);
+
+  EXPECT_THAT(firstIds, ::testing::ContainerEq(firstIdsResult));
+  EXPECT_THAT(secondIds, ::testing::ContainerEq(secondIdsResult));
+  EXPECT_THAT(thirdIds, ::testing::ContainerEq(thirdIdsResult));
+
+  // clean up the file created
+  std::remove(testfileFullPath.c_str());
 }
