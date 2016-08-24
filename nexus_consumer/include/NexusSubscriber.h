@@ -16,6 +16,7 @@ struct ReceivedDataStats {
   int32_t previousFrameNumber = std::numeric_limits<int32_t>::max();
   int numberOfFramesReceived = 0; // to check no messages lost
   int messagesPerFrame = 1;
+  uint64_t previousMessageID = std::numeric_limits<uint64_t>::max();
 };
 
 class NexusSubscriber {
@@ -34,7 +35,6 @@ private:
   std::shared_ptr<EventSubscriber> m_subscriber;
   std::shared_ptr<NexusFileWriter> m_filewriter;
   bool m_quietMode = false;
-  uint64_t m_previousMessageID = std::numeric_limits<uint64_t>::max();
   std::unordered_map<uint64_t, std::string> m_futureMessages;
 
   void processMessage(std::shared_ptr<EventData> receivedData,

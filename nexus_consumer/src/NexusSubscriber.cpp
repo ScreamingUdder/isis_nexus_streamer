@@ -94,11 +94,11 @@ void NexusSubscriber::decodeMessage(
   // if the message is in order or is the first message then go ahead and decode
   // it
   auto currentMessageID = getMessageID(rawbuf);
-  if (currentMessageID == m_previousMessageID + 1 ||
-      m_previousMessageID == std::numeric_limits<uint64_t>::max()) {
+  if (currentMessageID == receivedDataStats->previousMessageID + 1 ||
+      receivedDataStats->previousMessageID == std::numeric_limits<uint64_t>::max()) {
     eventData->decodeMessage(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
     processMessage(eventData, rawbuf, receivedDataStats);
-    m_previousMessageID = currentMessageID;
+    receivedDataStats->previousMessageID = currentMessageID;
 
     // if this was a message in the map then remove it
     if (m_futureMessages.count(currentMessageID) > 0) {
