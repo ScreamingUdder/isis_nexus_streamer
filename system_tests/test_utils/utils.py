@@ -21,9 +21,11 @@ def nexus_files_equal(filename_1, filename_2):
     success = True
     # entire small datasets can be loaded into memory
     small_datasets = [
+        '/raw_data_1/detector_1_events/event_index'
+    ]
+    scalar_datasets = [
         '/raw_data_1/detector_1_events/total_counts',
-        '/raw_data_1/detector_1_events/event_index',
-        '/raw_data_1/good_frames',
+        '/raw_data_1/good_frames'
     ]
     # larger datasets will be read and compared in smaller slices
     datasets = [
@@ -34,10 +36,18 @@ def nexus_files_equal(filename_1, filename_2):
         with h5py.File(filename_2, 'r') as f_read_2:
             for dataset in small_datasets:
                 data_1 = f_read_1.get(dataset)
-                data_2 = f_read_2.get(dataset),
+                data_2 = f_read_2.get(dataset)
                 if not len(data_1) == len(data_2) or not np.allclose(data_1, data_2, atol=0.01):
                     print("FAIL: Files are different in dataset: " + dataset)
                     success = False
+
+            for dataset in scalar_datasets:
+                data_1 = f_read_1.get(dataset)
+                data_2 = f_read_2.get(dataset),
+                if not np.isclose(data_1, data_2, atol=0.01):
+                    print("FAIL: Files are different in dataset: " + dataset)
+                    success = False
+
             for dataset in datasets:
                 data_1 = f_read_1.get(dataset)
                 data_2 = f_read_2.get(dataset)

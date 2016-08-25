@@ -113,16 +113,22 @@ int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
                                              size_t frameNumber,
                                              const int messagesPerFrame) {
   auto messageData = createMessageData(frameNumber, messagesPerFrame);
-  if (m_randomMode)
-    std::random_shuffle(messageData.begin(), messageData.end());
-  int64_t dataSize = 0;
-  for (const auto &message : messageData) {
-    auto buffer_uptr = message->getBufferPointer(rawbuf, m_messageID);
-    m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
-                             message->getBufferSize());
-    dataSize += rawbuf.size();
-    m_messageID++;
+  std::vector<int> indexes;
+  indexes.reserve(messageData.size());
+  for (int i = 0; i < messageData.size(); ++i)
+    indexes.push_back(i);
+  if (m_randomMode && indexes.size() > 1) {
+    std::random_shuffle(indexes.begin()+1, indexes.end());
   }
+  int64_t dataSize = 0;
+  for (const auto &index : indexes) {
+    auto buffer_uptr =
+        messageData[index]->getBufferPointer(rawbuf, m_messageID + index);
+    m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
+                             messageData[index]->getBufferSize());
+    dataSize += rawbuf.size();
+  }
+  m_messageID += indexes.size();
   return dataSize;
 }
 

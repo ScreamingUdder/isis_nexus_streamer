@@ -87,6 +87,8 @@ def parse_arguments():
                         help='hostname or address of a broker in the cluster')
     parser.add_argument('-g', '--producer_only', action='store_true',
                         help='use g flag to launch the producer but not consumer')
+    parser.add_argument('-r', '--random', action='store_true',
+                        help='publish messages within each frame in a random order')
     return parser.parse_args()
 
 
@@ -132,13 +134,23 @@ def launch_consumer(args):
 
 def launch_producer(args):
     print("Launching producer...", end="")
-    producer_process = test_utils.KafkaSubprocess(
-        [os.path.join(args.build_dir, "nexus_producer", "main_nexusPublisher"),
-         "-f", os.path.join(args.data_path, args.datafile),
-         "-b", args.broker,
-         "-t", args.topic_name,
-         "-m", "1",
-         "-q"])
+    if args.random:
+        producer_process = test_utils.KafkaSubprocess(
+            [os.path.join(args.build_dir, "nexus_producer", "main_nexusPublisher"),
+             "-f", os.path.join(args.data_path, args.datafile),
+             "-b", args.broker,
+             "-t", args.topic_name,
+             "-m", "10",
+             "-r",
+             "-q"])
+    else:
+        producer_process = test_utils.KafkaSubprocess(
+            [os.path.join(args.build_dir, "nexus_producer", "main_nexusPublisher"),
+             "-f", os.path.join(args.data_path, args.datafile),
+             "-b", args.broker,
+             "-t", args.topic_name,
+             "-m", "1",
+             "-q"])
     print(" done.")
     return producer_process
 
