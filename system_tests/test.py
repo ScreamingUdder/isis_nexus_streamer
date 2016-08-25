@@ -165,7 +165,8 @@ def main():
 
     # Start up the virtual cluster
     with test_utils.Cluster(repo_dir):
-        args.build_dir = os.path.join(os.getcwd())
+        args.build_dir = os.path.dirname(os.path.realpath(sys.argv[0])).rsplit('/', 1)[0]
+        print(args.build_dir)
 
         jmxhosts = create_jmxhosts_list(args)
 
