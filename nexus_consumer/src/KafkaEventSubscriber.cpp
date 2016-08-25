@@ -20,8 +20,10 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
                                  const std::string &topic_str) {
   std::string error_str;
 
-  RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-  RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+  auto conf = std::unique_ptr<RdKafka::Conf>(
+      RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
+  auto tconf = std::unique_ptr<RdKafka::Conf>(
+      RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC));
 
   conf->set("metadata.broker.list", broker_str, error_str);
   conf->set("message.max.bytes", "10000000", error_str);
@@ -30,7 +32,7 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
   // Create consumer using accumulated global configuration.
   m_consumer_ptr = std::unique_ptr<RdKafka::Consumer>(
-      RdKafka::Consumer::create(conf, error_str));
+      RdKafka::Consumer::create(conf.get(), error_str));
   if (!m_consumer_ptr.get()) {
     std::cerr << "Failed to create consumer: " << error_str << std::endl;
     exit(1);
@@ -40,15 +42,15 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
   // Create topic handle.
   m_topic_ptr = std::unique_ptr<RdKafka::Topic>(RdKafka::Topic::create(
-      m_consumer_ptr.get(), topic_str, tconf, error_str));
+      m_consumer_ptr.get(), topic_str, tconf.get(), error_str));
   if (!m_topic_ptr.get()) {
     std::cerr << "Failed to create topic: " << error_str << std::endl;
     exit(1);
   }
 
   // Start consumer for topic+partition at start offset
-  RdKafka::ErrorCode resp =
-      m_consumer_ptr->start(m_topic_ptr.get(), PARTITION, RdKafka::Topic::OFFSET_END);
+  RdKafka::ErrorCode resp = m_consumer_ptr->start(m_topic_ptr.get(), PARTITION,
+                                                  RdKafka::Topic::OFFSET_END);
   if (resp != RdKafka::ERR_NO_ERROR) {
     std::cerr << "Failed to start consumer: " << RdKafka::err2str(resp)
               << std::endl;

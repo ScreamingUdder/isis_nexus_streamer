@@ -9,4 +9,11 @@ table FlatbufEventData {
     totalCounts:ulong;
 }
 
-root_type FlatbufEventData;
+union MessageTypes { FlatbufEventData }
+
+table EventMessage {
+    message: MessageTypes;
+    id: ulong;
+}
+
+root_type EventMessage;

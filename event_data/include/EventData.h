@@ -6,6 +6,8 @@
 
 #include "eventDataFlatBuffer_generated.h"
 
+uint64_t getMessageID(const std::string &rawbuf);
+
 class EventData {
 
 public:
@@ -18,25 +20,25 @@ public:
   void decodeMessage(const uint8_t *buf);
 
   // Setters
-  void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; };
-  void setTof(std::vector<uint64_t> tofs) { m_tof = tofs; };
+  void setDetId(std::vector<uint32_t> detIds) { m_detId = detIds; }
+  void setTof(std::vector<uint64_t> tofs) { m_tof = tofs; }
   void setNumberOfFrames(uint32_t numberOfFrames) {
     m_numberOfFrames = numberOfFrames;
   };
-  void setFrameNumber(uint32_t frameNumber) { m_frameNumber = frameNumber; };
-  void setTotalCounts(uint64_t totalCounts) { m_totalCounts = totalCounts; };
+  void setFrameNumber(uint32_t frameNumber) { m_frameNumber = frameNumber; }
+  void setTotalCounts(uint64_t totalCounts) { m_totalCounts = totalCounts; }
 
   // Getters
-  std::vector<uint32_t> getDetId() { return m_detId; };
-  std::vector<uint64_t> getTof() { return m_tof; };
-  uint32_t getNumberOfFrames() { return m_numberOfFrames; };
-  uint32_t getFrameNumber() { return m_frameNumber; };
-  uint32_t getNumberOfEvents() { return m_tof.size(); };
-  uint64_t getTotalCounts() { return m_totalCounts; };
+  std::vector<uint32_t> getDetId() { return m_detId; }
+  std::vector<uint64_t> getTof() { return m_tof; }
+  uint32_t getNumberOfFrames() { return m_numberOfFrames; }
+  uint32_t getFrameNumber() { return m_frameNumber; }
+  uint32_t getNumberOfEvents() { return m_tof.size(); }
+  uint64_t getTotalCounts() { return m_totalCounts; }
 
-  flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer);
+  flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer, uint64_t messageID);
 
-  size_t getBufferSize() { return m_bufferSize; };
+  size_t getBufferSize() { return m_bufferSize; }
 
 private:
   std::vector<uint32_t> m_detId = {};

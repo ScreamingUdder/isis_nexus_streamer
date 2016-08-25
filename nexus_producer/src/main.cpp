@@ -18,9 +18,10 @@ int main(int argc, char **argv) {
   std::string topic = "test_topic";
   std::string compression = "";
   bool quietMode = false;
+  bool randomMode = false;
   int messagesPerFrame = 1;
 
-  while ((opt = getopt(argc, argv, "f:b:t:c:m:q")) != -1) {
+  while ((opt = getopt(argc, argv, "f:b:t:c:m:qr")) != -1) {
     switch (opt) {
 
     case 'f':
@@ -47,6 +48,10 @@ int main(int argc, char **argv) {
       quietMode = true;
       break;
 
+    case 'r':
+      randomMode = true;
+      break;
+
     default:
       goto usage;
     }
@@ -54,18 +59,19 @@ int main(int argc, char **argv) {
 
   if (filename.empty()) {
   usage:
-    fprintf(stderr, "Usage: %s -f <filepath> "
-                    "[-b <host:port>] "
-                    "[-t <topic_name>] "
-                    "[-m <messages_per_frame>] "
-                    "[-q] "
+    fprintf(stderr, "Usage: %s -f <filepath>    NeXus filename including full path\n"
+                    "[-b <host>]    hostname of a broker in the Kafka cluster\n"
+                    "[-t <topic_name>]    name of the topic to publish to\n"
+                    "[-m <messages_per_frame>]    number of messages per frame\n"
+                    "[-q]    quiet mode, make publisher less chatty\n"
+                    "[-r]    random mode, serve messages within each frame in a random order\n"
                     "\n",
             argv[0]);
     exit(1);
   }
 
   auto publisher = std::make_shared<KafkaEventPublisher>(compression);
-  NexusPublisher streamer(publisher, broker, topic, filename, quietMode);
+  NexusPublisher streamer(publisher, broker, topic, filename, quietMode, randomMode);
   streamer.streamData(messagesPerFrame);
 
   return 0;

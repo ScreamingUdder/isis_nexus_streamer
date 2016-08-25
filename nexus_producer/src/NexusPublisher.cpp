@@ -20,10 +20,10 @@ NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
                                const std::string &brokerAddress,
                                const std::string &streamName,
                                const std::string &filename,
-                               const bool quietMode)
+                               const bool quietMode, const bool randomMode)
     : m_publisher(publisher),
       m_fileReader(std::make_shared<NexusFileReader>(filename)),
-      m_quietMode(quietMode) {
+      m_quietMode(quietMode), m_randomMode(randomMode) {
   publisher->setUp(brokerAddress, streamName);
 }
 
@@ -99,8 +99,7 @@ void NexusPublisher::streamData(const int messagesPerFrame) {
             << "Bytes sent: " << totalBytesSent << std::endl
             << "Average message size: "
             << totalBytesSent / (messagesPerFrame * numberOfFrames * 1000)
-            << " kB"
-            << std::endl;
+            << " kB" << std::endl;
 }
 
 /**
@@ -114,13 +113,22 @@ int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
                                              size_t frameNumber,
                                              const int messagesPerFrame) {
   auto messageData = createMessageData(frameNumber, messagesPerFrame);
+  std::vector<int> indexes;
+  indexes.reserve(messageData.size());
+  for (int i = 0; i < messageData.size(); ++i)
+    indexes.push_back(i);
+  if (m_randomMode && indexes.size() > 1) {
+    std::random_shuffle(indexes.begin()+1, indexes.end());
+  }
   int64_t dataSize = 0;
-  for (const auto &message : messageData) {
-    auto buffer_uptr = message->getBufferPointer(rawbuf);
+  for (const auto &index : indexes) {
+    auto buffer_uptr =
+        messageData[index]->getBufferPointer(rawbuf, m_messageID + index);
     m_publisher->sendMessage(reinterpret_cast<char *>(buffer_uptr.get()),
-                             message->getBufferSize());
+                             messageData[index]->getBufferSize());
     dataSize += rawbuf.size();
   }
+  m_messageID += indexes.size();
   return dataSize;
 }
 

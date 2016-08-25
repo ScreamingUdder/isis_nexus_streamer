@@ -8,6 +8,23 @@
 
 
 struct FlatbufEventData;
+struct EventMessage;
+
+enum MessageTypes {
+  MessageTypes_NONE = 0,
+  MessageTypes_FlatbufEventData = 1,
+  MessageTypes_MIN = MessageTypes_NONE,
+  MessageTypes_MAX = MessageTypes_FlatbufEventData
+};
+
+inline const char **EnumNamesMessageTypes() {
+  static const char *names[] = { "NONE", "FlatbufEventData", nullptr };
+  return names;
+}
+
+inline const char *EnumNameMessageTypes(MessageTypes e) { return EnumNamesMessageTypes()[static_cast<int>(e)]; }
+
+inline bool VerifyMessageTypes(flatbuffers::Verifier &verifier, const void *union_obj, MessageTypes type);
 
 struct FlatbufEventData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -72,11 +89,63 @@ inline flatbuffers::Offset<FlatbufEventData> CreateFlatbufEventData(flatbuffers:
   return builder_.Finish();
 }
 
-inline const FlatbufEventData *GetFlatbufEventData(const void *buf) { return flatbuffers::GetRoot<FlatbufEventData>(buf); }
+struct EventMessage FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_MESSAGE_TYPE = 4,
+    VT_MESSAGE = 6,
+    VT_ID = 8
+  };
+  MessageTypes message_type() const { return static_cast<MessageTypes>(GetField<uint8_t>(VT_MESSAGE_TYPE, 0)); }
+  const void *message() const { return GetPointer<const void *>(VT_MESSAGE); }
+  uint64_t id() const { return GetField<uint64_t>(VT_ID, 0); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint8_t>(verifier, VT_MESSAGE_TYPE) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_MESSAGE) &&
+           VerifyMessageTypes(verifier, message(), message_type()) &&
+           VerifyField<uint64_t>(verifier, VT_ID) &&
+           verifier.EndTable();
+  }
+};
 
-inline bool VerifyFlatbufEventDataBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<FlatbufEventData>(); }
+struct EventMessageBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_message_type(MessageTypes message_type) { fbb_.AddElement<uint8_t>(EventMessage::VT_MESSAGE_TYPE, static_cast<uint8_t>(message_type), 0); }
+  void add_message(flatbuffers::Offset<void> message) { fbb_.AddOffset(EventMessage::VT_MESSAGE, message); }
+  void add_id(uint64_t id) { fbb_.AddElement<uint64_t>(EventMessage::VT_ID, id, 0); }
+  EventMessageBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  EventMessageBuilder &operator=(const EventMessageBuilder &);
+  flatbuffers::Offset<EventMessage> Finish() {
+    auto o = flatbuffers::Offset<EventMessage>(fbb_.EndTable(start_, 3));
+    return o;
+  }
+};
 
-inline void FinishFlatbufEventDataBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<FlatbufEventData> root) { fbb.Finish(root); }
+inline flatbuffers::Offset<EventMessage> CreateEventMessage(flatbuffers::FlatBufferBuilder &_fbb,
+   MessageTypes message_type = MessageTypes_NONE,
+   flatbuffers::Offset<void> message = 0,
+   uint64_t id = 0) {
+  EventMessageBuilder builder_(_fbb);
+  builder_.add_id(id);
+  builder_.add_message(message);
+  builder_.add_message_type(message_type);
+  return builder_.Finish();
+}
+
+inline bool VerifyMessageTypes(flatbuffers::Verifier &verifier, const void *union_obj, MessageTypes type) {
+  switch (type) {
+    case MessageTypes_NONE: return true;
+    case MessageTypes_FlatbufEventData: return verifier.VerifyTable(reinterpret_cast<const FlatbufEventData *>(union_obj));
+    default: return false;
+  }
+}
+
+inline const EventMessage *GetEventMessage(const void *buf) { return flatbuffers::GetRoot<EventMessage>(buf); }
+
+inline bool VerifyEventMessageBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<EventMessage>(); }
+
+inline void FinishEventMessageBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<EventMessage> root) { fbb.Finish(root); }
 
 
 #endif  // FLATBUFFERS_GENERATED_EVENTDATAFLATBUFFER_H_
