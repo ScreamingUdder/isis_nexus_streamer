@@ -20,10 +20,10 @@ NexusPublisher::NexusPublisher(std::shared_ptr<EventPublisher> publisher,
                                const std::string &brokerAddress,
                                const std::string &streamName,
                                const std::string &filename,
-                               const bool quietMode)
+                               const bool quietMode, const bool randomMode)
     : m_publisher(publisher),
       m_fileReader(std::make_shared<NexusFileReader>(filename)),
-      m_quietMode(quietMode) {
+      m_quietMode(quietMode), m_randomMode(randomMode) {
   publisher->setUp(brokerAddress, streamName);
 }
 
@@ -113,6 +113,8 @@ int64_t NexusPublisher::createAndSendMessage(std::string &rawbuf,
                                              size_t frameNumber,
                                              const int messagesPerFrame) {
   auto messageData = createMessageData(frameNumber, messagesPerFrame);
+  if (m_randomMode)
+    std::random_shuffle(messageData.begin(), messageData.end());
   int64_t dataSize = 0;
   for (const auto &message : messageData) {
     auto buffer_uptr = message->getBufferPointer(rawbuf, m_messageID);
