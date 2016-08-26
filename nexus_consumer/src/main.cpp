@@ -38,11 +38,11 @@ int main(int argc, char **argv) {
       break;
 
     default:
-      fprintf(stderr, "Usage: %s "
-                      "[-b <host>] "
-                      "[-t <topic_name>]"
-                      "[-f <filename>]"
-                      "[-q]"
+      fprintf(stderr, "Usage: %s \n"
+                      "[-b <host>]    NeXus filename including full path\n"
+                      "[-t <topic_name>]    Name of the topic to subscribe to\n"
+                      "[-f <filepath>]    Write the received data to a NeXus file with this full path\n"
+                      "[-q]    Quiet mode, make the client less chatty\n"
                       "\n",
               argv[0]);
       exit(1);

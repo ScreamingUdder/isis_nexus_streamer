@@ -3,6 +3,25 @@
 # ISIS NeXus Streamer
 Stream event data from a NeXus file from RAL/ISIS using Apache Kafka. A producer and a consumer client are included. Each message sent over the wire consists of a single frame of event mode data.
 
+Producer usage:
+```
+main_nexusPublisher -f <filepath>    NeXus filename including full path
+               [-b <host>]    Hostname of a broker in the Kafka cluster
+               [-t <topic_name>]    Name of the topic to publish to
+               [-m <messages_per_frame>]    Number of messages per frame
+               [-q]    Quiet mode, make publisher less chatty
+               [-u]    Random mode, serve messages within each frame in a random order
+```
+
+Consumer usage:
+```
+main_nexusSubscriber
+               [-b <host>]    NeXus filename including full path
+               [-t <topic_name>]    Name of the topic to subscribe to
+               [-f <filepath>]    Write the received data to a NeXus file with this full path
+               [-q]    Quiet mode, make the client less chatty
+```
+
 ## Dependencies
 Currently requires having `librdkafka` and the HDF5 C++ library installed. If `tcmalloc` is available then it will be used, but it is not a requirement.
 
