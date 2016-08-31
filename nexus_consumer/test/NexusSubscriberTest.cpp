@@ -121,6 +121,8 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_one_received) {
 
   auto exampleEventData = createEventData();
   // Make this the last frame so that listenForMessage will only be called once
+  exampleEventData->setEndFrame(true);
+  exampleEventData->setEndRun(true);
   exampleEventData->setNumberOfFrames(9);
   exampleEventData->setFrameNumber(9);
   std::string rawbuf;
@@ -156,6 +158,8 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_multiple_received) {
   auto exampleEventData_second = createEventData();
   exampleEventData_second->setNumberOfFrames(9);
   exampleEventData_second->setFrameNumber(8);
+  exampleEventData_second->setEndFrame(true);
+  exampleEventData_second->setEndRun(true);
   std::string rawbuf_second;
   EXPECT_NO_THROW(
       exampleEventData_second->getBufferPointer(rawbuf_second, messageID + 1));
@@ -201,6 +205,8 @@ TEST_F(NexusSubscriberTest, test_listen_for_messages_received_out_of_order) {
   // Last frame
   std::vector<uint32_t> thirdIds = {3, 3, 3, 3};
   auto exampleEventData_third = createEventData(thirdIds, 2);
+  exampleEventData_third->setEndFrame(true);
+  exampleEventData_third->setEndRun(true);
   std::string rawbuf_third;
   EXPECT_NO_THROW(
       exampleEventData_third->getBufferPointer(rawbuf_third, messageID + 2));

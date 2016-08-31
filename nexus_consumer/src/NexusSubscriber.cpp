@@ -20,6 +20,7 @@ NexusSubscriber::NexusSubscriber(std::shared_ptr<EventSubscriber> subscriber,
  */
 void NexusSubscriber::listen() {
   auto receivedDataStats = std::make_shared<ReceivedDataStats>();
+  m_running = true;
 
   std::string message;
   auto receivedData = std::make_shared<EventData>();
@@ -27,16 +28,19 @@ void NexusSubscriber::listen() {
   reportProgress(0.0);
 
   // frame numbers run from 0 to numberOfFrames-1
-  while ((receivedDataStats->frameNumber <
-          (receivedDataStats->numberOfFrames - 1)) ||
-         (receivedDataStats->numberOfmessagesReceived %
-          receivedDataStats->messagesPerFrame) != 0) {
+  while (m_running) {
     if (!(m_subscriber->listenForMessage(message)))
       continue;
 
     decodeMessage(receivedData, message, receivedDataStats);
-    // TODO should probably give up listening and report an error about a
-    // missing message if the map gets too large (64 messages?)
+
+    if (m_futureMessages.size() > 128) {
+      std::cout << "Error: A message is missing and 128 messages have been "
+          "received since it was supposed to be received. Aborting "
+          "listen."
+                << std::endl;
+      m_running = false;
+    }
   }
   reportProgress(1.0);
   std::cout << std::endl
@@ -45,7 +49,7 @@ void NexusSubscriber::listen() {
             << "Bytes received: " << receivedDataStats->totalBytesReceived
             << std::endl
             << "Number of messages received: "
-            << receivedDataStats->numberOfmessagesReceived << std::endl;
+            << receivedDataStats->numberOfMessagesReceived << std::endl;
 }
 
 /**
@@ -66,18 +70,15 @@ void NexusSubscriber::processMessage(
   if (m_filewriter) {
     m_filewriter->writeData(receivedData);
   }
-  if (receivedDataStats->frameNumber !=
-      receivedDataStats->previousFrameNumber) {
-    if (receivedDataStats->frameNumber == 1 &&
-        receivedDataStats->messagesPerFrame == 1)
-      receivedDataStats->messagesPerFrame =
-          receivedDataStats->numberOfmessagesReceived;
+  if (receivedData->getEndFrame()) {
     receivedDataStats->numberOfFramesReceived++;
     reportProgress(static_cast<float>(receivedDataStats->frameNumber) /
                    static_cast<float>(receivedDataStats->numberOfFrames));
+    if (receivedData->getEndRun()) {
+      m_running = false;
+    }
   }
-  receivedDataStats->previousFrameNumber = receivedDataStats->frameNumber;
-  receivedDataStats->numberOfmessagesReceived++;
+  receivedDataStats->numberOfMessagesReceived++;
 }
 
 /**
@@ -95,7 +96,8 @@ void NexusSubscriber::decodeMessage(
   // it
   auto currentMessageID = getMessageID(rawbuf);
   if (currentMessageID == receivedDataStats->previousMessageID + 1 ||
-      receivedDataStats->previousMessageID == std::numeric_limits<uint64_t>::max()) {
+      receivedDataStats->previousMessageID ==
+          std::numeric_limits<uint64_t>::max()) {
     eventData->decodeMessage(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
     processMessage(eventData, rawbuf, receivedDataStats);
     receivedDataStats->previousMessageID = currentMessageID;

@@ -140,7 +140,7 @@ def launch_producer(args):
              "-f", os.path.join(args.data_path, args.datafile),
              "-b", args.broker,
              "-t", args.topic_name,
-             "-m", "10",
+             "-m", "200",
              "-r",
              "-q"])
     else:
@@ -149,7 +149,7 @@ def launch_producer(args):
              "-f", os.path.join(args.data_path, args.datafile),
              "-b", args.broker,
              "-t", args.topic_name,
-             "-m", "1",
+             "-m", "200",
              "-q"])
     print(" done.")
     return producer_process
