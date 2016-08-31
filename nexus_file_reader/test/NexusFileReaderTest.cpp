@@ -70,3 +70,10 @@ TEST(NexusFileReaderTest, get_event_tofs_too_high_frame_number) {
   std::vector<uint64_t> eventTofs;
   EXPECT_FALSE(fileReader.getEventTofs(eventTofs, 3000000));
 }
+
+TEST(NexusFileReaderTest, get_frame_parts_per_frame) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath + "SANS_test_reduced.hdf5");
+  auto framePartsPerFrame = fileReader.getFramePartsPerFrame(200);
+  EXPECT_EQ(4, framePartsPerFrame[0]);
+}
