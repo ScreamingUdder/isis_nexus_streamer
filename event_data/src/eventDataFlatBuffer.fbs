@@ -7,6 +7,8 @@ table FlatbufEventData {
     frameNumber:uint;
     totalFrames:uint;
     totalCounts:ulong;
+    frameEnd:bool = false;
+    runEnd:bool = false;
 }
 
 union MessageTypes { FlatbufEventData }
