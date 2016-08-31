@@ -29,6 +29,8 @@ void EventData::decodeMessage(const uint8_t *buf) {
     setNumberOfFrames(eventData->totalFrames());
     setFrameNumber(eventData->frameNumber());
     setTotalCounts(eventData->totalCounts());
+    setEndFrame(eventData->frameEnd());
+    setEndRun(eventData->runEnd());
   } else {
     std::cout << "Unrecognised message type" << std::endl;
   }
@@ -42,7 +44,7 @@ flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer, uint6
 
   auto messageFlatbuf = CreateFlatbufEventData(
       builder, static_cast<int32_t>(m_detId.size()), detIdsVector, tofsVector,
-      m_frameNumber, m_numberOfFrames, m_totalCounts);
+      m_frameNumber, m_numberOfFrames, m_totalCounts, m_endFrame, m_endRun);
 
   auto messageOffset = CreateEventMessage(
       builder, MessageTypes_FlatbufEventData, messageFlatbuf.Union(), messageID);
