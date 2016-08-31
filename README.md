@@ -49,3 +49,5 @@ The CMake target for the system tests is `system_test`. Running the tests has th
 - numpy (`pip install numpy`)
 - matplotlib (`pip install matplotlib`)
 - kazoo (`pip install kazoo`)
+
+Usage of the test script can be seen using `python test.py --help`.

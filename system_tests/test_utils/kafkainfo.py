@@ -11,6 +11,10 @@ class KafkaInfo(object):
         broker_ids = self.zk.get_children('/brokers/ids')
         return [json.loads(self.zk.get('brokers/ids/'+broker_id)[0])['host'] for broker_id in broker_ids]
 
+    def jmxports(self):
+        broker_ids = self.zk.get_children('/brokers/ids')
+        return [json.loads(self.zk.get('brokers/ids/'+broker_id)[0])['jmx_port'] for broker_id in broker_ids]
+
     def topics(self):
         return self.zk.get_children('/brokers/topics')
 
