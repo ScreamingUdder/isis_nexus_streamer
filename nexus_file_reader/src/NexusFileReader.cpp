@@ -156,9 +156,15 @@ NexusFileReader::getFramePartsPerFrame(int maxEventsPerMessage) {
   std::vector<int> framePartsPerFrame;
   framePartsPerFrame.resize(m_numberOfFrames);
   for (hsize_t frameNumber = 0; frameNumber < m_numberOfFrames; frameNumber++) {
-    framePartsPerFrame[frameNumber] = static_cast<int>(
+    int frameParts = static_cast<int>(
         std::ceil(static_cast<float>(getNumberOfEventsInFrame(frameNumber)) /
                   static_cast<float>(maxEventsPerMessage)));
+    // If there are no events in the frame a message should still be sent
+    // otherwise the output file will not match the input file
+    if (frameParts > 0)
+      framePartsPerFrame[frameNumber] = frameParts;
+    else
+      framePartsPerFrame[frameNumber] = 1;
   }
   return framePartsPerFrame;
 }
