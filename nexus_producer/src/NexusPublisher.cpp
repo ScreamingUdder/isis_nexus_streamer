@@ -44,12 +44,14 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
   std::vector<uint64_t> tofs;
   m_fileReader->getEventTofs(tofs, frameNumber);
 
+  auto numberOfFrames = m_fileReader->getNumberOfFrames();
+
   uint32_t eventsPerMessage =
       static_cast<uint32_t>(ceil(static_cast<double>(detIds.size()) /
                                  static_cast<double>(messagesPerFrame)));
   for (int messageNumber = 0; messageNumber < messagesPerFrame;
        messageNumber++) {
-
+    auto eventData = std::make_shared<EventData>();
     auto upToDetId = detIds.begin() + ((messageNumber + 1) * eventsPerMessage);
     auto upToTof = tofs.begin() + ((messageNumber + 1) * eventsPerMessage);
 
@@ -57,6 +59,10 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
     if (messageNumber == (messagesPerFrame - 1)) {
       upToDetId = detIds.end();
       upToTof = tofs.end();
+      eventData->setEndFrame(true);
+      if (frameNumber == (numberOfFrames - 1)) {
+        eventData->setEndRun(true);
+      }
     }
 
     std::vector<uint32_t> detIdsCurrentMessage(
@@ -64,7 +70,6 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
     std::vector<uint64_t> tofsCurrentMessage(
         tofs.begin() + (messageNumber * eventsPerMessage), upToTof);
 
-    auto eventData = std::make_shared<EventData>();
     eventData->setDetId(detIdsCurrentMessage);
     eventData->setTof(tofsCurrentMessage);
     eventData->setNumberOfFrames(
@@ -81,25 +86,24 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
 /**
  * Start streaming all the data from the file
  */
-void NexusPublisher::streamData(const int messagesPerFrame) {
+void NexusPublisher::streamData(const int maxEventsPerFramePart) {
   std::string rawbuf;
   // frame numbers run from 0 to numberOfFrames-1
   reportProgress(0.0);
   int64_t totalBytesSent = 0;
   const auto numberOfFrames = m_fileReader->getNumberOfFrames();
+  auto framePartsPerFrame =
+      m_fileReader->getFramePartsPerFrame(maxEventsPerFramePart);
   for (size_t frameNumber = 0; frameNumber < numberOfFrames; frameNumber++) {
     totalBytesSent +=
-        createAndSendMessage(rawbuf, frameNumber, messagesPerFrame);
+        createAndSendMessage(rawbuf, frameNumber, framePartsPerFrame[frameNumber]);
     reportProgress(static_cast<float>(frameNumber) /
                    static_cast<float>(numberOfFrames));
   }
   reportProgress(1.0);
   std::cout << std::endl
             << "Frames sent: " << m_fileReader->getNumberOfFrames() << std::endl
-            << "Bytes sent: " << totalBytesSent << std::endl
-            << "Average message size: "
-            << totalBytesSent / (messagesPerFrame * numberOfFrames * 1000)
-            << " kB" << std::endl;
+            << "Bytes sent: " << totalBytesSent << std::endl;
 }
 
 /**
