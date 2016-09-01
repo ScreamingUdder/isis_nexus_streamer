@@ -33,13 +33,13 @@ void NexusSubscriber::listen() {
       continue;
 
     decodeMessage(receivedData, message, receivedDataStats);
-
+    std::cout << m_futureMessages.size() << std::endl;
     if (m_futureMessages.size() > 128) {
-      std::cout << "Error: A message is missing and 128 messages have been "
-          "received since it was supposed to be received. Aborting "
-          "listen."
-                << std::endl;
       m_running = false;
+      throw std::runtime_error(
+          "A message is missing and 128 messages have been "
+          "received since it was supposed to be received. Aborting "
+          "listen.");
     }
   }
   reportProgress(1.0);
