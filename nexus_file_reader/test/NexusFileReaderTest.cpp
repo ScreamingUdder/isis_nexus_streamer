@@ -36,7 +36,7 @@ TEST(NexusFileReaderTest, nexus_read_number_events) {
 TEST(NexusFileReaderTest, nexus_read_number_frames) {
   extern std::string testDataPath;
   auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
-  EXPECT_EQ(18131, fileReader.getNumberOfFrames());
+  EXPECT_EQ(18132, fileReader.getNumberOfFrames());
 }
 
 TEST(NexusFileReaderTest, get_detIds_first_frame) {
@@ -69,4 +69,11 @@ TEST(NexusFileReaderTest, get_event_tofs_too_high_frame_number) {
   auto fileReader = NexusFileReader(testDataPath + "SANS_test.nxs");
   std::vector<uint64_t> eventTofs;
   EXPECT_FALSE(fileReader.getEventTofs(eventTofs, 3000000));
+}
+
+TEST(NexusFileReaderTest, get_frame_parts_per_frame) {
+  extern std::string testDataPath;
+  auto fileReader = NexusFileReader(testDataPath + "SANS_test_reduced.hdf5");
+  auto framePartsPerFrame = fileReader.getFramePartsPerFrame(200);
+  EXPECT_EQ(4, framePartsPerFrame[0]);
 }

@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
   std::string compression = "";
   bool quietMode = false;
   bool randomMode = false;
-  int messagesPerFrame = 1;
+  int maxEventsPerFramePart = 200;
 
   while ((opt = getopt(argc, argv, "f:b:t:c:m:qu")) != -1) {
     switch (opt) {
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
       break;
 
     case 'm':
-      messagesPerFrame = std::stoi(optarg);
+      maxEventsPerFramePart = std::stoi(optarg);
       break;
 
     case 'q':
@@ -62,8 +62,8 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Usage: %s -f <filepath>    NeXus filename including full path\n"
                     "[-b <host>]    Hostname of a broker in the Kafka cluster\n"
                     "[-t <topic_name>]    Name of the topic to publish to\n"
-                    "[-m <messages_per_frame>]    Number of messages per frame\n"
-                    "[-q]    Quiet mode, make publisher less chatty\n"
+                    "[-m <max_events_per_message>]   Maximum number of events to send "
+                    "in a single message, default is 200\n"
                     "[-u]    Random mode, serve messages within each frame in a random order\n"
                     "\n",
             argv[0]);
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 
   auto publisher = std::make_shared<KafkaEventPublisher>(compression);
   NexusPublisher streamer(publisher, broker, topic, filename, quietMode, randomMode);
-  streamer.streamData(messagesPerFrame);
+  streamer.streamData(maxEventsPerFramePart);
 
   return 0;
 }

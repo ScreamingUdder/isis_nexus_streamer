@@ -86,12 +86,18 @@ TEST(NexusPublisherTest, test_create_message_data_3_message_per_frame) {
   EXPECT_EQ(257, receivedEventData.getNumberOfEvents());
   EXPECT_EQ(300, receivedEventData.getNumberOfFrames());
   EXPECT_EQ(1, receivedEventData.getFrameNumber());
+  // and should not be the last message in the frame or in the run
+  EXPECT_FALSE(receivedEventData.getEndFrame());
+  EXPECT_FALSE(receivedEventData.getEndRun());
 
   eventData[2]->getBufferPointer(rawbuf, messageID);
   receivedEventData =
       EventData(reinterpret_cast<const uint8_t *>(rawbuf.c_str()));
   // Last message should have remaining 256 events
   EXPECT_EQ(256, receivedEventData.getNumberOfEvents());
+  // and should be the last message in the frame but not in the run
+  EXPECT_TRUE(receivedEventData.getEndFrame());
+  EXPECT_FALSE(receivedEventData.getEndRun());
 }
 
 MATCHER_P(CheckMessageID, messageID, "") {
@@ -110,13 +116,13 @@ TEST(NexusPublisherTest, test_stream_data) {
   auto publisher = std::make_shared<MockEventPublisher>();
 
   const int numberOfFrames = 300;
-  const int messagesPerFrame = 1;
+  const int maxEventsPerFramePart = 1000000;
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
 
   // test that messages have sequential id numbers
   Sequence s1;
-  for (uint64_t messageID = 0; messageID < numberOfFrames * messagesPerFrame;
+  for (uint64_t messageID = 0; messageID < numberOfFrames;
        messageID++) {
     EXPECT_CALL(*publisher.get(), sendMessage(CheckMessageID(messageID), _))
         .InSequence(s1);
@@ -125,7 +131,7 @@ TEST(NexusPublisherTest, test_stream_data) {
   NexusPublisher streamer(publisher, broker, topic,
                           testDataPath + "SANS_test_reduced.hdf5", false,
                           false);
-  EXPECT_NO_THROW(streamer.streamData(messagesPerFrame));
+  EXPECT_NO_THROW(streamer.streamData(maxEventsPerFramePart));
 }
 
 TEST(NexusPublisherTest, test_stream_data_multiple_messages_per_frame) {
@@ -137,15 +143,14 @@ TEST(NexusPublisherTest, test_stream_data_multiple_messages_per_frame) {
 
   auto publisher = std::make_shared<MockEventPublisher>();
 
-  const int numberOfFrames = 300;
-  const int messagesPerFrame = 10;
+  const int maxEventsPerFramePart = 200;
 
   EXPECT_CALL(*publisher.get(), setUp(broker, topic)).Times(1);
   EXPECT_CALL(*publisher.get(), sendMessage(_, _))
-      .Times(numberOfFrames * messagesPerFrame);
+      .Times(1291);
 
   NexusPublisher streamer(publisher, broker, topic,
                           testDataPath + "SANS_test_reduced.hdf5", false,
                           false);
-  EXPECT_NO_THROW(streamer.streamData(messagesPerFrame));
+  EXPECT_NO_THROW(streamer.streamData(maxEventsPerFramePart));
 }

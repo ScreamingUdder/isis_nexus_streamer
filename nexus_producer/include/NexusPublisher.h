@@ -15,7 +15,7 @@ public:
                  const bool quietMode, const bool randomMode);
   std::vector<std::shared_ptr<EventData>>
   createMessageData(hsize_t frameNumber, const int messagesPerFrame);
-  void streamData(const int messagesPerFrame);
+  void streamData(const int maxEventsPerFramePart);
 
 private:
   int64_t createAndSendMessage(std::string &rawbuf, size_t frameNumber,

@@ -17,10 +17,12 @@ public:
   bool getEventDetIds(std::vector<uint32_t> &detIds, hsize_t frameNumber);
   bool getEventTofs(std::vector<uint64_t> &tofs, hsize_t frameNumber);
   size_t getNumberOfFrames() { return m_numberOfFrames; };
+  std::vector<int> getFramePartsPerFrame(int maxEventsPerMessage);
 
 private:
   hsize_t getFrameStart(hsize_t frameNumber);
   hsize_t getNumberOfEventsInFrame(hsize_t frameNumber);
+  size_t getNumberOfFramesFromFile();
   H5FilePtr m_file = nullptr;
   size_t m_numberOfFrames;
 };

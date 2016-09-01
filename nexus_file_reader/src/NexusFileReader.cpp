@@ -1,4 +1,5 @@
 #include "../include/NexusFileReader.h"
+#include <cmath>
 #include <iostream>
 
 using namespace H5;
@@ -11,10 +12,27 @@ using namespace H5;
  */
 NexusFileReader::NexusFileReader(const std::string &filename)
     : m_file(new H5File(filename, H5F_ACC_RDONLY)) {
-  DataSet dataset = m_file->openDataSet("/raw_data_1/good_frames");
-  size_t numOfFrames;
-  dataset.read(&numOfFrames, PredType::NATIVE_UINT64);
-  m_numberOfFrames = numOfFrames;
+
+  m_numberOfFrames = getNumberOfFramesFromFile();
+}
+
+/**
+ * Get the number of frames in the file, don't use "good_frames" dataset as want
+ * to include frames which have zero events, otherwise comparing input and
+ * output file becomes problematic
+ *
+ * @return number of frames, includes those with zero events
+ */
+size_t NexusFileReader::getNumberOfFramesFromFile() {
+  auto dataset =
+      m_file->openDataSet("/raw_data_1/detector_1_events/event_index");
+  auto dataspace = dataset.getSpace();
+  auto numberOfFrames = dataspace.getSimpleExtentNpoints();
+
+  //DataSet dataset = m_file->openDataSet("/raw_data_1/good_frames");
+  //size_t numOfFrames;
+  //dataset.read(&numOfFrames, PredType::NATIVE_UINT64);
+  return static_cast<size_t>(numberOfFrames);
 }
 
 /**
@@ -63,11 +81,13 @@ hsize_t NexusFileReader::getFrameStart(hsize_t frameNumber) {
 /**
  * Get the number of events which are in the specified frame
  *
- * @param frameNumber - the number of the frame in which to count the number of events
+ * @param frameNumber - the number of the frame in which to count the number of
+ * events
  * @return - the number of events in the specified frame
  */
 hsize_t NexusFileReader::getNumberOfEventsInFrame(hsize_t frameNumber) {
-  // if this is the last frame then we cannot get number of events by looking at event index of next frame
+  // if this is the last frame then we cannot get number of events by looking at
+  // event index of next frame
   // instead use the total_counts field
   if (frameNumber == (m_numberOfFrames - 1)) {
     return getTotalEventCount() - getFrameStart(frameNumber);
@@ -80,14 +100,14 @@ hsize_t NexusFileReader::getNumberOfEventsInFrame(hsize_t frameNumber) {
  *
  * @param detIds - vector in which to store the detector IDs
  * @param frameNumber - the number of the frame in which to get the detector IDs
- * @return - false if the specified frame number is not the data range, true otherwise
+ * @return - false if the specified frame number is not the data range, true
+ * otherwise
  */
 bool NexusFileReader::getEventDetIds(std::vector<uint32_t> &detIds,
                                      hsize_t frameNumber) {
   if (frameNumber >= m_numberOfFrames)
     return false;
-  auto dataset =
-      m_file->openDataSet("/raw_data_1/detector_1_events/event_id");
+  auto dataset = m_file->openDataSet("/raw_data_1/detector_1_events/event_id");
 
   auto numberOfEventsInFrame = getNumberOfEventsInFrame(frameNumber);
 
@@ -114,8 +134,10 @@ bool NexusFileReader::getEventDetIds(std::vector<uint32_t> &detIds,
  * Get the list of flight times corresponding to events in the specifed frame
  *
  * @param tofs - vector in which to store the time-of-flight
- * @param frameNumber - the number of the frame in which to get the time-of-flights
- * @return - false if the specified frame number is not the data range, true otherwise
+ * @param frameNumber - the number of the frame in which to get the
+ * time-of-flights
+ * @return - false if the specified frame number is not the data range, true
+ * otherwise
  */
 bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
                                    hsize_t frameNumber) {
@@ -139,7 +161,8 @@ bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
   hsize_t dimsm = numberOfEventsInFrame;
   DataSpace memspace(1, &dimsm);
 
-  dataset.read(timeOffsetArray.data(), PredType::NATIVE_DOUBLE, memspace, dataspace);
+  dataset.read(timeOffsetArray.data(), PredType::NATIVE_DOUBLE, memspace,
+               dataspace);
 
   tofs.resize(numberOfEventsInFrame);
 
@@ -148,4 +171,22 @@ bool NexusFileReader::getEventTofs(std::vector<uint64_t> &tofs,
   }
 
   return true;
+}
+
+std::vector<int>
+NexusFileReader::getFramePartsPerFrame(int maxEventsPerMessage) {
+  std::vector<int> framePartsPerFrame;
+  framePartsPerFrame.resize(m_numberOfFrames);
+  for (hsize_t frameNumber = 0; frameNumber < m_numberOfFrames; frameNumber++) {
+    int frameParts = static_cast<int>(
+        std::ceil(static_cast<float>(getNumberOfEventsInFrame(frameNumber)) /
+                  static_cast<float>(maxEventsPerMessage)));
+    // If there are no events in the frame a message should still be sent
+    // otherwise the output file will not match the input file
+    if (frameParts > 0)
+      framePartsPerFrame[frameNumber] = frameParts;
+    else
+      framePartsPerFrame[frameNumber] = 1;
+  }
+  return framePartsPerFrame;
 }
