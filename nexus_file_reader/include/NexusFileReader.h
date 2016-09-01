@@ -22,6 +22,7 @@ public:
 private:
   hsize_t getFrameStart(hsize_t frameNumber);
   hsize_t getNumberOfEventsInFrame(hsize_t frameNumber);
+  size_t getNumberOfFramesFromFile();
   H5FilePtr m_file = nullptr;
   size_t m_numberOfFrames;
 };

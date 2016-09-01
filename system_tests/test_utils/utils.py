@@ -25,7 +25,6 @@ def nexus_files_equal(filename_1, filename_2):
     ]
     scalar_datasets = [
         '/raw_data_1/detector_1_events/total_counts',
-        '/raw_data_1/good_frames'
     ]
     # larger datasets will be read and compared in smaller slices
     datasets = [
