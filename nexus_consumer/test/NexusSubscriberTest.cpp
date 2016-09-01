@@ -290,6 +290,7 @@ TEST_F(NexusSubscriberTest, test_listener_throws_if_message_missing) {
   for (uint64_t messageID = 0; messageID < 131; messageID++) {
     auto exampleEventData =
         createEventData(static_cast<uint32_t>(messageID));
+    // Make the second message never arrive
     if (messageID != 1) {
       EXPECT_NO_THROW(exampleEventData->getBufferPointer(rawbuf, messageID));
       EXPECT_CALL(*subscriber.get(), listenForMessage(_))

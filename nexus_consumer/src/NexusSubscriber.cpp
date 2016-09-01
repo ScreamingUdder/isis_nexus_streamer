@@ -33,7 +33,6 @@ void NexusSubscriber::listen() {
       continue;
 
     decodeMessage(receivedData, message, receivedDataStats);
-    std::cout << m_futureMessages.size() << std::endl;
     if (m_futureMessages.size() > 128) {
       m_running = false;
       throw std::runtime_error(
