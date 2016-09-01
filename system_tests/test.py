@@ -80,23 +80,17 @@ def parse_arguments():
                         help='stream data across physical cluster instead of virtual cluster')
     parser.add_argument('-t', '--topic_name', default='topic_system_test', type=str,
                         help='name of the topic to use, default is "topic_system_test"')
-    parser.add_argument('-j', '--jmxport', type=str, default='9990',
-                        help=('specify the port on the broker for jmx, for virtual cluster port '
-                              'numbers are expected to be consecutive and ascending from this value'))
-    parser.add_argument('-b', '--broker', default='localhost', type=str,
-                        help='hostname or address of a broker in the cluster')
     parser.add_argument('-g', '--producer_only', action='store_true',
                         help='use g flag to launch the producer but not consumer')
     parser.add_argument('-r', '--random', action='store_true',
-                        help='publish messages within each frame in a random order')
+                        help='publish messages within each frame in a random order, for testing message reordering')
+    parser.add_argument('-z', '--zookeeper', default='localhost', type=str,
+                        help='hostname of the Zookeeper')
     return parser.parse_args()
 
 
 def create_jmxhosts_list(args):
-    # TODO get list of hosts for given topic from kafka and use that instead
-    if args.p:
-        return ["sakura:" + args.jmxport, "hinata:" + args.jmxport, "tenten:" + args.jmxport]
-    return ["localhost:9990", "localhost:9991", "localhost:9992"]
+    return [broker + ':' + str(jmxport) for (broker, jmxport) in zip(args.info.brokers(), args.info.jmxports())]
 
 
 def pull_virtual_cluster_repo(args):
@@ -114,7 +108,6 @@ def pull_virtual_cluster_repo(args):
     else:
         print("Using real cluster")
         repo_dir = ""
-        args.broker = "sakura"
     return repo_dir
 
 
@@ -157,6 +150,8 @@ def launch_producer(args):
 
 def main():
     args = parse_arguments()
+    args.info = test_utils.KafkaInfo(args.zookeeper)
+    args.broker = args.info.brokers()[0]
 
     # Redirect stdout to a system test output file
     # sys.stdout = open('system_test_output.txt', 'w')

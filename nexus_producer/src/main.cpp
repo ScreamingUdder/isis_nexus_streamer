@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   bool randomMode = false;
   int maxEventsPerFramePart = 200;
 
-  while ((opt = getopt(argc, argv, "f:b:t:c:m:qr")) != -1) {
+  while ((opt = getopt(argc, argv, "f:b:t:c:m:qu")) != -1) {
     switch (opt) {
 
     case 'f':
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
       quietMode = true;
       break;
 
-    case 'r':
+    case 'u':
       randomMode = true;
       break;
 
@@ -60,12 +60,11 @@ int main(int argc, char **argv) {
   if (filename.empty()) {
   usage:
     fprintf(stderr, "Usage: %s -f <filepath>    NeXus filename including full path\n"
-                    "[-b <host>]    hostname of a broker in the Kafka cluster\n"
-                    "[-t <topic_name>]    name of the topic to publish to\n"
+                    "[-b <host>]    Hostname of a broker in the Kafka cluster\n"
+                    "[-t <topic_name>]    Name of the topic to publish to\n"
                     "[-m <max_events_per_message>]   Maximum number of events to send "
                     "in a single message, default is 200\n"
-                    "[-q]    quiet mode, make publisher less chatty\n"
-                    "[-r]    random mode, serve messages within each frame in a random order\n"
+                    "[-u]    Random mode, serve messages within each frame in a random order\n"
                     "\n",
             argv[0]);
     exit(1);
