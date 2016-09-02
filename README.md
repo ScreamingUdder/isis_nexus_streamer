@@ -8,7 +8,7 @@ Producer usage:
 main_nexusPublisher -f <filepath>    NeXus filename including full path
                [-b <host>]    Hostname of a broker in the Kafka cluster
                [-t <topic_name>]    Name of the topic to publish to
-               [-m <messages_per_frame>]    Number of messages per frame
+               [-m <max_events_per_message>]    Maximum number of events to send in a single message
                [-q]    Quiet mode, make publisher less chatty
                [-u]    Random mode, serve messages within each frame in a random order
 ```
