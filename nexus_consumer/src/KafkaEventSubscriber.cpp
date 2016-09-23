@@ -7,10 +7,7 @@ const int static PARTITION = 0;
 }
 
 KafkaEventSubscriber::~KafkaEventSubscriber() {
-  m_consumer_ptr->stop(m_topic_ptr.get(), PARTITION);
-  // rdkafka example polls after stop() is called,
-  // not sure why but doing the same here for now
-  m_consumer_ptr->poll(1000);
+  m_consumer_ptr->close();
   // Wait for RdKafka to decommission, avoids complaints of memory leak from
   // valgrind etc.
   RdKafka::wait_destroyed(5000);
@@ -22,17 +19,16 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
   auto conf = std::unique_ptr<RdKafka::Conf>(
       RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
-  auto tconf = std::unique_ptr<RdKafka::Conf>(
-      RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC));
 
   conf->set("metadata.broker.list", broker_str, error_str);
   conf->set("message.max.bytes", "10000000", error_str);
   conf->set("fetch.message.max.bytes", "10000000", error_str);
   conf->set("replica.fetch.max.bytes", "10000000", error_str);
+  conf->set("group.id", "nexus_stream_consumer", error_str);
 
   // Create consumer using accumulated global configuration.
-  m_consumer_ptr = std::unique_ptr<RdKafka::Consumer>(
-      RdKafka::Consumer::create(conf.get(), error_str));
+  m_consumer_ptr = std::unique_ptr<RdKafka::KafkaConsumer>(
+      RdKafka::KafkaConsumer::create(conf.get(), error_str));
   if (!m_consumer_ptr.get()) {
     std::cerr << "Failed to create consumer: " << error_str << std::endl;
     exit(1);
@@ -40,17 +36,9 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
   std::cout << "% Created consumer " << m_consumer_ptr->name() << std::endl;
 
-  // Create topic handle.
-  m_topic_ptr = std::unique_ptr<RdKafka::Topic>(RdKafka::Topic::create(
-      m_consumer_ptr.get(), topic_str, tconf.get(), error_str));
-  if (!m_topic_ptr.get()) {
-    std::cerr << "Failed to create topic: " << error_str << std::endl;
-    exit(1);
-  }
-
   // Start consumer for topic+partition at start offset
-  RdKafka::ErrorCode resp = m_consumer_ptr->start(m_topic_ptr.get(), PARTITION,
-                                                  RdKafka::Topic::OFFSET_END);
+  std::vector<std::string> topics = {topic_str};
+  RdKafka::ErrorCode resp = m_consumer_ptr->subscribe(topics);
   if (resp != RdKafka::ERR_NO_ERROR) {
     std::cerr << "Failed to start consumer: " << RdKafka::err2str(resp)
               << std::endl;
@@ -60,9 +48,8 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
 
 bool KafkaEventSubscriber::listenForMessage(std::string &message) {
   RdKafka::Message *msg =
-      m_consumer_ptr->consume(m_topic_ptr.get(), PARTITION, 1000);
+      m_consumer_ptr->consume(1000);
   bool success = messageConsume(msg, message);
-  m_consumer_ptr->poll(0);
   delete msg;
   return success;
 }
