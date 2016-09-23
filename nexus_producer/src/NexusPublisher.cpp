@@ -47,7 +47,7 @@ NexusPublisher::createMessageData(hsize_t frameNumber,
   auto numberOfFrames = m_fileReader->getNumberOfFrames();
 
   uint32_t eventsPerMessage =
-      static_cast<uint32_t>(ceil(static_cast<double>(detIds.size()) /
+      static_cast<uint32_t>(std::ceil(static_cast<double>(detIds.size()) /
                                  static_cast<double>(messagesPerFrame)));
   for (int messageNumber = 0; messageNumber < messagesPerFrame;
        messageNumber++) {
