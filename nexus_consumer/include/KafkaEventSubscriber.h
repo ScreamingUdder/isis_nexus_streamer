@@ -14,8 +14,7 @@ public:
   ~KafkaEventSubscriber();
 
 private:
-  std::unique_ptr<RdKafka::Consumer> m_consumer_ptr;
-  std::unique_ptr<RdKafka::Topic> m_topic_ptr;
+  std::unique_ptr<RdKafka::KafkaConsumer> m_consumer_ptr;
 };
 
 #endif //ISIS_NEXUS_STREAMER_KAFKAEVENTSUBSCRIBER_H
