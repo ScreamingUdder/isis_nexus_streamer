@@ -25,6 +25,10 @@ void KafkaEventSubscriber::setUp(const std::string &broker_str,
   conf->set("fetch.message.max.bytes", "10000000", error_str);
   conf->set("replica.fetch.max.bytes", "10000000", error_str);
   conf->set("group.id", "nexus_stream_consumer", error_str);
+  conf->set("enable.auto.commit", "false", error_str);
+  conf->set("enable.auto.offset.store", "false", error_str);
+  conf->set("offset.store.method", "none", error_str);
+  conf->set("auto.offset.reset", "largest", error_str);
 
   // Create consumer using accumulated global configuration.
   m_consumer_ptr = std::unique_ptr<RdKafka::KafkaConsumer>(
