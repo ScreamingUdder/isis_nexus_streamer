@@ -35,10 +35,16 @@ void NexusSubscriber::listen() {
     decodeMessage(receivedData, message, receivedDataStats);
     if (m_futureMessages.size() > 128) {
       m_running = false;
-      throw std::runtime_error(
+      uint64_t smallestID = std::numeric_limits<uint64_t>::max();
+      for (auto messageID : m_futureMessages) {
+        if (messageID.first < smallestID)
+          smallestID = messageID.first;
+      }
+      std::string missingError =
           "A message is missing and 128 messages have been "
           "received since it was supposed to be received. Aborting "
-          "listen.");
+          "listen. Missing message ID: ";
+      throw std::runtime_error(missingError + std::to_string(smallestID - 1));
     }
   }
   reportProgress(1.0);
