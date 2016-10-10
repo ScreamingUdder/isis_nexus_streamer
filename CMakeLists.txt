@@ -9,6 +9,7 @@ set(CMAKE_MODULE_PATH
 find_package(HDF5 COMPONENTS CXX HL REQUIRED)
 find_package(LibRDKafka)
 find_package(Tcmalloc)
+find_package(CapnProto)
 
 include(CTest)
 enable_testing()
