@@ -1,5 +1,23 @@
 #include "EventData.h"
 #include <iostream>
+#include <memory>
+#include <capnp/message.h>
+#include <capnp/serialize-packed.h>
+#include <capnp/schema.h>
+#include <capnp/dynamic.h>
+
+using ::capnp::DynamicValue;
+using ::capnp::DynamicStruct;
+using ::capnp::DynamicEnum;
+using ::capnp::DynamicList;
+using ::capnp::List;
+using ::capnp::Schema;
+using ::capnp::StructSchema;
+using ::capnp::EnumSchema;
+
+using ::capnp::Void;
+using ::capnp::MallocMessageBuilder;
+using ::capnp::SegmentArrayMessageReader;
 
 EventData::EventData()
     : m_bufferSize(0), m_frameNumber(0), m_numberOfFrames(0), m_totalCounts(0) {
@@ -8,54 +26,79 @@ EventData::EventData()
 EventData::EventData(const uint8_t *buf) { decodeMessage(buf); }
 
 uint64_t getMessageID(const std::string &rawbuf) {
+
   auto buf = reinterpret_cast<const uint8_t *>(rawbuf.c_str());
-  auto messageData = GetEventMessage(buf);
-  return messageData->id();
+
+  auto wordLimit = capnp::ReaderOptions().traversalLimitInWords;
+  // TODO don't forget to clean up this pointer
+  auto message_segments = kj::arrayPtr(reinterpret_cast<const capnp::word*>(buf), wordLimit);
+  capnp::SegmentArrayMessageReader reader(&message_segments);
+  auto messageStruct = reader.getRoot<EventMessage>();
+  auto id =  messageStruct.getId();
+  delete message_segments;
+  return id;
 }
 
 void EventData::decodeMessage(const uint8_t *buf) {
-  auto messageData = GetEventMessage(buf);
-  if (messageData->message_type() == MessageTypes_FlatbufEventData) {
-    auto eventData =
-        static_cast<const FlatbufEventData *>(messageData->message());
-    auto detIdFBVector = eventData->detId();
-    auto tofFBVector = eventData->tof();
 
-    m_detId.resize(static_cast<size_t>(eventData->count()));
-    m_tof.resize(static_cast<size_t>(eventData->count()));
-    std::copy(detIdFBVector->begin(), detIdFBVector->end(), m_detId.begin());
-    std::copy(tofFBVector->begin(), tofFBVector->end(), m_tof.begin());
+  auto wordLimit = capnp::ReaderOptions().traversalLimitInWords;
+  // TODO don't forget to clean up this pointer
+  auto message_segments = kj::arrayPtr(reinterpret_cast<const capnp::word*>(buf), wordLimit);
+  capnp::SegmentArrayMessageReader reader(&message_segments);
 
-    setNumberOfFrames(eventData->totalFrames());
-    setFrameNumber(eventData->frameNumber());
-    setTotalCounts(eventData->totalCounts());
-    setEndFrame(eventData->frameEnd());
-    setEndRun(eventData->runEnd());
+  auto messageStruct = reader.getRoot<EventMessage>();
+  auto message = messageStruct.getMessage();
+  if (message.hasData()) {
+    auto eventDataMsg = message.getData();
+    auto count = eventDataMsg.getCount();
+    m_detId.resize(static_cast<size_t>(count));
+    m_tof.resize(static_cast<size_t>(count));
+    std::copy(eventDataMsg.getDetId().begin(), eventDataMsg.getDetId().end(), m_detId.begin());
+    std::copy(eventDataMsg.getTof().begin(), eventDataMsg.getTof().end(), m_tof.begin());
+
+    setNumberOfFrames(eventDataMsg.getTotalFrames());
+    setFrameNumber(eventDataMsg.getFrameNumber());
+    setTotalCounts(eventDataMsg.getTotalCounts());
+    setEndFrame(eventDataMsg.getFrameEnd());
+    setEndRun(eventDataMsg.getRunEnd());
+
   } else {
     std::cout << "Unrecognised message type" << std::endl;
   }
+  delete message_segments;
 }
 
-flatbuffers::unique_ptr_t EventData::getBufferPointer(std::string &buffer, uint64_t messageID) {
-  flatbuffers::FlatBufferBuilder builder;
+kj::Array<capnp::word> EventData::getBufferPointer(std::string &buffer, uint64_t messageID) {
 
-  auto detIdsVector = builder.CreateVector(m_detId);
-  auto tofsVector = builder.CreateVector(m_tof);
+  MallocMessageBuilder builder;
 
-  auto messageFlatbuf = CreateFlatbufEventData(
-      builder, static_cast<int32_t>(m_detId.size()), detIdsVector, tofsVector,
-      m_frameNumber, m_numberOfFrames, m_totalCounts, m_endFrame, m_endRun);
+  auto messageStruct = builder.initRoot<EventMessage>();
+  auto eventStruct = messageStruct.initMessage().initData<FlatbufEventData>();
 
-  auto messageOffset = CreateEventMessage(
-      builder, MessageTypes_FlatbufEventData, messageFlatbuf.Union(), messageID);
+  uint32_t counts = static_cast<uint32_t>(m_detId.size());
+  eventStruct.setCount(counts);
 
-  builder.Finish(messageOffset);
+  auto detIdsList = eventStruct.initDetId(counts);
+  for (uint32_t i=0; i<counts; i++) {
+    detIdsList.set(i, m_detId[i]);
+  }
 
-  auto bufferpointer =
-      reinterpret_cast<const char *>(builder.GetBufferPointer());
-  buffer.assign(bufferpointer, bufferpointer + builder.GetSize());
+  auto tofsList = eventStruct.initTof(counts);
+  for (uint32_t i=0; i<counts; i++) {
+    tofsList.set(i, m_tof[i]);
+  }
 
-  m_bufferSize = builder.GetSize();
+  eventStruct.setFrameNumber(m_frameNumber);
+  eventStruct.setTotalFrames(m_numberOfFrames);
+  eventStruct.setTotalCounts(m_totalCounts);
+  eventStruct.setFrameEnd(m_endFrame);
+  eventStruct.setRunEnd(m_endRun);
 
-  return builder.ReleaseBufferPointer();
+  messageStruct.setId(messageID);
+
+  m_bufferSize = capnp::computeSerializedSizeInWords(builder) * sizeof(capnp::word);
+  auto words = capnp::messageToFlatArray(builder);
+  auto bytes = words.asBytes();
+  buffer.assign(reinterpret_cast<const char *>(bytes.begin()), bytes.size());
+  return words;
 }

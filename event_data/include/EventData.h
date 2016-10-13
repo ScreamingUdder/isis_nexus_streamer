@@ -3,8 +3,9 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
-#include "eventDataFlatBuffer_generated.h"
+#include "eventData.capnp.h"
 
 uint64_t getMessageID(const std::string &rawbuf);
 
@@ -13,7 +14,7 @@ class EventData {
 public:
   // Construct a new empty EventData object
   EventData();
-  // Construct an EventData object from a flatbuf buffer
+  // Construct an EventData object from a message buffer
   EventData(const uint8_t *buf);
 
   // Decode message into existing EventData instance
@@ -40,7 +41,7 @@ public:
   bool getEndFrame() { return m_endFrame; }
   bool getEndRun() { return m_endRun; }
 
-  flatbuffers::unique_ptr_t getBufferPointer(std::string &buffer, uint64_t messageID);
+  kj::Array<capnp::word> getBufferPointer(std::string &buffer, uint64_t messageID);
 
   size_t getBufferSize() { return m_bufferSize; }
 

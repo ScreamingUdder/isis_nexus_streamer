@@ -17,6 +17,7 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/include)
 
 add_library(eventdata_lib ${PROJECT_SOURCE_DIR}/src/EventData.cpp)
+target_link_libraries(eventdata_lib libcapnp libkj)
 
 #####################
 ## Unit Tests      ##
