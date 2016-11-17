@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 
     default:
       fprintf(stderr, "Usage: %s \n"
-                      "[-b <host>]    NeXus filename including full path\n"
+                      "[-b <host>]    Hostname of a broker in the Kafka cluster\n"
                       "[-t <topic_name>]    Name of the topic to subscribe to\n"
                       "[-f <filepath>]    Write the received data to a NeXus file with this full path\n"
                       "[-q]    Quiet mode, make the client less chatty\n"
