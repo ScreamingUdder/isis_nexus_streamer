@@ -15,4 +15,4 @@ echo "Run tests"
 ./unitTests ../code/data/ --gtest_output=xml:test_results.xml
 
 echo "Create docs"
-make docs
+make doc
