@@ -176,4 +176,5 @@ add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINAR
 add_custom_target(system_test_virtual COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data
         COMMENT "Executing system tests..." VERBATIM)
 
+install(FILES LICENSE DESTINATION share)
 install(FILES data/SANS_test.nxs DESTINATION share)
