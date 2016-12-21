@@ -1,5 +1,9 @@
 #!/bin/bash
 
+ls
+pwd
+ls
+
 cd ..
 mkdir -p build
 cd build
