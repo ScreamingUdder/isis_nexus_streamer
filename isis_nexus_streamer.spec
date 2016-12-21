@@ -15,6 +15,7 @@ ISIS NeXus Streamer.
 
 %package -n %{name}-data
 Summary: ISIS NeXus Streamer sample data
+
 BuildArch: noarch
 
 %description -n %{name}-data
