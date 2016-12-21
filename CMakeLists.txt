@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(isis_nexus_streamer)
 
+set(PROJECT_VERSION 1.0.0)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic-errors")
 
 set(CMAKE_MODULE_PATH
@@ -12,6 +14,9 @@ find_package(Tcmalloc)
 
 include(CTest)
 enable_testing()
+
+include(CPackConfig.cmake)
+include(CPack)
 
 # We probably don't want this to run on every build.
 option(COVERALLS "Generate coveralls data" OFF)
@@ -170,3 +175,5 @@ add_custom_target(system_test COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINAR
         COMMENT "Executing system tests..." VERBATIM)
 add_custom_target(system_test_virtual COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/system_tests/test.py ${PROJECT_SOURCE_DIR}/data
         COMMENT "Executing system tests..." VERBATIM)
+
+install(FILES data/SANS_test.nxs DESTINATION share)

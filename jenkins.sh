@@ -16,3 +16,6 @@ echo "Run tests"
 
 echo "Create docs"
 make doc
+
+echo "Create package"
+make package
