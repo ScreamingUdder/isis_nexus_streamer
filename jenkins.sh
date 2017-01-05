@@ -4,9 +4,9 @@ mkdir -p build
 cd build
 
 echo "Run cmake..."
-HDF5_ROOT=/opt/dm_group/hdf5 \
+HDF5_ROOT=$HDF5_ROOT \
     cmake ../code \
-    -DLibRDKafka_ROOT_DIR=/opt/dm_group/librdkafka
+    -DLibRDKafka_ROOT_DIR=$LibRDKafka_ROOT_DIR
 
 echo "Build project"
 make
