@@ -1,6 +1,7 @@
 Name:    isis_nexus_streamer
 Version: %{_version}
 Release: %{_release}%{?dist}
+%define dm_group_prefix /opt/dm_group/usr
 
 Summary: ISIS NeXus Streamer
 License: BSD 2-clause
@@ -27,27 +28,30 @@ ISIS NeXus Streamer sample file.
 
 %install
 rm -rf %{buildroot}
-install -d %{buildroot}/opt/dm_group/isis_nexus_streamer/bin
-install -d %{buildroot}/opt/dm_group/isis_nexus_streamer/share
-cp bin/main_nexusPublisher %{buildroot}/opt/dm_group/isis_nexus_streamer/bin/nexusPublisher
-cp bin/main_nexusSubscriber %{buildroot}/opt/dm_group/isis_nexus_streamer/bin/nexusSubscriber
-cp share/SANS_test.nxs %{buildroot}/opt/dm_group/isis_nexus_streamer/share/
-cp share/LICENSE %{buildroot}/opt/dm_group/isis_nexus_streamer/share/
+install -d %{buildroot}%{dm_group_prefix}/bin
+install -d %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer
+cp bin/main_nexusPublisher %{buildroot}%{dm_group_prefix}/bin/nexusPublisher
+cp bin/main_nexusSubscriber %{buildroot}%{dm_group_prefix}/bin/nexusSubscriber
+cp share/SANS_test.nxs %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer/
+cp share/LICENSE %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer/
 
 %clean
 rm -rf %{buildroot}
 
 %files -n %{name}
 %defattr(-,root,root)
-/opt/dm_group/isis_nexus_streamer/bin/nexusPublisher
-/opt/dm_group/isis_nexus_streamer/bin/nexusSubscriber
-%doc /opt/dm_group/isis_nexus_streamer/share/isis_nexus_streamer/LICENSE
+%{dm_group_prefix}/bin/nexusPublisher
+%{dm_group_prefix}/bin/nexusSubscriber
+%doc %{dm_group_prefix}/share/isis_nexus_streamer/LICENSE
 
 %files -n %{name}-data
-/opt/dm_group/isis_nexus_streamer/share/isis_nexus_streamer/SANS_test.nxs
+%{dm_group_prefix}/share/isis_nexus_streamer/SANS_test.nxs
 
 
 %changelog
 
-* Wed Dec 21 2016 Afonso Mukai <afonso.mukai@esss.se> 1.8.18
+* Fri Jan 13 2017 Afonso Mukai <afonso.mukai@esss.se> 0.1.0
+- Change installation prefix to /opt/dm_group/usr
+
+* Wed Dec 21 2016 Afonso Mukai <afonso.mukai@esss.se> 0.1.0
 - Initial package
