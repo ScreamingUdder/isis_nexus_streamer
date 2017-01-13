@@ -32,8 +32,8 @@ install -d %{buildroot}%{dm_group_prefix}/bin
 install -d %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer
 cp bin/main_nexusPublisher %{buildroot}%{dm_group_prefix}/bin/nexusPublisher
 cp bin/main_nexusSubscriber %{buildroot}%{dm_group_prefix}/bin/nexusSubscriber
-cp share/SANS_test.nxs %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer/
-cp share/LICENSE %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer/
+cp share/isis_nexus_streamer/SANS_test.nxs %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer/
+cp share/isis_nexus_streamer/LICENSE %{buildroot}%{dm_group_prefix}/share/isis_nexus_streamer/
 
 %clean
 rm -rf %{buildroot}
