@@ -41,13 +41,13 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 /opt/dm_group/isis_nexus_streamer/bin/nexusPublisher
 /opt/dm_group/isis_nexus_streamer/bin/nexusSubscriber
-%doc /opt/dm_group/isis_nexus_streamer/share/LICENSE
+%doc /opt/dm_group/isis_nexus_streamer/share/isis_nexus_streamer/LICENSE
 
 %files -n %{name}-data
-/opt/dm_group/isis_nexus_streamer/share/SANS_test.nxs
+/opt/dm_group/isis_nexus_streamer/share/isis_nexus_streamer/SANS_test.nxs
 
 
 %changelog
 
-* Wed Dec 21 2016 Afonso Mukai <afonso.mukai@esss.se> - 1.8.18
+* Wed Dec 21 2016 Afonso Mukai <afonso.mukai@esss.se> 1.8.18
 - Initial package
