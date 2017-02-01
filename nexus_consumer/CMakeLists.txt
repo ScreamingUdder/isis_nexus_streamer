@@ -54,6 +54,8 @@ add_executable(main_nexusSubscriber ${PROJECT_SOURCE_DIR}/src/main.cpp)
 target_link_libraries(main_nexusSubscriber
         ${core_libraries})
 
+install(TARGETS main_nexusSubscriber DESTINATION bin)
+
 #####################
 ## Unit Tests      ##
 #####################

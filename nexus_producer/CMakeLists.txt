@@ -43,6 +43,8 @@ add_executable(main_nexusPublisher ${PROJECT_SOURCE_DIR}/src/main.cpp)
 target_link_libraries(main_nexusPublisher
         ${core_libraries})
 
+install(TARGETS main_nexusPublisher DESTINATION bin)
+
 #####################
 ## Unit Tests      ##
 #####################
