@@ -23,7 +23,7 @@ node('kafka-client') {
         stage("CMake") {
             sh "cmake --version"
             sh "HDF5_ROOT=$HDF5_ROOT \
-                cmake ../code -DLibRDKafka_ROOT_DIR=$DM_ROOT"
+                cmake ../code -DLibRDKafka_ROOT_DIR=$DM_ROOT/usr"
         }
 
         stage("Build") {
