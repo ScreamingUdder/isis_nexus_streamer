@@ -39,7 +39,9 @@ node('kafka-client') {
         }
 
         stage("cppcheck") {
-            sh "make cppcheck"
+            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer"
+            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_consumer/include nexus_consumer"
+            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I event_data/include event_data"
         }
 
         stage("Docs") {
