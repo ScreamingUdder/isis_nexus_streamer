@@ -49,3 +49,9 @@ if (COVERALLS)
         set_property(GLOBAL APPEND PROPERTY COVERAGE_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/${loop_var}")
     endforeach(loop_var)
 endif()
+
+#####################
+## clang-format    ##
+#####################
+
+add_check_clang_format(check_format_nexus_file_reader)

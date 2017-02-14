@@ -18,6 +18,8 @@ enable_testing()
 include(CPackConfig.cmake)
 include(CPack)
 
+include(CheckClangFormat)
+
 # We probably don't want this to run on every build.
 option(COVERALLS "Generate coveralls data" OFF)
 
