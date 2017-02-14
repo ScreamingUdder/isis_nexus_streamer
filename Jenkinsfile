@@ -35,7 +35,12 @@ node('kafka-client') {
         }
 
         stage("clang-format") {
-            sh "make VERBOSE=1 check_clang_format"
+            try {
+                sh "make -i VERBOSE=1 check_clang_format"
+                currentBuild.result = 'SUCCESS'
+            } catch(Exception err) {
+                currentBuild.result = 'UNSTABLE'
+            }
         }
 
         stage("cppcheck") {
