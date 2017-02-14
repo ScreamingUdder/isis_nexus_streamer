@@ -34,19 +34,14 @@ node('kafka-client') {
             sh "./unitTests ../code/data/ --gtest_output=xml:test_results.xml"
         }
 
-        stage("clang-format") {
-            try {
-                sh "make -i VERBOSE=1 check_clang_format"
-                currentBuild.result = 'SUCCESS'
-            } catch(Exception err) {
-                currentBuild.result = 'UNSTABLE'
-            }
-        }
-
         stage("cppcheck") {
             sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer"
             sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_consumer/include nexus_consumer"
             sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I event_data/include event_data"
+        }
+
+        stage("clang-format") {
+            sh "make -i check_clang_format || true" // Don't fail build.
         }
 
         stage("Docs") {
