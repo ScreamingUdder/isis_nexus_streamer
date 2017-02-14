@@ -47,14 +47,6 @@ if [ "$usefile" -a "$style" ] ; then
     usage
 fi
 
-if [ "$usefile" ] ; then
-    cmd='clang-format -style=file "$filename" | diff "$filename" -'
-elif [ "$style" ] ; then
-    cmd='clang-format -style=$style "$filename" | diff "$filename" -'
-else
-    cmd='clang-format -style=LLVM "$filename" | diff "$filename" -'
-fi
-
 
 result=0
 output=""
@@ -72,7 +64,13 @@ for filename in $@; do
         exit 2
     fi
 
-    current_output=$(clang-format -style=LLVM "$filename" | diff "$filename" -)
+    if [ "$usefile" ] ; then
+        current_output=$(clang-format -style=file "$filename" | diff "$filename" -)
+    elif [ "$style" ] ; then
+        current_output=$(clang-format -style=$style "$filename" | diff "$filename" -)
+    else
+        current_output=$(clang-format -style=LLVM "$filename" | diff "$filename" -)
+    fi
 
     # Escape '%' chars, as we are using printf
     current_output=$(echo "$current_output" | sed -e 's/%/%%/g')
