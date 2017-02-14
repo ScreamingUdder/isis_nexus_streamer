@@ -32,6 +32,7 @@ node('kafka-client') {
 
         stage("Unit Tests") {
             sh "./unitTests ../code/data/ --gtest_output=xml:test_results.xml"
+            junit 'test_results.xml'
         }
 
         stage("clang-format") {
@@ -57,5 +58,6 @@ node('kafka-client') {
 
     stage("RPM") {
         sh(rpm_script)
+        archiveArtifacts 'package/RPMS/'
     }
 }
