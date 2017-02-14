@@ -34,12 +34,6 @@ node('kafka-client') {
             sh "./unitTests ../code/data/ --gtest_output=xml:test_results.xml"
         }
 
-        stage("cppcheck") {
-            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer"
-            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_consumer/include nexus_consumer"
-            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I event_data/include event_data"
-        }
-
         stage("clang-format") {
             sh "make -i check_clang_format || true" // Don't fail build.
         }
@@ -50,6 +44,14 @@ node('kafka-client') {
 
         stage("Package") {
             sh "make package"
+        }
+    }
+
+    dir("code") {
+        stage("cppcheck") {
+            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_producer/include nexus_producer"
+            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I nexus_consumer/include nexus_consumer"
+            sh "cppcheck --force --quiet --inline-suppr --enable=all --suppress=missingIncludeSystem -I event_data/include event_data"
         }
     }
 
